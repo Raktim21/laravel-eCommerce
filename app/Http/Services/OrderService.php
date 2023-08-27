@@ -306,7 +306,7 @@ class OrderService
     }
 
 
-    public function placeMessengerOrder(Request $request): bool
+    public function placeMessengerOrder(Request $request)
     {
         DB::beginTransaction();
         try {
@@ -402,11 +402,11 @@ class OrderService
 
             DB::commit();
 
-            return true;
+            return 'done';
         } catch (QueryException $ex)
         {
             DB::rollback();
-            return false;
+            return $ex->getMessage();
         }
     }
 
