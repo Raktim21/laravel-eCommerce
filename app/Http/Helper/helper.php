@@ -7,6 +7,7 @@ use App\Models\PickupAddress;
 use App\Models\User;
 use App\Models\UserAddress;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 function peperfly(): array
@@ -115,18 +116,19 @@ function getDeliveryCharge($address_id, $total_weight, $total_price): float|int
 
 function sendMessengerResponse($response, $route): void
 {
-    try {
-        $ch = curl_init('https://chatbotapi.selopian.us/api/v1/' . $route);
-//        $ch = curl_init('http://192.168.68.125:4004/api/v1/' . $route);
+    $url = 'https://chatbotapi.selopian.us/api/v1/' . $route;
 
+    try {
+        $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($response));
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 
-        curl_exec($ch);
+        $status = curl_exec($ch);
         curl_close($ch);
+        Log::info($status);
     } catch (Throwable $e)
     {}
 }

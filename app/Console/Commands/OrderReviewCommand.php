@@ -7,6 +7,7 @@ use App\Models\GeneralSetting;
 use App\Models\Order;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class OrderReviewCommand extends Command
 {
@@ -33,7 +34,7 @@ class OrderReviewCommand extends Command
     {
         $orders = Order::where('order_status_id', 4)->whereHas('user.profile', function ($q) {
             return $q->whereNotNull('messenger_psid');
-        })->where('updated_at','<=', Carbon::now()->subMinutes(30))
+        })->whereBetween('updated_at',[Carbon::now('Asia/Dhaka')->subMinutes(30), Carbon::now('Asia/Dhaka')])
             ->whereHas('items', function ($q) {
                 $q->where('is_reviewed', 1);
             }, '=', 0)
@@ -45,7 +46,7 @@ class OrderReviewCommand extends Command
                 $payload = array(
                     'page_id' => (new GeneralSettingService(new GeneralSetting()))->getSetting()->facebook_page_id,
                     'psid' => $item->user->profile->messenger_psid,
-                    'order_id' => $item->order_no
+                    'order_id' => $item->order_number
                 );
 
                 sendMessengerResponse($payload, 'order_review');
