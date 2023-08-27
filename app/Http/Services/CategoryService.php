@@ -22,7 +22,7 @@ class CategoryService
         if($isPaginated==1)
         {
             return $this->category->clone()
-                ->when(!$isAdmin, function ($q) {
+                ->when(!$isAdmin || \request()->input('status') == 1, function ($q) {
                     return $q->where('status', 1);
                 })
                 ->when(request()->input('search'), function ($q) {

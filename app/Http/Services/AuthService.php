@@ -75,7 +75,7 @@ class AuthService
                     'status'  => false,
                     'errors'  => ['Too many request. Please fill up the captcha.'],
                     'captcha' => Captcha::create('default',true),
-                ], 422);
+                ], 400);
             }
 
             $validator = Validator::make($request->all(), [
@@ -90,11 +90,6 @@ class AuthService
                 ],422);
             }
         }
-
-        $user = User::withTrashed()->where('username', $request->username)
-            ->orWhere('phone', $request->username)->first();
-
-        $user?->restore();
 
         if ($token = auth()->attempt($credentials)) {
 
@@ -134,6 +129,11 @@ class AuthService
                             'cart'  =>  $cart,
                         );
             }
+
+            auth()->user()->update([
+                'is_active'  => 1,
+                'last_login' => Carbon::now()
+            ]);
 
             return response()->json([
                 'status'         => true,
@@ -276,7 +276,7 @@ class AuthService
 
         if($this->logout($token))
         {
-            User::find($user)->delete();
+            User::find($user)->update(['is_active' => 0]);
 
             return true;
         }
