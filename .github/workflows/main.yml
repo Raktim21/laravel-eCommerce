@@ -41,7 +41,7 @@ on:
       # php artisan migrate:fresh --seed
       # php artisan optimize
       # php artisan cache:clear
-      
+
 
 name: 🚀 Deploy website on push main
 jobs:
@@ -56,116 +56,112 @@ jobs:
 
 
 
-      - name: 📂 Sync files in Woman
-        uses: SamKirkland/FTP-Deploy-Action@4.3.0
-        with:
-          server: selopia.com
-          username: u652464815.womanapi.selopia.com
-          password: dF@qa#4;k,vd
-          exclude:  |
-            **/.git*
-            **/.git*/**
-            **/public/upload*
-            **/public/upload*/**
-            **/public/json*
-            **/public/json*/**
-        continue-on-error: true     
+      # - name: 📂 Sync files in Woman
+      #   uses: SamKirkland/FTP-Deploy-Action@4.3.0
+      #   with:
+      #     server: selopia.com
+      #     username: u652464815.womanapi.selopia.com
+      #     password: dF@qa#4;k,vd
+      #     exclude:  |
+      #       **/.git*
+      #       **/.git*/**
+      #       **/public/upload*
+      #       **/public/upload*/**
+      #       **/public/json*
+      #       **/public/json*/**
+      #   continue-on-error: true     
     
-      - name: executing remote ssh commands in Woman
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: selopia.com
-          username: u652464815
-          password: wew2Weqsdf@ssfa3
-          port: 65002
-          script: |
-            cd domains/womanapi.selopia.com/public_html/
-            composer2 update
-            php artisan migrate
-            php artisan optimize
-            php artisan config:clear
-            php artisan cache:clear
-    
-      
-        continue-on-error: true      
-
-
-
-      - name: 📂 Sync files in fairfusion
-        uses: SamKirkland/FTP-Deploy-Action@4.3.0
-        with:
-          server: selopia.com
-          username: u652464815.apifairfusion.selopia.com
-          password: dF@qa#4;k,vd
-          exclude:  |
-            **/.git*
-            **/.git*/**
-            **/public/upload*
-            **/public/upload*/**
-            **/public/json*
-            **/public/json*/**
-        continue-on-error: true     
-    
-      - name: executing remote ssh commands in fairfusion
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: selopia.com
-          username: u652464815
-          password: wew2Weqsdf@ssfa3
-          port: 65002
-          script: |
-
-            cd domains/apifairfusion.selopia.com/public_html/
-            composer2 update
-            php artisan migrate
-            php artisan optimize
-            php artisan config:clear
-            php artisan cache:clear
-      
+      # - name: executing remote ssh commands in Woman
+      #   uses: appleboy/ssh-action@v0.1.10
+      #   with:
+      #     host: selopia.com
+      #     username: u652464815
+      #     password: wew2Weqsdf@ssfa3
+      #     port: 65002
+      #     script: |
+      #       cd domains/womanapi.selopia.com/public_html/
+      #       composer2 update
+      #       php artisan migrate
+      #       php artisan optimize
+      #       php artisan config:clear
+      #       php artisan cache:clear
     
       
-        continue-on-error: true    
+      #   continue-on-error: true      
 
 
 
-
-
-
-
-
-
-      - name: 📂 Sync files in Grocery
-        uses: SamKirkland/FTP-Deploy-Action@4.3.0
-        with:
-          server: selopia.com
-          username: u652464815.apigrocery.selopia.com
-          password: dF@qa#4;k,vd
-          exclude:  |
-            **/.git*
-            **/.git*/**
-            **/public/upload*
-            **/public/upload*/**
-            **/public/json*
-            **/public/json*/**
-        continue-on-error: true     
+      # - name: 📂 Sync files in fairfusion
+      #   uses: SamKirkland/FTP-Deploy-Action@4.3.0
+      #   with:
+      #     server: selopia.com
+      #     username: u652464815.apifairfusion.selopia.com
+      #     password: dF@qa#4;k,vd
+      #     exclude:  |
+      #       **/.git*
+      #       **/.git*/**
+      #       **/public/upload*
+      #       **/public/upload*/**
+      #       **/public/json*
+      #       **/public/json*/**
+      #   continue-on-error: true     
     
-      - name: executing remote ssh commands in Grocery
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: selopia.com
-          username: u652464815
-          password: wew2Weqsdf@ssfa3
-          port: 65002
-          script: |
-            cd domains/apigrocery.selopia.com/public_html/
-            composer2 update
-            php artisan migrate
-            php artisan optimize
-            php artisan config:clear
-            php artisan cache:clear
+      # - name: executing remote ssh commands in fairfusion
+      #   uses: appleboy/ssh-action@v0.1.10
+      #   with:
+      #     host: selopia.com
+      #     username: u652464815
+      #     password: wew2Weqsdf@ssfa3
+      #     port: 65002
+      #     script: |
+
+      #       cd domains/apifairfusion.selopia.com/public_html/
+      #       composer2 update
+      #       php artisan migrate
+      #       php artisan optimize
+      #       php artisan config:clear
+      #       php artisan cache:clear
+      
     
       
-        continue-on-error: true    
+      #   continue-on-error: true    
+
+
+
+
+
+      # - name: 📂 Sync files in Grocery
+      #   uses: SamKirkland/FTP-Deploy-Action@4.3.0
+      #   with:
+      #     server: selopia.com
+      #     username: u652464815.apigrocery.selopia.com
+      #     password: dF@qa#4;k,vd
+      #     exclude:  |
+      #       **/.git*
+      #       **/.git*/**
+      #       **/public/upload*
+      #       **/public/upload*/**
+      #       **/public/json*
+      #       **/public/json*/**
+      #   continue-on-error: true     
+    
+      # - name: executing remote ssh commands in Grocery
+      #   uses: appleboy/ssh-action@v0.1.10
+      #   with:
+      #     host: selopia.com
+      #     username: u652464815
+      #     password: wew2Weqsdf@ssfa3
+      #     port: 65002
+      #     script: |
+      #       cd domains/apigrocery.selopia.com/public_html/
+      #       composer2 update
+      #       php artisan migrate
+      #       php artisan optimize
+      #       php artisan config:clear
+      #       php artisan cache:clear
+    
+      
+      #   continue-on-error: true    
 
 
 
@@ -185,7 +181,7 @@ jobs:
             **/public/json*/**
         continue-on-error: true     
     
-      - name: executing remote ssh commands in Grocery
+      - name: executing remote ssh commands in api.shukkarun.com
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: selopia.com
@@ -223,7 +219,7 @@ jobs:
             **/public/json*/**
         continue-on-error: true     
     
-      - name: executing remote ssh commands in Grocery
+      - name: executing remote ssh commands in api.vintbd.com
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: selopia.com
@@ -263,7 +259,7 @@ jobs:
             **/public/json*/**
         continue-on-error: true     
     
-      - name: executing remote ssh commands in Grocery
+      - name: executing remote ssh commands in api.glamdesmit.com
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: selopia.com
