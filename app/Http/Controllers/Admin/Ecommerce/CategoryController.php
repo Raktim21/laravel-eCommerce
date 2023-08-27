@@ -43,6 +43,7 @@ class CategoryController extends Controller
     public function store(CategoryStoreRequest $request)
     {
         $this->service->store($request);
+        Cache::delete('categories');
 
         return response()->json([
             'status' => true,
@@ -53,6 +54,7 @@ class CategoryController extends Controller
     public function update(CategoryUpdateRequest $request, $id)
     {
         $this->service->update($request, $id);
+        Cache::delete('categories');
 
         return response()->json([
             'status' => true
@@ -63,6 +65,7 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         if($this->service->delete($id)) {
+            Cache::delete('categories');
             return response()->json([
                 'status' => true,
             ]);
@@ -77,6 +80,7 @@ class CategoryController extends Controller
     public function reorder(ReOrderRequest $request)
     {
         $this->service->shuffleCategories($request);
+        Cache::delete('categories');
 
         return response()->json([
             'status' => true,
@@ -88,6 +92,7 @@ class CategoryController extends Controller
     {
         $this->service->changeStatus($id);
 
+        Cache::delete('categories');
         return response()->json([
             'status'  => true,
         ]);
@@ -98,6 +103,7 @@ class CategoryController extends Controller
     {
         $this->service->deleteCategories($request);
 
+        Cache::delete('categories');
         return response()->json([
             'status' => true,
         ]);
