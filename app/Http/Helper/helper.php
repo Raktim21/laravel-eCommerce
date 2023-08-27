@@ -117,6 +117,7 @@ function sendMessengerResponse($response, $route): void
 {
     try {
         $ch = curl_init('https://chatbotapi.selopian.us/api/v1/' . $route);
+//        $ch = curl_init('http://192.168.68.125:4004/api/v1/' . $route);
 
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($response));

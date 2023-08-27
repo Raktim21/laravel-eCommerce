@@ -320,6 +320,9 @@ class OrderService
                     'password'              => Hash::make($request->password),
                 ]);
 
+            $user->is_active = 1;
+            $user->save();
+
             \Config::set('auth.defaults.guard','user-api');
             $user->assignRole(3);
             \Config::set('auth.defaults.guard','');

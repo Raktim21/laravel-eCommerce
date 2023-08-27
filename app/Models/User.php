@@ -18,7 +18,7 @@ class User extends Authenticatable implements JWTSubject
     protected $fillable = [
         'shop_branch_id','username','password','salt','name','email_verified_at','phone_verified_at',
         'phone','password_reset_code','password_reset_token','last_login','remember_token',
-        'google_id','facebook_id'
+        'google_id','facebook_id','is_active'
     ];
 
     protected $hidden = [
@@ -58,6 +58,11 @@ class User extends Authenticatable implements JWTSubject
     public function addresses()
     {
         return $this->hasMany(UserAddress::class, 'user_id');
+    }
+
+    public function emailVerification()
+    {
+        return $this->hasOne(EmailVerification::class, 'user_id');
     }
 
     public function contactForms()
