@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUsersTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -15,15 +15,22 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
+            $table->foreignId('shop_branch_id')->nullable()->constrained('shop_branches')->onDelete('restrict');
+            $table->string('username', 100)->unique()->comment('email');
+            $table->string('password', 100);
+            $table->string('salt', 100)->nullable();
+            $table->string('name', 100);
+            $table->string('phone', 30)->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->string('utype')->default('USR')->comment('Use ADM for admin and use USR for user');
+            $table->timestamp('phone_verified_at')->nullable();
+            $table->string('password_reset_code', 10)->nullable();
+            $table->string('password_reset_token', 150)->nullable();
+            $table->timestamp('last_login')->nullable();
             $table->rememberToken();
-            $table->foreignId('current_team_id')->nullable();
-            $table->string('profile_photo_path', 2048)->nullable();
+            $table->string('google_id', 50)->nullable();
+            $table->string('facebook_id', 50)->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -36,4 +43,4 @@ class CreateUsersTable extends Migration
     {
         Schema::dropIfExists('users');
     }
-}
+};

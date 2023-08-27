@@ -1,14 +1,8 @@
 <?php
 
-use App\Http\Livewire\Admin\AdminDashboardComponent;
-use App\Http\Livewire\CartComponent;
-use App\Http\Livewire\CheckoutComponent;
-use App\Http\Livewire\HomeComponent;
-use App\Http\Livewire\ProductDetailsComponent;
-use App\Http\Livewire\ShopComponent;
-use App\Http\Livewire\User\UserDashboardComponent;
+use App\Http\Controllers\System\CroneController;
+use App\Http\Controllers\System\GoogleFacebookController;
 use Illuminate\Support\Facades\Route;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -21,28 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/crone-job', [CroneController::class, 'crone'])->name('crone.job');
 
-Route::get('/',HomeComponent::class);
-Route::get('/shop' , ShopComponent::class)->name('home.shop');
-Route::get('/cart' , CartComponent::class)->name('home.cart');
-Route::get('/checkout' , CheckoutComponent::class)->name('home.checkout');
-Route::get('/product/details/{slug}' , ProductDetailsComponent::class)->name('product.details');
-
-
-// Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-//     return view('dashboard');
-// })->name('dashboard');
-
-//For Admin
-Route::middleware(['auth:sanctum', 'verified','authadmin'])->group(function() {    
-    Route::get('/admin/dashboard',AdminDashboardComponent::class)->name('admin.dashboard');
-});
-
-
-//For User
-Route::middleware(['auth:sanctum', 'verified'])->group(function() {    
-    Route::get('/user/dashboard',UserDashboardComponent::class)->name('user.dashboard'); 
+Route::controller(GoogleFacebookController::class)->group(function () {
+    Route::get('redirect-auth', 'redirect');
+    Route::get('auth/google/callback', 'handleGoogleCallback');
+    Route::get('auth/facebook/callback', 'handleFacebookCallback');
 });

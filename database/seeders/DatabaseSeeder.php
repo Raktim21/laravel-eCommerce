@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,8 +14,30 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
-        \App\Models\Category::factory(6)->create();
-        \App\Models\Product::factory(22)->create();
+        $this->call([
+            CurrencySeeder::class,
+            DashboardLanguageSeeder::class,
+            MessengerSubscriptionSeeder::class,
+            GeneralSettingSeeder::class,
+            CountrySeeder::class,
+            DivisionSeeder::class,
+            DistrictsSeeder::class,
+            SubDistrictSeeder::class,
+            UnionSeeder::class,
+            BranchSeeder::class,
+            UserSexSeeder::class,
+            AdminSeeder::class,
+            RolePermissionSeeder::class,
+            OrderStatusSeeder::class,
+            PaymentStatusSeeder::class,
+            PaymentMethodSeeder::class,
+            ShippingMethodSeeder::class,
+            PickupAddressSeeder::class,
+            ThemeCustomizationSeeder::class,
+            ThemeEventTypeSeeder::class,
+            StaticMenuTypeSeeder::class,
+            FbPageConnectionSeeder::class,
+        ]);
+
     }
 }
