@@ -7,8 +7,6 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Admin\Analytics\SalesReportController;
 
-// Messenger Routes
-
 Route::group(['middleware' => ['ApiAuth']], function() {
 
     Route::controller(StaticAssetController::class)->group(function () {

@@ -160,15 +160,13 @@ class GoogleFacebookController extends Controller
 
     private function authorizeUser($credentials)
     {
-        $user = User::withTrashed()->where('username', $credentials['username'])->first();
-
-        $user?->restore();
-
         if ($token = auth()->attempt($credentials)) {
 
             $auth_user = auth()->user();
 
-            $expiration = Carbon::now()->addMonth(1);
+            $auth_user->update(['is_active' => 1, 'last_login' => Carbon::now()]);
+
+            $expiration = Carbon::now()->addMonth();
 
             $refreshToken = JWTAuth::customClaims(['exp' => $expiration->timestamp, 'refresh_token' => true])->fromUser($auth_user);
 
@@ -183,7 +181,7 @@ class GoogleFacebookController extends Controller
             return response()->json([
                 'status' => true,
                 'data' => array(
-                    'user' => $user,
+                    'user' => $auth_user,
                     'token' => array(
                         'customer_access_token' => $token,
                         'token_type' => 'bearer',

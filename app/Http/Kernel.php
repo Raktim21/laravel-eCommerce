@@ -69,8 +69,8 @@ class Kernel extends HttpKernel
         'role'              => \Spatie\Permission\Middlewares\RoleMiddleware::class,
         'permission'        => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
         'role_or_permission'=> \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
-        'auth.site'         => \App\Http\Middleware\AuthenticateToken::class,
         'view_count'        => \App\Http\Middleware\IncrementViewCount::class,
         'gzip'              => \App\Http\Middleware\GzipMiddleware::class,
+        'verify.email'      => \App\Http\Middleware\VerifyEmail::class
     ];
 }

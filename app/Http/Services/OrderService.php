@@ -306,7 +306,7 @@ class OrderService
     }
 
 
-    public function placeMessengerOrder(Request $request)
+    public function placeMessengerOrder(Request $request): bool
     {
         DB::beginTransaction();
         try {
@@ -402,11 +402,11 @@ class OrderService
 
             DB::commit();
 
-            return $new_order->id;
+            return true;
         } catch (QueryException $ex)
         {
             DB::rollback();
-            return 1;
+            return false;
         }
     }
 

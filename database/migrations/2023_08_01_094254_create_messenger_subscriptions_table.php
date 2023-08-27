@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('messenger_subscriptions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('subscription_type_id')->constrained('messenger_subscriptions')->onDelete('restrict');
+            $table->foreignId('subscription_type_id')->constrained('messenger_subscription_types')->onDelete('restrict');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
 

@@ -1,17 +1,3 @@
-{{-- <x-mail::message>
-# Introduction
-
-The body of your message.
-
-<x-mail::button :url="''">
-Button Text
-</x-mail::button>
-
-Thanks,<br>
-{{ config('app.name') }}
-</x-mail::message> --}}
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office" style="font-family:arial, 'helvetica neue', helvetica, sans-serif">
 
@@ -360,26 +346,26 @@ Thanks,<br>
                                                                         </h1>
                                                                     </td>
                                                                 </tr>
-                                                                <tr>
-                                                                    <td align="center" style="padding:0;Margin:0;padding-top:40px;padding-bottom:40px">
-                                                                        <h3 style="Margin:0;line-height:24px;mso-line-height-rule:exactly;font-family:Poppins, sans-serif;font-size:20px;font-style:normal;font-weight:bold;color:#5D541D">
-                                                                            Thanks for joining Selopia!
-                                                                        </h3>
-                                                                        <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:Poppins, sans-serif;line-height:27px;color:#5D541D;font-size:18px">
-                                                                            <br>
-                                                                        </p>
-                                                                        <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:Poppins, sans-serif;line-height:27px;color:#5D541D;font-size:18px">
-                                                                            To finish signing up, please confirm your email address. This ensures we have the
-                                                                            right email in case we need to contact you.
-                                                                        </p>
-                                                                    </td>
-                                                                </tr>
+{{--                                                                <tr>--}}
+{{--                                                                    <td align="center" style="padding:0;Margin:0;padding-top:40px;padding-bottom:40px">--}}
+{{--                                                                        <h3 style="Margin:0;line-height:24px;mso-line-height-rule:exactly;font-family:Poppins, sans-serif;font-size:20px;font-style:normal;font-weight:bold;color:#5D541D">--}}
+{{--                                                                            Thanks for joining Selopia!--}}
+{{--                                                                        </h3>--}}
+{{--                                                                        <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:Poppins, sans-serif;line-height:27px;color:#5D541D;font-size:18px">--}}
+{{--                                                                            <br>--}}
+{{--                                                                        </p>--}}
+{{--                                                                        <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:Poppins, sans-serif;line-height:27px;color:#5D541D;font-size:18px">--}}
+{{--                                                                            To finish signing up, please confirm your email address. This ensures we have the--}}
+{{--                                                                            right email in case we need to contact you.--}}
+{{--                                                                        </p>--}}
+{{--                                                                    </td>--}}
+{{--                                                                </tr>--}}
                                                                 <tr>
                                                                     <td align="center" style="padding:0;Margin:0">
                                                                         <span class="msohide es-button-border" style="border-style:solid;border-color:#2CB543;background:#8928c6;border-width:0px;display:inline-block;border-radius:30px;width:auto;mso-hide:all">
                                                                             <button type="button" class="es-button" target="_blank" style="mso-style-priority:100 !important;text-decoration:none;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;color:#FFFFFF;font-size:16px;border-style:solid;border-color:#8928c6;border-width:15px 35px 15px 35px;display:inline-block;background:#8928c6;border-radius:30px;font-family:Poppins, sans-serif;font-weight:normal;font-style:normal;line-height:19px;width:auto;text-align:center">
                                                                                 {{$code}}
-                                                                            </a>
+                                                                            </button>
                                                                         </span>
                                                                     </td>
                                                                 </tr>

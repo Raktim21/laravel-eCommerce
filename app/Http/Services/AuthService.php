@@ -2,8 +2,10 @@
 
 namespace App\Http\Services;
 
+use App\Mail\EmailVerificationMail;
 use App\Mail\PasswordResetMail;
 use App\Models\CustomerCart;
+use App\Models\EmailVerification;
 use App\Models\User;
 use App\Models\UserProfile;
 use Carbon\Carbon;
@@ -30,7 +32,6 @@ class AuthService
                 'username'          => $request->username,
                 'password'          => Hash::make($request['password']),
                 'phone'             => $request->phone,
-                'email_verified_at' => Carbon::now(),
                 'phone_verified_at' => Carbon::now(),
             ]);
 
@@ -51,6 +52,17 @@ class AuthService
             if ($request->hasFile('avatar')) {
                 saveImage($request->file('avatar'), '/uploads/customer/avatars/', $profile, 'image');
             }
+
+            $code = rand(100000, 999999);
+
+            EmailVerification::create([
+                'user_id'               => $user->id,
+                'verification_token'    => Hash::make($code),
+                'expired_at'            => Carbon::now()->addMonth()
+            ]);
+
+//            Mail::to($user)->queue(new EmailVerificationMail($user, $code));
+
             DB::commit();
             return true;
         }
@@ -281,16 +293,6 @@ class AuthService
             return true;
         }
         return false;
-    }
-
-    private function updateCart($uuid, $id): void
-    {
-        $cart = CustomerCart::where('session_id', $uuid)->get();
-
-        foreach ($cart as $value) {
-            $value->customer_id = $id;
-            $value->save();
-        }
     }
 
     private function notifyUser($user, $code): void

@@ -23,7 +23,7 @@ class User extends Authenticatable implements JWTSubject
 
     protected $hidden = [
         'password','remember_token','salt','password_reset_code','password_reset_token',
-        'updated_at','email_verified_at','phone_verified_at','deleted_at','google_id','facebook_id'
+        'updated_at','phone_verified_at','deleted_at','google_id','facebook_id'
     ];
 
     protected $casts = [

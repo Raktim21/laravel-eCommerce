@@ -556,7 +556,7 @@ Route::group(['prefix' => 'user'], function () {
             Route::put('password-update','passwordUpdate');
             Route::post('avatar-update','avatarUpdate');
             Route::get('address-list','addressList')->middleware('gzip');
-            Route::post('create-new-address','createNewAddress');
+            Route::post('create-new-address','createNewAddress')->middleware('verify.email');
             Route::get('address-detail/{id}','addressDetail')->middleware('gzip');
             Route::put('address-update/{id}','updateAddress');
             Route::delete('address-delete/{id}','deleteAddress');
@@ -564,7 +564,7 @@ Route::group(['prefix' => 'user'], function () {
         });
 
         Route::controller(FrontendController::class)->group(function() {
-            Route::post('product-request-restock', 'restockRequest');
+            Route::post('product-request-restock', 'restockRequest')->middleware('verify.email');
             Route::post('product-abuse-report', 'reportProduct');
         });
 
@@ -582,7 +582,7 @@ Route::group(['prefix' => 'user'], function () {
             Route::put('add-cart-from-wishlist', 'addCartFromWishlist');
         });
 
-        Route::controller(WishlistController::class)->group(function () {
+        Route::controller(WishlistController::class)->middleware('verify.email')->group(function () {
             Route::get('wish-list', 'getList')->middleware('gzip');
             Route::post('wish-store', 'store');
             Route::get('convert-to-cart/{id}', 'addToCart');
@@ -592,7 +592,7 @@ Route::group(['prefix' => 'user'], function () {
             Route::post('wish-list-send/{id}','sendWishList');
         });
 
-        Route::controller(CustomerOrderController::class)->group(function () {
+        Route::controller(CustomerOrderController::class)->middleware('verify.email')->group(function () {
             Route::get('order-list','orderList')->middleware('gzip');
             Route::post('add-promo', 'addPromo');
             Route::post('order','order');
