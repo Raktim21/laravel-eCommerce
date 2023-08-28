@@ -124,6 +124,7 @@ Route::group(['prefix' => 'admin'], function () {
         });
 
         Route::get('general-setting', [FrontendController::class, 'general'])->middleware('gzip');
+        Route::get('wish-list', [WishlistController::class, 'getList'])->middleware('gzip');
 
         Route::get('/captcha', function () {
             return response()->json([
