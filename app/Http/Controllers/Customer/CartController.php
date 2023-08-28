@@ -171,20 +171,10 @@ class CartController extends Controller
 
         $response = $this->service->addCartFromWishlist($request);
 
-        if ($response != 'user') {
-            if ($request->user_unique_id && !is_null($request->user_unique_id)) {
-
-                return response()->json([
-                    'status' => true,
-                ]);
-
-            }else {
-
-                return response()->json([
-                    'status' => false,
-                    'data'   => array('user_unique_id' => $response),
-                ]);
-            }
+        if ($response != 'user' && !request()->cookie('customer_unique_token')) {
+            return response()->json([
+                'status' => true,
+            ])->cookie('customer_unique_token', $response, 43200, null, null, false, false);
         }
 
         return response()->json([

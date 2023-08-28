@@ -180,13 +180,13 @@ class CartService
 
     public function addCartFromWishlist(Request $request) {
 
-        $wishlist = Wishlist::where('wishlist_secret_key', $request->wishlist_secret_key)->first();
+        $wishlist = Wishlist::where('secret_key', $request->wishlist_secret_key)->first();
 
         if(auth()->guard('user-api')->check())
         {
             foreach ($wishlist->items as $item) {
 
-                $is_valid = Inventory::where('product_combination_id', $item->product_combination_id)->where('quantity', '>', 0)->exist();
+                $is_valid = Inventory::where('product_combination_id', $item->product_combination_id)->where('stock_quantity', '>', 0)->exists();
 
                 if ($is_valid) {
                     $exist_product = $this->cart->clone()->where('user_id', auth()->guard('user-api')->user()->id)->where('product_combination_id',$item->product_combination_id)->first();
@@ -207,10 +207,12 @@ class CartService
         } else {
             foreach ($wishlist->items as $item) {
 
-                $is_valid = Inventory::where('product_combination_id', $item->product_combination_id)->where('quantity', '>', 0)->exist();
+                $is_valid = Inventory::where('product_combination_id', $item->product_combination_id)->where('stock_quantity', '>', 0)->exists();
 
                 if ($is_valid) {
-                    $exist_product = !is_null($request->user_unique_id) ? $this->cart->clone()->where('guest_session_id', $request->user_unique_id)->where('product_combination_id', $item->product_combination_id)->first() : null;
+                    $exist_product = !is_null(request()->cookie('customer_unique_token')) ?
+                        $this->cart->clone()->where('guest_session_id', request()->cookie('customer_unique_token'))
+                            ->where('product_combination_id', $item->product_combination_id)->first() : null;
 
                     if ($exist_product)
                     {
@@ -221,19 +223,12 @@ class CartService
                     {
                         $this->cart->product_combination_id  = $item->product_combination_id;
                         $this->cart->product_quantity        = 1;
-                        if ($request->user_unique_id && !is_null($request->user_unique_id)) {
-
-                            $this->cart->guest_session_id        = $item->user_unique_id;
-
-                        } else {
-
-                            $this->cart->guest_session_id        = $item->user_unique_id ?? uniqid('GUEST-');
-                        }
+                        $this->cart->guest_session_id        = request()->cookie('customer_unique_token') ?? uniqid('GUEST-');
                         $this->cart->save();
                     }
                 }
             }
-            return $this->cart->guest_session_id;
+            return request()->cookie('customer_unique_token') ? null : $this->cart->guest_session_id;
         }
     }
 

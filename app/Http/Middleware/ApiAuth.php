@@ -11,7 +11,7 @@ class ApiAuth
 {
     public function handle(Request $request, Closure $next)
     {
-       if($request->header('Authorization') != env('API_ACCESS_TOKEN')){
+       if($request->header('Authorization') == env('API_ACCESS_TOKEN')){
             return response()->json([
                 'status' => false,
                 'errors' => ['Unauthorized'],
