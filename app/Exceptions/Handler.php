@@ -37,7 +37,7 @@ class Handler extends ExceptionHandler
         'password',
         'password_confirmation',
     ];
-    
+
 
     /**
      * Register the exception handling callbacks for the application.
@@ -48,17 +48,17 @@ class Handler extends ExceptionHandler
     {
         // $this->reportable(function (Throwable $e) {
         //     //
-        // });  
-       
-        
+        // });
+
+
         $this->renderable(function (NotFoundHttpException $e,Request $request) {
             if (request()->ajax() || request()->wantsJson() || $request->is('api/*') ) {
                 return response()->json([
-                    'success' => false,
+                    'status' => false,
                     'errors'  => ['Records not found'],
                 ], 404);
             }
-        }); 
+        });
 
 
         // if ($this->isHttpException($exception)) {
@@ -70,7 +70,7 @@ class Handler extends ExceptionHandler
 
 
         // $this->renderable(function (GeneralJsonException $e,Request $request) {
-            
+
         // });
     }
 
@@ -82,6 +82,7 @@ class Handler extends ExceptionHandler
             return $this->renderHttpException($exception);
         } else {
             return response()->json([
+                'status' => false,
                 'errors' => ['Internal Server Error']
             ], 500);
         }

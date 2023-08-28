@@ -49,9 +49,9 @@ class EmailVerificationMail extends Mailable
         return new Content(
             markdown: 'emails.verify_email',
             with: [
-                'user' => $this->user,
+                'user'             => $this->user,
                 'general_settings' => GeneralSetting::first(),
-                'code' => $this->code,
+                'code'             => $this->code,
             ],
         );
     }
