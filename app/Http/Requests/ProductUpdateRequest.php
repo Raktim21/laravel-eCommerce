@@ -36,8 +36,6 @@ class ProductUpdateRequest extends FormRequest
             'is_featured'          => 'sometimes|in:0,1',
             'featured_image'       => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'status'               => 'required|in:0,1',
-            'display_price'        => 'required|numeric',
-            'previous_display_price' => 'sometimes|numeric',
         ];
 
         if($this->input('is_featured') == 1) {

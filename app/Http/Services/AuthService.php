@@ -11,8 +11,10 @@ use App\Models\UserProfile;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -61,16 +63,21 @@ class AuthService
                 'expired_at'            => Carbon::now()->addMonth()
             ]);
 
-//            Mail::to($user)->queue(new EmailVerificationMail($user, $code));
+            Cache::delete('admin_dashboard_data');
 
             DB::commit();
-            return true;
         }
         catch (QueryException $e)
         {
             DB::rollback();
             return false;
         }
+
+        try {
+            Mail::to($user->username)->queue(new EmailVerificationMail($user, $code));
+        } catch (\Throwable $th) {}
+
+        return true;
     }
 
     public function login(Request $request, $isAdmin)

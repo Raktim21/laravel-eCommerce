@@ -106,7 +106,7 @@ Route::group(['middleware' => ['ApiAuth']],function () {
 
 });
 
-//Admin Routes
+
 Route::group(['prefix' => 'admin'], function () {
 
     Route::group(['middleware' => ['ApiStaticAuth','gzip']],function () {
@@ -534,20 +534,27 @@ Route::group(['prefix' => 'admin'], function () {
 });
 
 
-//User Routes
 Route::group(['prefix' => 'user'], function () {
 
-    Route::post('login',[CustomerAuthController::class,'login']);
-    Route::post('register',[CustomerAuthController::class,'register']);
-    Route::get('refresh',[CustomerAuthController::class,'refresh']);
-    Route::post('reset-password',[CustomerAuthController::class,'resetPassword']);
-    Route::post('confirm-password',[CustomerAuthController::class,'confirmPassword']);
+    Route::controller(CustomerAuthController::class)->group(function () {
+
+        Route::post('login', 'login');
+        Route::post('register', 'register');
+        Route::get('refresh', 'refresh');
+        Route::post('reset-password', 'resetPassword');
+        Route::post('confirm-password', 'confirmPassword');
+    });
 
     Route::group(['middleware' => ['jwt.verify:user-api']], function () {
 
-        Route::post('logout',[CustomerAuthController::class,'logout']);
-        Route::get('me',[CustomerAuthController::class,'me']);
-        Route::delete('delete-account', [CustomerAuthController::class, 'deleteAccount']);
+        Route::controller(CustomerAuthController::class)->group(function () {
+
+            Route::post('verify-email', 'emailVerification');
+            Route::get('send-verification-code', 'sendVerificationCode');
+            Route::post('logout', 'logout');
+            Route::get('me', 'me');
+            Route::delete('delete-account', 'deleteAccount');
+        });
 
 
         Route::controller(CustomerProfileController::class)->group(function () {

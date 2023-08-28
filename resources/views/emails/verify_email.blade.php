@@ -316,7 +316,7 @@
                                                             <table width="100%" cellspacing="0" cellpadding="0" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
                                                                 <tr>
                                                                     <td align="center" style="padding:0;Margin:0;position:relative">
-                                                                        <img class="adapt-img" src="https://mefhdq.stripocdn.email/content/guids/bannerImgGuid/images/image16768006133445566.png" alt title width="510" style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic" height="324">
+                                                                        <img class="adapt-img" src="https://mefhdq.stripocdn.email/content/guids/bannerImgGuid/images/image16768006133445566.png" alt="title" width="510" style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic" height="324">
                                                                     </td>
                                                                 </tr>
                                                             </table>
@@ -341,25 +341,18 @@
                                                             <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
                                                                 <tr>
                                                                     <td align="center" style="padding:0;Margin:0">
-                                                                        <h1 style="Margin:0;line-height:46px;mso-line-height-rule:exactly;font-family:Poppins, sans-serif;font-size:38px;font-style:normal;font-weight:bold;color:#5d541d">
-                                                                            Please confirm<br>your email address
-                                                                        </h1>
+                                                                        <h6 style="Margin:0;line-height:46px;mso-line-height-rule:exactly;font-family:Poppins, sans-serif;font-size:38px;font-style:normal;font-weight:bold;color:#5d541d">
+                                                                            Email Verification Code
+                                                                        </h6>
                                                                     </td>
                                                                 </tr>
-{{--                                                                <tr>--}}
-{{--                                                                    <td align="center" style="padding:0;Margin:0;padding-top:40px;padding-bottom:40px">--}}
-{{--                                                                        <h3 style="Margin:0;line-height:24px;mso-line-height-rule:exactly;font-family:Poppins, sans-serif;font-size:20px;font-style:normal;font-weight:bold;color:#5D541D">--}}
-{{--                                                                            Thanks for joining Selopia!--}}
-{{--                                                                        </h3>--}}
-{{--                                                                        <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:Poppins, sans-serif;line-height:27px;color:#5D541D;font-size:18px">--}}
-{{--                                                                            <br>--}}
-{{--                                                                        </p>--}}
-{{--                                                                        <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:Poppins, sans-serif;line-height:27px;color:#5D541D;font-size:18px">--}}
-{{--                                                                            To finish signing up, please confirm your email address. This ensures we have the--}}
-{{--                                                                            right email in case we need to contact you.--}}
-{{--                                                                        </p>--}}
-{{--                                                                    </td>--}}
-{{--                                                                </tr>--}}
+                                                                <tr>
+                                                                    <td align="center" style="Margin:0;padding-top:40px;padding-bottom:40px">
+                                                                        <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:Poppins, sans-serif;line-height:27px;color:#5D541D;font-size:14px">
+                                                                            Please be aware that if you do not complete verification within two months, your account will permanently be removed.
+                                                                        </p>
+                                                                    </td>
+                                                                </tr>
                                                                 <tr>
                                                                     <td align="center" style="padding:0;Margin:0">
                                                                         <span class="msohide es-button-border" style="border-style:solid;border-color:#2CB543;background:#8928c6;border-width:0px;display:inline-block;border-radius:30px;width:auto;mso-hide:all">
@@ -388,7 +381,7 @@
                                                         <td align="center" style="padding:0;Margin:0">
                                                         <p
                                                             style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:Poppins, sans-serif;line-height:21px;color:#5D541D;font-size:14px">
-                                                            Thanks,<br>Selopia Team!&nbsp;</p>
+                                                            Regards,<br> {{ $general_settings->name }}&nbsp;</p>
                                                         </td>
                                                     </tr>
                                                     </table>
@@ -454,25 +447,35 @@
                                                                         <table cellpadding="0" cellspacing="0" class="es-table-not-adapt es-social" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
                                                                             <tr>
                                                                                 <td align="center" valign="top" style="padding:0;Margin:0;padding-right:10px">
-                                                                                    <a target="_blank" href="https://viewstripo.email" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#FFFFFF;font-size:14px">
+                                                                                    <a target="_blank" href="{{ $general_settings->facebook }}" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#FFFFFF;font-size:14px">
                                                                                         <img src="https://mefhdq.stripocdn.email/content/assets/img/social-icons/circle-white/facebook-circle-white.png" alt="Fb" title="Facebook" height="24" width="24" style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic">
                                                                                     </a>
                                                                                 </td>
-                                                                                <td align="center" valign="top" style="padding:0;Margin:0;padding-right:10px">
-                                                                                    <a target="_blank" href="https://viewstripo.email" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#FFFFFF;font-size:14px">
-                                                                                        <img src="https://mefhdq.stripocdn.email/content/assets/img/social-icons/circle-white/twitter-circle-white.png" alt="Tw" title="Twitter" height="24" width="24" style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic">
-                                                                                    </a>
-                                                                                </td>
-                                                                                <td align="center" valign="top" style="padding:0;Margin:0;padding-right:10px">
-                                                                                    <a target="_blank" href="https://viewstripo.email"style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#FFFFFF;font-size:14px">
-                                                                                        <img src="https://mefhdq.stripocdn.email/content/assets/img/social-icons/circle-white/instagram-circle-white.png" alt="Ig" title="Instagram" height="24" width="24" style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic">
-                                                                                    </a>
-                                                                                </td>
-                                                                                <td align="center" valign="top" style="padding:0;Margin:0">
-                                                                                    <a target="_blank" href="https://viewstripo.email" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#FFFFFF;font-size:14px">
-                                                                                        <img src="https://mefhdq.stripocdn.email/content/assets/img/social-icons/circle-white/youtube-circle-white.png" alt="Yt" title="Youtube" height="24" width="24" style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic">
-                                                                                    </a>
-                                                                                </td>
+
+                                                                                @if($general_settings->twitter)
+                                                                                    <td align="center" valign="top" style="padding:0;Margin:0;padding-right:10px">
+                                                                                        <a target="_blank" href="{{ $general_settings->twitter }}" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#FFFFFF;font-size:14px">
+                                                                                            <img src="https://mefhdq.stripocdn.email/content/assets/img/social-icons/circle-white/twitter-circle-white.png" alt="Tw" title="Twitter" height="24" width="24" style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic">
+                                                                                        </a>
+                                                                                    </td>
+                                                                                @endif
+
+                                                                                @if($general_settings->instagram)
+                                                                                    <td align="center" valign="top" style="padding:0;Margin:0;padding-right:10px">
+                                                                                        <a target="_blank" href="{{ $general_settings->instagram }}" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#FFFFFF;font-size:14px">
+                                                                                            <img src="https://mefhdq.stripocdn.email/content/assets/img/social-icons/circle-white/instagram-circle-white.png" alt="Ig" title="Instagram" height="24" width="24" style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic">
+                                                                                        </a>
+                                                                                    </td>
+                                                                                @endif
+
+                                                                                @if($general_settings->youtube)
+                                                                                    <td align="center" valign="top" style="padding:0;Margin:0">
+                                                                                        <a target="_blank" href="{{ $general_settings->youtube }}" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#FFFFFF;font-size:14px">
+                                                                                            <img src="https://mefhdq.stripocdn.email/content/assets/img/social-icons/circle-white/youtube-circle-white.png" alt="Yt" title="Youtube" height="24" width="24" style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic">
+                                                                                        </a>
+                                                                                    </td>
+                                                                                @endif
+
                                                                             </tr>
                                                                         </table>
                                                                     </td>

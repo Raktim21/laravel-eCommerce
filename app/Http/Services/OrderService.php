@@ -21,6 +21,7 @@ use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -298,6 +299,8 @@ class OrderService
 
             DB::commit();
 
+            Cache::delete('admin_dashboard_data');
+
             return true;
         } catch(QueryException $e) {
             DB::rollback();
@@ -401,6 +404,8 @@ class OrderService
             ]);
 
             DB::commit();
+
+            Cache::delete('admin_dashboard_data');
 
             return 'done';
         } catch (QueryException $ex)
