@@ -96,6 +96,8 @@ Route::group(['middleware' => ['ApiAuth']],function () {
         Route::get('flash-sale', 'flashSale')->middleware('gzip');
     });
 
+    Route::get('wish-list', [WishlistController::class, 'getList'])->middleware('gzip');
+
     Route::get('/captcha', function () {
 
         return response()->json([
@@ -124,7 +126,6 @@ Route::group(['prefix' => 'admin'], function () {
         });
 
         Route::get('general-setting', [FrontendController::class, 'general'])->middleware('gzip');
-        Route::get('wish-list', [WishlistController::class, 'getList'])->middleware('gzip');
 
         Route::get('/captcha', function () {
             return response()->json([
