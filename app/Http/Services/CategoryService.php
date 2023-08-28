@@ -22,7 +22,7 @@ class CategoryService
         if($isPaginated==1)
         {
             return $this->category->clone()
-                ->when(!$isAdmin, function ($q) {
+                ->when(!$isAdmin || \request()->input('status') == 1, function ($q) {
                     return $q->where('status', 1);
                 })
                 ->when(request()->input('search'), function ($q) {
@@ -34,7 +34,7 @@ class CategoryService
                 ->orderBy('ordering')
                 ->with('subCategories')->paginate(25)->appends(request()->except('page'));
         }
-        return $this->category->clone()->when(!$isAdmin, function ($q) {
+        return $this->category->clone()->when(!$isAdmin || \request()->input('status') == 1, function ($q) {
             return $q->where('status', 1);
         })->with('subCategories')->latest()->orderBy('ordering')->get();
     }

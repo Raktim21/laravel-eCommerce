@@ -18,12 +18,12 @@ class User extends Authenticatable implements JWTSubject
     protected $fillable = [
         'shop_branch_id','username','password','salt','name','email_verified_at','phone_verified_at',
         'phone','password_reset_code','password_reset_token','last_login','remember_token',
-        'google_id','facebook_id'
+        'google_id','facebook_id','is_active'
     ];
 
     protected $hidden = [
         'password','remember_token','salt','password_reset_code','password_reset_token',
-        'updated_at','email_verified_at','phone_verified_at','deleted_at','google_id','facebook_id'
+        'updated_at','phone_verified_at','deleted_at','google_id','facebook_id'
     ];
 
     protected $casts = [
@@ -58,6 +58,11 @@ class User extends Authenticatable implements JWTSubject
     public function addresses()
     {
         return $this->hasMany(UserAddress::class, 'user_id');
+    }
+
+    public function emailVerification()
+    {
+        return $this->hasOne(EmailVerification::class, 'user_id');
     }
 
     public function contactForms()

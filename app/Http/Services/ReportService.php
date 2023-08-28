@@ -28,22 +28,13 @@ class ReportService
 
         $data->cost            = DB::table('expenses')->sum('amount');
 
-        $data->revenue         = $data->revenue == null ? 0 : $data->revenue; 
-        $data->product_cost    = $data->product_cost == null ? 0 : $data->product_cost; 
+        $data->revenue         = $data->revenue == null ? 0 : $data->revenue;
+        $data->product_cost    = $data->product_cost == null ? 0 : $data->product_cost;
 
         $data->gross_profit    = round(($data->revenue - $data->product_cost),2);
-
         $data->net_profit      = round(($data->gross_profit - $data->cost),2);
 
-        if($data->total_order == 0)
-        {
-            $data->avg_order_value = 0;
-        }
-        else
-        {
-            $data->avg_order_value = round(($data->revenue / $data->total_order),2);
-
-        }
+        $data->avg_order_value = $data->total_order == 0 ? 0 : round(($data->revenue / $data->total_order),2);
 
         return $data;
     }

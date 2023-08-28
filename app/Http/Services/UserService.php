@@ -10,6 +10,7 @@ use App\Models\UserProfile;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
@@ -87,6 +88,8 @@ class UserService
             if ($request->hasFile('avatar')) {
                 saveImage($request->file('avatar'), '/uploads/admin/avatars/', $profile, 'image');
             }
+
+            Cache::delete('admin_dashboard_data');
 
             DB::commit();
             return true;

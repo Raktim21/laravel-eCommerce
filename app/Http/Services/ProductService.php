@@ -156,8 +156,6 @@ class ProductService
             'brand_id'                  => $request->brand_id ?? $product->brand_id,
             'is_on_sale'                => $request->is_on_sale ?? $product->is_on_sale,
             'is_featured'               => $request->is_featured ?? $product->is_featured,
-            'display_price'             => $request->display_price,
-            'previous_display_price'    => $request->previous_display_price,
             'status'                    => $request->status,
         ]);
 
@@ -253,7 +251,7 @@ class ProductService
         {
             $name = hexdec(uniqid()).'.'.$multiple_image->getClientOriginalExtension();
             $m_image = Image::make($multiple_image);
-            $m_image->resize(800, 600);
+            $m_image->resize(600, 600);
             $m_image->save(public_path('/uploads/products/multiple_image/' . $name));
             $product->productImages()->create([
                 'image' => '/uploads/products/multiple_image/'.$name,

@@ -21,6 +21,7 @@ use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -298,6 +299,8 @@ class OrderService
 
             DB::commit();
 
+            Cache::delete('admin_dashboard_data');
+
             return true;
         } catch(QueryException $e) {
             DB::rollback();
@@ -319,6 +322,9 @@ class OrderService
                     'phone'                 => $request->phone_no,
                     'password'              => Hash::make($request->password),
                 ]);
+
+            $user->is_active = 1;
+            $user->save();
 
             \Config::set('auth.defaults.guard','user-api');
             $user->assignRole(3);
@@ -399,11 +405,13 @@ class OrderService
 
             DB::commit();
 
-            return $new_order->id;
+            Cache::delete('admin_dashboard_data');
+
+            return 'done';
         } catch (QueryException $ex)
         {
             DB::rollback();
-            return 1;
+            return $ex->getMessage();
         }
     }
 

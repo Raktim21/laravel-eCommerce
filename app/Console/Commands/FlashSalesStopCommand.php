@@ -26,7 +26,7 @@ class FlashSalesStopCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return int
+     * @return void
      */
     public function handle()
     {
@@ -36,12 +36,7 @@ class FlashSalesStopCommand extends Command
             if ($FlashSale->status == 1 && $FlashSale->end_date < Carbon::now('Asia/Dhaka')) {
                 $FlashSale->status = 0;
                 $FlashSale->save();
-
-                Cache::delete('flash_sale');
             }
         }
-
-
-        return Command::SUCCESS;
     }
 }

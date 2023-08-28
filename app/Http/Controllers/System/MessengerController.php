@@ -52,14 +52,17 @@ class MessengerController extends Controller
 
     public function order(MessengerOrderRequest $request)
     {
-        if((new OrderService(new Order()))->placeMessengerOrder($request))
+        $status = (new OrderService(new Order()))->placeMessengerOrder($request);
+
+        if($status == 'done')
         {
             return response()->json([
                 'status' => true
             ], 201);
         }
         return response()->json([
-            'status' => false
+            'status' => false,
+            'errors' => $status
         ], 500);
     }
 
