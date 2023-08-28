@@ -60,6 +60,7 @@ class CategoryService
         saveImage($request->file('image'), '/uploads/images/category/', $category, 'image');
 
         Cache::delete('allCategory');
+        Cache::delete('categories');
     }
 
     public function update(Request $request, $id): void
@@ -79,6 +80,7 @@ class CategoryService
         }
 
         Cache::delete('allCategory');
+        Cache::delete('categories');
     }
 
     public function delete($id): bool
@@ -89,6 +91,7 @@ class CategoryService
             $category->delete();
             deleteFile($category->image);
             Cache::delete('allCategory');
+            Cache::delete('categories');
             return true;
         } catch (QueryException $e)
         {
@@ -105,6 +108,7 @@ class CategoryService
             ]);
         }
         Cache::delete('allCategory');
+        Cache::delete('categories');
     }
 
     public function deleteCategories(Request $request): void
@@ -118,6 +122,7 @@ class CategoryService
 
         $this->category->clone()->whereIn('id',$request->ids)->delete();
         Cache::delete('allCategory');
+        Cache::delete('categories');
     }
 
     public function changeStatus($id): void
