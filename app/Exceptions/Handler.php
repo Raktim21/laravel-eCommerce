@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
@@ -81,6 +82,7 @@ class Handler extends ExceptionHandler
         if ($this->isHttpException($exception)) {
             return $this->renderHttpException($exception);
         } else {
+            Log::info($exception);
             return response()->json([
                 'status' => false,
                 'errors' => ['Internal Server Error']

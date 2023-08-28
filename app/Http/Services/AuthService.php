@@ -307,12 +307,9 @@ class AuthService
         try {
             $to = $user->username;
 
-            $user_name = $user->name;
-
-            $message = "Dear {$user_name},\n\nYour password reset code is: {$code}.";
-
             $data = [
-                'body' => $message
+                'user' => $user->name,
+                'code' => $code
             ];
 
             Mail::to($to)->send(new PasswordResetMail($data));

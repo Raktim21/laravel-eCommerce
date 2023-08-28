@@ -273,7 +273,7 @@
                                 <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
 
                                     <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:22px;text-align:center;color:#555;">
-                                        Please send your feedback to <br> <a href="{{ $general_settings->email }}" style="color:#2F67F6">info@example.com</a>
+                                        Please send your feedback to <br> <a href="" style="color:#2F67F6">{{ $general_settings->email }}</a>
                                     </div>
 
                                 </td>

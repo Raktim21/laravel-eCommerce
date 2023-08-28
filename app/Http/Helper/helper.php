@@ -48,18 +48,16 @@ function notifyUser($order_number): void
     try {
         $to = auth()->user()->username;
 
-        $user_name = auth()->user()->name;
-
-        $message = "Dear {$user_name},\n\nYou have placed a new order. Your order number is {$order_number}. We will notify you shortly when the order is ready for shipment.";
+        $message = "You have recently placed a new order. Your order number is {$order_number}. We will notify you shortly when the order is ready for shipment.";
 
         $mail_data = [
-            'title' => 'New Order',
+            'user' => auth()->user()->name,
             'body' => $message
         ];
 
         Mail::to($to)->queue(new OrdersMail($mail_data));
     } catch (\Throwable $th) {
-
+        Log::info($th->getMessage());
     }
 }
 
@@ -78,14 +76,14 @@ function notifyAdmins($order_number): void
             $to = $email->username;
 
             $mail_data = [
-                'title' => 'New Order',
+                'user' => $email->name,
                 'body' => $message
             ];
 
             Mail::to($to)->queue(new OrdersMail($mail_data));
         }
     } catch (\Throwable $th) {
-
+        Log::info($th->getMessage());
     }
 }
 
