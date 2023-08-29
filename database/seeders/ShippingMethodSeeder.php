@@ -25,10 +25,5 @@ class ShippingMethodSeeder extends Seeder
             'name'      => 'Instant delivery',
             'is_active' => 1,
         ]);
-
-        OrderDeliveryMethod::create([
-            'name'  => 'Pickup',
-            'is_active' => 1,
-        ]);
     }
 }
