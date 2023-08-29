@@ -42,7 +42,7 @@ class OrderService
             $new_order = $this->order->newQuery()->create([
                 'shop_branch_id'             => auth()->guard('admin-api')->user()->shop_branch_id,
                 'user_id'               => $request->user_id,
-                'order_number'          => uniqid('ORD-'),
+                'order_number'          => 'ORD-' . implode('-', str_split(hexdec(uniqid()), 4)),
                 'order_status_id'       => $request->delivery_method_id == 2 ? 4 : 2,
                 'order_status_updated_by' => auth()->guard('admin-api')->user()->id,
                 'payment_method_id'     => 1,
@@ -239,7 +239,7 @@ class OrderService
         try {
             $new_order = Order::create([
                 'user_id'                   => auth()->user()->id,
-                'order_number'              => uniqid('ORD-'),
+                'order_number'              => 'ORD-' . implode('-', str_split(hexdec(uniqid()), 4)),
                 'payment_method_id'         => $request->payment_method_id,
                 'delivery_method_id'        => 1,
                 'delivery_address_id'       => $request->delivery_address_id,
@@ -351,7 +351,7 @@ class OrderService
 
             $new_order = Order::create([
                 'user_id'                   => $user->id,
-                'order_number'              => uniqid('ORD-'),
+                'order_number'              => 'ORD-' . implode('-', str_split(hexdec(uniqid()), 4)),
                 'payment_method_id'         => $request->payment_method_id,
                 'delivery_method_id'        => $request->delivery_method_id,
                 'delivery_address_id'       => $address->id,
