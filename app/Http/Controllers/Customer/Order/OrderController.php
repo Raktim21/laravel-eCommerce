@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Customer\Order;
 
 use App\Http\Controllers\Controller;
 use App\Http\Services\OrderService;
+use App\Http\Services\PromoCodeService;
 use App\Models\EmailConfig;
 use App\Models\Inventory;
 use App\Models\ProductCombination;
@@ -135,8 +136,8 @@ class OrderController extends Controller
     public function orderList()
     {
         $order = Order::where('user_id',auth()->user()->id)->withCount('items')
-                ->when(request()->input('delivery_status')=='picked', function ($q) {
-                    return $q->where('delivery_status', 'Picked');
+                ->when(request()->input('delivery_status')=='delivered', function ($q) {
+                    return $q->where('order_status_id', 4);
                 })
                 ->join('users', 'orders.user_id', '=', 'users.id')
                 ->join('order_payment_methods', 'orders.payment_method_id', '=', 'order_payment_methods.id')
@@ -300,5 +301,15 @@ class OrderController extends Controller
         return response()->json([
             'status'        => true,
         ]);
+    }
+
+    public function getPromos()
+    {
+        $data = (new PromoCodeService(new PromoCode()))->getAuthPromos();
+
+        return response()->json([
+            'status' => true,
+            'data'   => $data
+        ], count($data) == 0 ? 204 : 200);
     }
 }

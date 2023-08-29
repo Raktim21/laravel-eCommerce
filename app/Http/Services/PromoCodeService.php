@@ -10,7 +10,9 @@ use App\Models\UserPromo;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PromoCodeService
 {
@@ -105,9 +107,81 @@ class PromoCodeService
 
     public function updateStatus($id)
     {
-        $promo = PromoCode::findOrFail($id);
+        $promo = $this->code->clone()->findOrFail($id);
 
         $promo->is_active = $promo->is_active==0 ? 1 : 0;
         $promo->save();
+    }
+
+    public function getAuthPromos(): array
+    {
+        Cache::clear();
+        $applicablePromos = [];
+        $data = $this->code->clone()
+
+            ->with(['products' => function($q) {
+                return $q->select('products.id','products.name','products.thumbnail_image')->withTrashed();
+            }])
+            ->where('is_active', 1)
+            ->latest()->get();
+
+        foreach ($data as $item)
+        {
+            if(is_null($item->end_date) || ($item->end_date && $item->end_date>=Carbon::today()->format('Y-m-d'))) {
+                if ($item->is_global_user == 1) {
+                    if ($item->max_usage != 0) {
+                        $promo_usage = PromoUser::where('promo_id', $item->id)
+                            ->where('user_id', auth()->guard('user-api')->user()->id)
+                            ->first();
+
+                        if ($promo_usage) {
+                            if ($promo_usage->usage_number < $item->max_usage) {
+                                if ($item->max_num_users == 0) {
+                                    $applicablePromos[] = $item;
+                                } else if ($item->max_num_users > PromoUser::where('promo_id', $item->id)->whereNot('usage_number',0)->count()) {
+                                    $applicablePromos[] = $item;
+                                }
+                            }
+                        } else {
+                            if ($item->max_num_users == 0) {
+                                $applicablePromos[] = $item;
+                            } else if ($item->max_num_users > PromoUser::where('promo_id', $item->id)->count()) {
+                                $applicablePromos[] = $item;
+                            }
+                        }
+                    } else {
+                        if ($item->max_num_users == 0) {
+                            $applicablePromos[] = $item;
+                        } else if ($item->max_num_users > PromoUser::where('promo_id', $item->id)->count()) {
+                            $applicablePromos[] = $item;
+                        }
+                    }
+                } else {
+                    $promo_usage = PromoUser::where('promo_id', $item->id)
+                        ->where('user_id', auth()->guard('user-api')->user()->id)
+                        ->first();
+
+                    if ($promo_usage) {
+                        if ($item->max_usage != 0) {
+                            if ($item->max_usage > $promo_usage->usage_number) {
+                                if ($item->max_num_users == 0) {
+                                    $applicablePromos[] = $item;
+                                } else if ($item->max_num_users > PromoUser::where('promo_id', $item->id)->count()) {
+                                    $applicablePromos[] = $item;
+                                }
+                            }
+                        } else {
+                            if ($item->max_num_users == 0) {
+                                $applicablePromos[] = $item;
+                            } else if ($item->max_num_users > PromoUser::where('promo_id', $item->id)->count()) {
+                                $applicablePromos[] = $item;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $applicablePromos;
     }
 }

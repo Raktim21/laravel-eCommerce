@@ -24,6 +24,8 @@ class PromoUserObserver
                     'page_id'       => (new GeneralSettingService(new GeneralSetting()))->getSetting()->facebook_page_id,
                     'coupon_code'   => $user->promo->code,
                     'title'         => $user->promo->title,
+                    'description'   => $user->promo->is_global_product == 1 ? 'Applicable for all products.' :
+                        'Applicable for specific products only.'
                 );
 
                 sendMessengerResponse($payload, 'offers');

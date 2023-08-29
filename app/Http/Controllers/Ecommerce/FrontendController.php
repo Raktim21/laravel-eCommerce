@@ -315,7 +315,7 @@ class FrontendController extends Controller
     public function deliveryMethods()
     {
         $data = Cache::remember('shippingMethods', 60*60*24, function () {
-            return OrderDeliveryMethod::where('is_active',1)->latest()->get();
+            return OrderDeliveryMethod::where('is_active',1)->whereNot('id', 2)->get();
         });
 
         return response()->json([

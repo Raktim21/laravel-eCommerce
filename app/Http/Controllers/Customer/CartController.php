@@ -169,17 +169,7 @@ class CartController extends Controller
             ], 422);
         }
 
-        $response = $this->service->addCartFromWishlist($request);
-
-        if ($response != 'user' && !request()->cookie('customer_unique_token')) {
-            return response()->json([
-                'status' => true,
-            ])->cookie('customer_unique_token', $response, 43200, null, null, false, false);
-        }
-
-        return response()->json([
-            'status' => true,
-        ]);
+        return $this->service->addCartFromWishlist($request);
     }
 
 }
