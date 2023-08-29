@@ -305,7 +305,7 @@ class OrderController extends Controller
 
     public function getPromos()
     {
-        $data = (new PromoCodeService(new PromoCode()))->getAuthPromos();
+        $data = (new PromoCodeService(new PromoCode()))->getAuthPromos(auth()->user()->id);
 
         return response()->json([
             'status' => true,

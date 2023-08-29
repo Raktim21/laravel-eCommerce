@@ -8,11 +8,13 @@ use App\Http\Services\CategoryService;
 use App\Http\Services\GeneralSettingService;
 use App\Http\Services\OrderService;
 use App\Http\Services\ProductService;
+use App\Http\Services\PromoCodeService;
 use App\Models\GeneralSetting;
 use App\Models\MessengerSubscriptions;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Models\PromoCode;
 use App\Models\ShopReviews;
 use App\Models\Subscriber;
 use App\Models\User;
@@ -64,6 +66,39 @@ class MessengerController extends Controller
             'status' => false,
             'errors' => $status
         ], 500);
+    }
+
+
+    public function getPromos(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email'     => 'required|email'
+        ]);
+
+        if($validator->fails())
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()->all()
+            ], 422);
+        }
+
+        $user = User::where('username', $request->email)->first();
+
+        if($user)
+        {
+            $data = (new PromoCodeService(new PromoCode()))->getAuthPromos($user->id);
+
+            return response()->json([
+                'status' => true,
+                'data'   => $data
+            ], count($data) == 0 ? 204 : 200);
+        }
+
+        return response()->json([
+            'status' => false,
+            'errors' => ['User account not found.']
+        ], 404);
     }
 
 

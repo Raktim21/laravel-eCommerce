@@ -1,14 +1,8 @@
 <?php
 
-use App\Mail\OrdersMail;
-use App\Models\Admin;
 use App\Models\OrderPickupAddress;
-use App\Models\PickupAddress;
-use App\Models\User;
 use App\Models\UserAddress;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
 function peperfly(): array
 {
@@ -43,51 +37,7 @@ function deleteFile($filepath): void
     }
 }
 
-function notifyUser($order_number): void
-{
-    try {
-        $to = auth()->user()->username;
-
-        $message = "You have recently placed a new order. Your order number is {$order_number}. We will notify you shortly when the order is ready for shipment.";
-
-        $mail_data = [
-            'user' => auth()->user()->name,
-            'body' => $message
-        ];
-
-        Mail::to($to)->queue(new OrdersMail($mail_data));
-    } catch (\Throwable $th) {
-        Log::info($th->getMessage());
-    }
-}
-
-function notifyAdmins($order_number): void
-{
-    try {
-        $admin_emails = User::whereHas('roles', function ($query) {
-            $query->whereIn('id', [1, 2]);
-        })->get();
-
-        $user_name = auth()->user()->name;
-
-        $message = "A new order has been placed by user: {$user_name}. The order number is {$order_number}.";
-
-        foreach ($admin_emails as $email) {
-            $to = $email->username;
-
-            $mail_data = [
-                'user' => $email->name,
-                'body' => $message
-            ];
-
-            Mail::to($to)->queue(new OrdersMail($mail_data));
-        }
-    } catch (\Throwable $th) {
-        Log::info($th->getMessage());
-    }
-}
-
-function getDeliveryCharge($address_id, $total_weight, $total_price): float|int
+function getDeliveryCharge($address_id, $total_price): float|int
 {
     $address = UserAddress::find($address_id);
 
@@ -102,11 +52,11 @@ function getDeliveryCharge($address_id, $total_weight, $total_price): float|int
         if ($address->upazila->district_id == $pickup_address->upazila->district_id) {
             $delivery_price = 55;
         }else{
-            $delivery_price = 120 + ($total_price * 0.01);
+            $delivery_price = 120 + (($total_price + 120) * 0.01);
         }
 
     }else {
-        $delivery_price = 120 + ($total_price * 0.01);
+        $delivery_price = 120 + (($total_price + 120) * 0.01);
     }
 
     return $delivery_price;
@@ -124,9 +74,8 @@ function sendMessengerResponse($response, $route): void
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 
-        $status = curl_exec($ch);
+        curl_exec($ch);
         curl_close($ch);
-        Log::info($status);
     } catch (Throwable $e)
     {}
 }

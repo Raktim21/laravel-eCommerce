@@ -113,9 +113,8 @@ class PromoCodeService
         $promo->save();
     }
 
-    public function getAuthPromos(): array
+    public function getAuthPromos($user_id): array
     {
-        Cache::clear();
         $applicablePromos = [];
         $data = $this->code->clone()
 
@@ -131,7 +130,7 @@ class PromoCodeService
                 if ($item->is_global_user == 1) {
                     if ($item->max_usage != 0) {
                         $promo_usage = PromoUser::where('promo_id', $item->id)
-                            ->where('user_id', auth()->guard('user-api')->user()->id)
+                            ->where('user_id', $user_id)
                             ->first();
 
                         if ($promo_usage) {
@@ -145,20 +144,20 @@ class PromoCodeService
                         } else {
                             if ($item->max_num_users == 0) {
                                 $applicablePromos[] = $item;
-                            } else if ($item->max_num_users > PromoUser::where('promo_id', $item->id)->count()) {
+                            } else if ($item->max_num_users > PromoUser::where('promo_id', $item->id)->whereNot('usage_number',0)->count()) {
                                 $applicablePromos[] = $item;
                             }
                         }
                     } else {
                         if ($item->max_num_users == 0) {
                             $applicablePromos[] = $item;
-                        } else if ($item->max_num_users > PromoUser::where('promo_id', $item->id)->count()) {
+                        } else if ($item->max_num_users > PromoUser::where('promo_id', $item->id)->whereNot('usage_number',0)->count()) {
                             $applicablePromos[] = $item;
                         }
                     }
                 } else {
                     $promo_usage = PromoUser::where('promo_id', $item->id)
-                        ->where('user_id', auth()->guard('user-api')->user()->id)
+                        ->where('user_id', $user_id)
                         ->first();
 
                     if ($promo_usage) {
@@ -166,14 +165,14 @@ class PromoCodeService
                             if ($item->max_usage > $promo_usage->usage_number) {
                                 if ($item->max_num_users == 0) {
                                     $applicablePromos[] = $item;
-                                } else if ($item->max_num_users > PromoUser::where('promo_id', $item->id)->count()) {
+                                } else if ($item->max_num_users > PromoUser::where('promo_id', $item->id)->whereNot('usage_number',0)->count()) {
                                     $applicablePromos[] = $item;
                                 }
                             }
                         } else {
                             if ($item->max_num_users == 0) {
                                 $applicablePromos[] = $item;
-                            } else if ($item->max_num_users > PromoUser::where('promo_id', $item->id)->count()) {
+                            } else if ($item->max_num_users > PromoUser::where('promo_id', $item->id)->whereNot('usage_number',0)->count()) {
                                 $applicablePromos[] = $item;
                             }
                         }
