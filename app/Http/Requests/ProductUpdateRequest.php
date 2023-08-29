@@ -25,7 +25,7 @@ class ProductUpdateRequest extends FormRequest
      */
     public function rules()
     {
-        $rules = [
+        return [
             'name'                 => 'sometimes|string|max:100',
             'description'          => 'string',
             'short_description'    => 'string|max:500',
@@ -37,12 +37,6 @@ class ProductUpdateRequest extends FormRequest
             'featured_image'       => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'status'               => 'required|in:0,1',
         ];
-
-        if($this->input('is_featured') == 1) {
-            $rules['featured_image'] = 'required';
-        }
-
-        return $rules;
     }
 
     protected function failedValidation(Validator $validator)

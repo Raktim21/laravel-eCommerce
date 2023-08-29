@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\GeneralSetting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -13,7 +14,7 @@ class VerificationWarningMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $user;
+    public $user, $general_settings;
     /**
      * Create a new message instance.
      *
@@ -22,6 +23,7 @@ class VerificationWarningMail extends Mailable
     public function __construct($user)
     {
         $this->user = $user;
+        $this->general_settings = GeneralSetting::first();
     }
 
     /**

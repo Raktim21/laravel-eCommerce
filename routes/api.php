@@ -68,7 +68,7 @@ Route::group(['middleware' => ['ApiAuth']],function () {
         Route::put('cart-update/{id}', 'cartUpdate');
         Route::delete('cart-delete/{id}', 'cartDelete');
         Route::post('cart-bulk-delete', 'bulkDelete');
-        Route::put('add-cart-from-wishlist', 'addCartFromWishlist');
+        Route::post('add-cart-from-wishlist', 'addCartFromWishlist');
     });
 
     Route::controller(FrontendController::class)->group(function () {
@@ -95,6 +95,8 @@ Route::group(['middleware' => ['ApiAuth']],function () {
         Route::get('static-menu-content/{id}','staticMenuContent')->middleware('gzip');
         Route::get('flash-sale', 'flashSale')->middleware('gzip');
     });
+
+    Route::get('wish-list', [WishlistController::class, 'getList'])->middleware('gzip');
 
     Route::get('/captcha', function () {
 
@@ -586,7 +588,7 @@ Route::group(['prefix' => 'user'], function () {
             Route::get('delivery-charge/{id}','deliveryCharge');
             Route::get('additional-charge', 'getCharge')->middleware('gzip');
             Route::post('cart-bulk-delete', 'bulkDelete');
-            Route::put('add-cart-from-wishlist', 'addCartFromWishlist');
+            Route::post('add-cart-from-wishlist', 'addCartFromWishlist');
         });
 
         Route::controller(WishlistController::class)->middleware('verify.email')->group(function () {

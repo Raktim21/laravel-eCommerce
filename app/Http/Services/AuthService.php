@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -307,12 +306,9 @@ class AuthService
         try {
             $to = $user->username;
 
-            $user_name = $user->name;
-
-            $message = "Dear {$user_name},\n\nYour password reset code is: {$code}.";
-
             $data = [
-                'body' => $message
+                'user' => $user->name,
+                'code' => $code
             ];
 
             Mail::to($to)->send(new PasswordResetMail($data));

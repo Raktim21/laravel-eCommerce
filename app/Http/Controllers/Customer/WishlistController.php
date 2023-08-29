@@ -24,12 +24,18 @@ class WishlistController extends Controller
 
     public function getList()
     {
-        $data = $this->service->getAuthWish();
+        if(\request()->has('wishlist_token') && \request()->has('wishlist_id'))
+        {
+            $data = $this->service->getSharedWish(request()->input('wishlist_token'), request()->input('wishlist_id'));
+        }
+        else {
+            $data = $this->service->getAuthWish();
+        }
 
         return response()->json([
             'status'    => true,
             'data'      => $data
-        ], count($data)==0 ? 204 : 200);
+        ]);
     }
 
     public function store(WishStoreRequest $request)
@@ -57,7 +63,7 @@ class WishlistController extends Controller
         {
             return response()->json([
                 'status' => false,
-                'errors' => ['You are not authorized to delete this wish.']
+                'errors' => ['You are not authorized to add this wish.']
             ], 401);
         }
     }
