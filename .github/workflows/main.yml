@@ -190,7 +190,7 @@ jobs:
           port: 65002
           script: |
             cd domains/api.shukkarun.com/public_html/
-            composer2 update
+            # composer2 update
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -228,7 +228,7 @@ jobs:
           port: 65002
           script: |
             cd domains/api.vintbd.com/public_html/
-            composer2 update
+            # composer2 update
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -268,7 +268,7 @@ jobs:
           port: 65002
           script: |
             cd domains/api.glamdesmit.com/public_html/
-            composer2 update
+            # composer2 update
             php artisan migrate
             php artisan optimize
             php artisan config:clear

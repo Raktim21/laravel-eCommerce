@@ -13,13 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('messenger_subscriptions', function (Blueprint $table) {
+        Schema::create('email_verifications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('subscription_type_id')->constrained('messenger_subscription_types')->onDelete('restrict');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('verification_token', 150)->unique();
+            $table->timestamp('expired_at');
             $table->timestamps();
-
-            $table->unique(['subscription_type_id','user_id']);
         });
     }
 
@@ -30,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('messenger_subscriptions');
+        Schema::dropIfExists('email_verifications');
     }
 };

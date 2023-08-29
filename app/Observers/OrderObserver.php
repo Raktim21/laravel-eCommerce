@@ -61,9 +61,9 @@ class OrderObserver
 
 //        notify admins about new order
 
-            foreach ($admins as $admin) {
-                $admin->notify(new OrderPlacedNotification($order));
-            }
+//            foreach ($admins as $admin) {
+//                $admin->notify(new OrderPlacedNotification($order));
+//            }
 
 //        delete customer cart
             if(auth()->guard('user-api')->check())
@@ -73,7 +73,7 @@ class OrderObserver
 
 //        email user and admins
             notifyUser($order->order_number);
-            notifyAdmins($order->order_number);
+//            notifyAdmins($order->order_number);
         }
     }
 

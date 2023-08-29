@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\GeneralSetting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -9,18 +10,20 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class RegistationMail extends Mailable
+class VerificationWarningMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $user, $general_settings;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($user)
     {
-        //
+        $this->user = $user;
+        $this->general_settings = GeneralSetting::first();
     }
 
     /**
@@ -31,7 +34,7 @@ class RegistationMail extends Mailable
     public function envelope()
     {
         return new Envelope(
-            subject: 'Registation Mail',
+            subject: 'Pending Email Verification',
         );
     }
 
@@ -43,10 +46,7 @@ class RegistationMail extends Mailable
     public function content()
     {
         return new Content(
-            view: 'view.name',
-            with: [
-                'name' => 'John Doe',
-            ],
+            view: 'emails.verification_warning',
         );
     }
 

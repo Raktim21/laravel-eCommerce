@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('order:status')->everyMinute();
         $schedule->command('flashsale:status')->everyMinute();
         $schedule->command('order:review')->everyThirtyMinutes();
+        $schedule->command('email:verify')->everyMinute();
 
     }
 

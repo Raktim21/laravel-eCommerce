@@ -7,6 +7,7 @@ use App\Models\PickupAddress;
 use App\Models\User;
 use App\Models\UserAddress;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 function peperfly(): array
@@ -47,18 +48,16 @@ function notifyUser($order_number): void
     try {
         $to = auth()->user()->username;
 
-        $user_name = auth()->user()->name;
-
-        $message = "Dear {$user_name},\n\nYou have placed a new order. Your order number is {$order_number}. We will notify you shortly when the order is ready for shipment.";
+        $message = "You have recently placed a new order. Your order number is {$order_number}. We will notify you shortly when the order is ready for shipment.";
 
         $mail_data = [
-            'title' => 'New Order',
+            'user' => auth()->user()->name,
             'body' => $message
         ];
 
         Mail::to($to)->queue(new OrdersMail($mail_data));
     } catch (\Throwable $th) {
-
+        Log::info($th->getMessage());
     }
 }
 
@@ -77,14 +76,14 @@ function notifyAdmins($order_number): void
             $to = $email->username;
 
             $mail_data = [
-                'title' => 'New Order',
+                'user' => $email->name,
                 'body' => $message
             ];
 
             Mail::to($to)->queue(new OrdersMail($mail_data));
         }
     } catch (\Throwable $th) {
-
+        Log::info($th->getMessage());
     }
 }
 
@@ -115,17 +114,19 @@ function getDeliveryCharge($address_id, $total_weight, $total_price): float|int
 
 function sendMessengerResponse($response, $route): void
 {
-    try {
-        $ch = curl_init('https://chatbotapi.selopian.us/api/v1/' . $route);
+    $url = 'https://chatbotapi.selopian.us/api/v1/' . $route;
 
+    try {
+        $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($response));
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 
-        curl_exec($ch);
+        $status = curl_exec($ch);
         curl_close($ch);
+        Log::info($status);
     } catch (Throwable $e)
     {}
 }

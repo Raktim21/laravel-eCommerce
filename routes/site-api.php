@@ -7,8 +7,6 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Admin\Analytics\SalesReportController;
 
-// Messenger Routes
-
 Route::group(['middleware' => ['ApiAuth']], function() {
 
     Route::controller(StaticAssetController::class)->group(function () {
@@ -23,7 +21,7 @@ Route::group(['middleware' => ['ApiAuth']], function() {
     Route::controller(MessengerController::class)->group(function () {
         Route::get('product-list', 'productFilter');
         Route::post('cancel_order', 'cancelOrder');
-        Route::post('subscribe', 'subscribe');
+        Route::post('subscription', 'subscribe');
         Route::post('shop_review', 'storeReview');
         Route::post('track_order', 'getOrderStatus');
         Route::post('chat_order', 'order');

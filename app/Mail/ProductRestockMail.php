@@ -33,7 +33,7 @@ class ProductRestockMail extends Mailable
     public function envelope()
     {
         return new Envelope(
-            subject: 'Product Restock Mail',
+            subject: 'Product Restock',
         );
     }
 

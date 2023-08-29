@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\GeneralSetting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -14,6 +15,7 @@ class OrdersMail extends Mailable
     use Queueable, SerializesModels;
 
     public $mail_data;
+    public $general_settings;
     /**
      * Create a new message instance.
      *
@@ -22,6 +24,7 @@ class OrdersMail extends Mailable
     public function __construct($mail_data)
     {
         $this->mail_data = $mail_data;
+        $this->general_settings = GeneralSetting::first();
     }
 
     /**

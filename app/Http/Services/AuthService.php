@@ -2,13 +2,16 @@
 
 namespace App\Http\Services;
 
+use App\Mail\EmailVerificationMail;
 use App\Mail\PasswordResetMail;
 use App\Models\CustomerCart;
+use App\Models\EmailVerification;
 use App\Models\User;
 use App\Models\UserProfile;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -30,7 +33,6 @@ class AuthService
                 'username'          => $request->username,
                 'password'          => Hash::make($request['password']),
                 'phone'             => $request->phone,
-                'email_verified_at' => Carbon::now(),
                 'phone_verified_at' => Carbon::now(),
             ]);
 
@@ -51,14 +53,30 @@ class AuthService
             if ($request->hasFile('avatar')) {
                 saveImage($request->file('avatar'), '/uploads/customer/avatars/', $profile, 'image');
             }
+
+            $code = rand(100000, 999999);
+
+            EmailVerification::create([
+                'user_id'               => $user->id,
+                'verification_token'    => Hash::make($code),
+                'expired_at'            => Carbon::now()->addMonth()
+            ]);
+
+            Cache::delete('admin_dashboard_data');
+
             DB::commit();
-            return true;
         }
         catch (QueryException $e)
         {
             DB::rollback();
             return false;
         }
+
+        try {
+            Mail::to($user->username)->queue(new EmailVerificationMail($user, $code));
+        } catch (\Throwable $th) {}
+
+        return true;
     }
 
     public function login(Request $request, $isAdmin)
@@ -75,7 +93,7 @@ class AuthService
                     'status'  => false,
                     'errors'  => ['Too many request. Please fill up the captcha.'],
                     'captcha' => Captcha::create('default',true),
-                ], 422);
+                ], 400);
             }
 
             $validator = Validator::make($request->all(), [
@@ -90,11 +108,6 @@ class AuthService
                 ],422);
             }
         }
-
-        $user = User::withTrashed()->where('username', $request->username)
-            ->orWhere('phone', $request->username)->first();
-
-        $user?->restore();
 
         if ($token = auth()->attempt($credentials)) {
 
@@ -134,6 +147,11 @@ class AuthService
                             'cart'  =>  $cart,
                         );
             }
+
+            auth()->user()->update([
+                'is_active'  => 1,
+                'last_login' => Carbon::now()
+            ]);
 
             return response()->json([
                 'status'         => true,
@@ -276,21 +294,11 @@ class AuthService
 
         if($this->logout($token))
         {
-            User::find($user)->delete();
+            User::find($user)->update(['is_active' => 0]);
 
             return true;
         }
         return false;
-    }
-
-    private function updateCart($uuid, $id): void
-    {
-        $cart = CustomerCart::where('session_id', $uuid)->get();
-
-        foreach ($cart as $value) {
-            $value->customer_id = $id;
-            $value->save();
-        }
     }
 
     private function notifyUser($user, $code): void
@@ -298,12 +306,9 @@ class AuthService
         try {
             $to = $user->username;
 
-            $user_name = $user->name;
-
-            $message = "Dear {$user_name},\n\nYour password reset code is: {$code}.";
-
             $data = [
-                'body' => $message
+                'user' => $user->name,
+                'code' => $code
             ];
 
             Mail::to($to)->send(new PasswordResetMail($data));

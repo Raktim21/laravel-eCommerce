@@ -189,7 +189,7 @@
                                 <td align="center" style="font-size:0px;padding:10px 25px;padding-bottom:40px;word-break:break-word;">
 
                                     <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:32px;font-weight:bold;line-height:1;text-align:center;color:#555;">
-                                        New Order
+                                        Pending Email Verification
                                     </div>
 
                                 </td>
@@ -199,7 +199,7 @@
                                 <td align="center" style="font-size:0px;padding:10px 25px;padding-bottom:0;word-break:break-word;">
 
                                     <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:center;color:#555;">
-                                        Hi, <b>{{ $mail_data['user'] }}</b>,
+                                        Hi, <b>{{ $user->name }}</b>,
                                     </div>
 
                                 </td>
@@ -209,7 +209,7 @@
                                 <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
 
                                     <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:center;color:#555;">
-                                        {{ $mail_data['body'] }}
+                                        Your email has not been verified yet. Please verify your email before {{ \Carbon\Carbon::now()->addMonth()->format('d-m-Y') }}.
                                     </div>
 
                                 </td>

@@ -10,6 +10,7 @@ use App\Http\Requests\UserRegistrationRequest;
 use App\Http\Services\AuthService;
 use App\Mail\EmailVerificationMail;
 use App\Models\CustomerCart;
+use App\Models\EmailVerification;
 use App\Models\EmailVerificationCode;
 use App\Models\Order;
 use App\Models\ProductReview;
@@ -139,77 +140,77 @@ class CustomerAuthController extends Controller
 
     public function sendVerificationCode()
     {
-        if (auth()->user()->email_verified_at) {
+        if (auth()->guard('user-api')->user()->email_verified_at)
+        {
             return response()->json([
-                'error' => 'Email already verified'
+                'status' => false,
+                'errors' => ['You have already verified your email.']
             ], 400);
         }
 
-        $code = EmailVerificationCode::where('user_id', auth()->guard('user-api')->user()->id)->first();
+        $code = EmailVerification::where('user_id', auth()->guard('user-api')->user()->id)->first();
+
+        $new_code = rand(100000, 999999);
 
         if ($code) {
-            if (Carbon::now()->diffInMinutes($code->created_at) < 2) {
-
+            if (Carbon::now()->diffInMinutes($code->created_at) < 10 || Carbon::now()->diffInMinutes($code->updated_at) < 10)
+            {
                 return response()->json([
-                    'error' => 'Please wait 2 minute to send another code'
+                    'status' => false,
+                    'errors' => ['Please wait 10 minutes to send another code.']
                 ], 400);
             }
+
+            $code->update([
+                'verification_token' => Hash::make($new_code),
+                'expired_at'         => Carbon::now()->addMonth()
+            ]);
+        } else {
+            EmailVerification::create([
+                'user_id'               => auth()->guard('user-api')->user()->id,
+                'verification_token'    => Hash::make($new_code),
+                'expired_at'            => Carbon::now()->addMonth()
+            ]);
         }
 
-        $user = User::find(auth()->guard('user-api')->user()->id);
-
-
-        // $user->emailVerificationCode()->create([
-        //     'user_id'    => $user->id,
-        //     'code'       => rand(100000, 999999),
-        //     'created_at' => Carbon::now(),
-        // ]);
-
-        $email_verification = new EmailVerificationCode();
-        $email_verification->user_id = $user->id;
-        $email_verification->code = rand(100000, 999999);
-        $email_verification->save();
-
-        Mail::to($user->username)->queue(new EmailVerificationMail($user, $email_verification->code));
+        try {
+            Mail::to(auth()->guard('user-api')->user()->username)->queue(new EmailVerificationMail(auth()->user(), $new_code));
+        } catch (\Throwable $th) {}
 
         return response()->json([
             'status'  => true,
         ]);
-
     }
 
 
-//    no use
     public function emailVerification(Request $request)
     {
-
         $validated = Validator::make($request->all(), [
             'code' => 'required|numeric',
         ]);
 
         if ($validated->fails()) {
-            return response()->json(['error' => $validated->errors()], 400);
+            return response()->json([
+                'status' => false,
+                'errors' => $validated->errors()->all()
+            ], 422);
         }
 
+        $code = EmailVerification::where('user_id', auth()->guard('user-api')->user()->id)->first();
 
-        $emailVerificationCode = EmailVerificationCode::where(auth()->guard('user-api')->user()->id)->where('code', $request->code)->first();
-
-        if ($emailVerificationCode) {
-
-            $user = User::find($emailVerificationCode->user_id);
-            $user->email_verified_at = Carbon::now();
-            $user->save();
-
-            $emailVerificationCode->delete();
+        if ($code && Hash::check($request->code, $code->verification_token) && $code->expired_at >= Carbon::now('Asia/Dhaka'))
+        {
+            $code->user->email_verified_at = Carbon::now();
+            $code->user->save();
+            $code->delete();
 
             return response()->json([
                 'status'  => true,
             ]);
-
-        }else {
-            return response()->json([
-                'status'  => false,
-            ]);
         }
+        return response()->json([
+            'status' => false,
+            'errors' => ['Invalid verification code.']
+        ], 400);
     }
 }

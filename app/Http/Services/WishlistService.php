@@ -142,4 +142,23 @@ class WishlistService
         }
     }
 
+    public function getSharedWish($token, $id)
+    {
+        return $this->wish->clone()->where('id', $id)
+            ->where('secret_key', $token)
+            ->with(['user' => function($q) {
+                return $q->select('id','username','name');
+            }])
+            ->with(['items.productCombination' => function($q) {
+                return $q->with(['product' => function($q1) {
+                    return $q1->select('id','name','thumbnail_image')->withTrashed();
+                }])
+                    ->with(['attributeValues' => function($q1) {
+                    return $q1->withTrashed();
+                }])
+                    ->withTrashed();
+            }])
+            ->first();
+    }
+
 }

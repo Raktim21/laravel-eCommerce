@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\GeneralSetting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -18,10 +19,12 @@ class SendWishListMail extends Mailable
      *
      * @return void
     */
-    public $wishlist;
+    public $wishlist, $general_settings;
+
     public function __construct($wishlist)
     {
         $this->wishlist = $wishlist;
+        $this->general_settings = GeneralSetting::first();
     }
 
     /**

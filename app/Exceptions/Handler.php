@@ -2,12 +2,9 @@
 
 namespace App\Exceptions;
 
-use Doctrine\DBAL\Schema\Exception\IndexNameInvalid;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
-use Mockery\Exception\InvalidOrderException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
@@ -41,7 +38,7 @@ class Handler extends ExceptionHandler
         'password',
         'password_confirmation',
     ];
-    
+
 
     /**
      * Register the exception handling callbacks for the application.
@@ -52,26 +49,45 @@ class Handler extends ExceptionHandler
     {
         // $this->reportable(function (Throwable $e) {
         //     //
-        // });  
-       
-        
-        // $this->renderable(function (NotFoundHttpException $e,Request $request) {
-        //     if (request()->ajax() || request()->wantsJson() || $request->is('api/*') ) {
-        //         return response()->json([
-        //             'errors' => ['Object not found'],
-        //         ], 404);
-        //     }
-        // }); 
-
-
-
-        // $this->renderable(function (InvalidOrderException $e,Request $request) {
-        //     return response()->json([
-        //         'errors' => ['Internal server error'],
-        //     ], 500);
         // });
 
 
+        $this->renderable(function (NotFoundHttpException $e,Request $request) {
+            if (request()->ajax() || request()->wantsJson() || $request->is('api/*') ) {
+                return response()->json([
+                    'status' => false,
+                    'errors'  => ['Records not found'],
+                ], 404);
+            }
+        });
+
+
+        // if ($this->isHttpException($exception)) {
+        //     return $this->renderHttpException($exception);
+        // } else {
+        //     // Handle all 500 errors with a common message.
+        //     return response()->json(['error' => 'Internal Server Error'], 500);
+        // }
+
+
+        // $this->renderable(function (GeneralJsonException $e,Request $request) {
+
+        // });
+    }
+
+
+
+    public function render($request, Throwable $exception)
+    {
+        if ($this->isHttpException($exception)) {
+            return $this->renderHttpException($exception);
+        } else {
+            Log::info($exception);
+            return response()->json([
+                'status' => false,
+                'errors' => ['Internal Server Error']
+            ], 500);
+        }
     }
 
 

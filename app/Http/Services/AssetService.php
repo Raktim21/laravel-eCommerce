@@ -47,12 +47,12 @@ class AssetService
 
     public function getCurrencies()
     {
-        return Currency::all();
+        return Currency::get();
     }
 
     public function getGenders()
     {
-        return UserSex::all();
+        return UserSex::get();
     }
 
     public function getFaqs()
