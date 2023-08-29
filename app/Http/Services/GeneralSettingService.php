@@ -4,6 +4,7 @@ namespace App\Http\Services;
 
 use App\Models\GeneralSetting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Mews\Purifier\Facades\Purifier;
 
 class GeneralSettingService

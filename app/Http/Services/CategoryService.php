@@ -59,6 +59,7 @@ class CategoryService
 
         saveImage($request->file('image'), '/uploads/images/category/', $category, 'image');
 
+        Cache::delete('allCategories');
         Cache::delete('allCategory');
         Cache::delete('categories');
     }
@@ -79,6 +80,7 @@ class CategoryService
             saveImage($request->file('image'), '/uploads/images/category/', $category, 'image');
         }
 
+        Cache::delete('allCategories');
         Cache::delete('allCategory');
         Cache::delete('categories');
     }
@@ -90,6 +92,7 @@ class CategoryService
         try {
             $category->delete();
             deleteFile($category->image);
+            Cache::delete('allCategories');
             Cache::delete('allCategory');
             Cache::delete('categories');
             return true;
@@ -107,6 +110,7 @@ class CategoryService
                 'ordering' => $key + 1,
             ]);
         }
+        Cache::delete('allCategories');
         Cache::delete('allCategory');
         Cache::delete('categories');
     }
@@ -121,6 +125,7 @@ class CategoryService
         }
 
         $this->category->clone()->whereIn('id',$request->ids)->delete();
+        Cache::delete('allCategories');
         Cache::delete('allCategory');
         Cache::delete('categories');
     }
@@ -132,6 +137,10 @@ class CategoryService
         $status = $cat->status == 1 ? 0 : 1;
 
         $cat->update(['status' => $status]);
+
+        Cache::delete('allCategories');
+        Cache::delete('allCategory');
+        Cache::delete('categories');
     }
 
 }

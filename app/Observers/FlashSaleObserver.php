@@ -17,5 +17,6 @@ class FlashSaleObserver
         }
 
         Cache::delete('flash_sale');
+        Cache::delete('productOnSale');
     }
 }

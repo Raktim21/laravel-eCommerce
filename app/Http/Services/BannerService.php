@@ -38,6 +38,7 @@ class BannerService
 
             DB::commit();
             Cache::delete('allBanner');
+            Cache::delete('banners');
             return true;
         }
         catch (\Throwable $th)
@@ -61,6 +62,7 @@ class BannerService
 
             DB::commit();
             Cache::delete('allBanner');
+            Cache::delete('banners');
 
             return true;
         } catch (\Throwable $th)
@@ -75,6 +77,7 @@ class BannerService
         deleteFile($banner->image);
         $banner->delete();
         Cache::delete('allBanner');
+        Cache::delete('banners');
     }
 
     public function multipleDeletes(Request $request)
@@ -88,6 +91,7 @@ class BannerService
 
         $this->banner->clone()->whereIn('id',$request->ids)->delete();
         Cache::delete('allBanner');
+        Cache::delete('banners');
     }
 
 }

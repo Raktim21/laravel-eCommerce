@@ -10,6 +10,7 @@ use App\Models\Expense;
 use App\Models\ExpenseCategory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class ExpenseController extends Controller
@@ -24,7 +25,10 @@ class ExpenseController extends Controller
 
     public function categoryIndex()
     {
-        $data = $this->service->getCategories();
+        $data = Cache::remember('expenseCategories', 60*60*24, function () {
+            return $this->service->getCategories();
+        });
+
         return response()->json([
             'status'        => true,
             'data'          => $data,
@@ -93,7 +97,9 @@ class ExpenseController extends Controller
 
     public function expenseIndex()
     {
-        $data = $this->service->getExpenses();
+        $data = Cache::remember('expenses', 24*60*60, function () {
+            return $this->service->getExpenses();
+        });
 
         return response()->json([
             'status'           => true,

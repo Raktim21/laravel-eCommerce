@@ -7,6 +7,7 @@ use App\Http\Requests\BannerSettingRequest;
 use App\Http\Services\BannerService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 use OpenApi\Annotations as OA;
 
 class BannerSettingController extends Controller
@@ -21,9 +22,13 @@ class BannerSettingController extends Controller
 
     public function index()
     {
+        $data = Cache::remember('banners', 60*24*60, function () {
+            return $this->service->getAll();
+        });
+
         return response()->json([
             'status' => true,
-            'data' => $this->service->getAll()
+            'data' => $data
         ]);
 
     }
@@ -33,7 +38,6 @@ class BannerSettingController extends Controller
     {
         if($this->service->store($request))
         {
-            Artisan::call('cache:clear');
             return response()->json([
                 'status' => true,
             ], 201);

@@ -5,6 +5,7 @@ namespace App\Http\Services;
 use App\Models\ProductBrand;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class BrandService
@@ -37,6 +38,8 @@ class BrandService
         {
             saveImage($request->file('image'), '/uploads/images/brands/', $brand, 'image');
         }
+
+        Cache::forget('allBrands');
     }
 
 
@@ -54,6 +57,8 @@ class BrandService
             deleteFile($brand->image);
             saveImage($request->file('image'), '/uploads/images/brands/', $brand, 'image');
         }
+
+        Cache::forget('allBrands');
     }
 
 
@@ -64,6 +69,7 @@ class BrandService
         try {
             $brand->delete();
             deleteFile($brand->image);
+            Cache::forget('allBrands');
             return true;
         }
         catch (QueryException $e)
@@ -84,5 +90,6 @@ class BrandService
         }
 
         $this->brand->clone()->whereIn('id',$request->ids)->delete();
+        Cache::forget('allBrands');
     }
 }
