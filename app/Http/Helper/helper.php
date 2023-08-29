@@ -100,13 +100,13 @@ function getDeliveryCharge($address_id, $total_weight, $total_price): float|int
     if ($address->upazila->district->division_id == $pickup_address->upazila->district->division_id) {
 
         if ($address->upazila->district_id == $pickup_address->upazila->district_id) {
-            $delivery_price = 55 + ($total_weight * 25);
+            $delivery_price = 55;
         }else{
-            $delivery_price = 120 + ($total_weight * 30) + ($total_price * 0.01);
+            $delivery_price = 120 + ($total_price * 0.01);
         }
 
     }else {
-        $delivery_price = 120 + ($total_weight * 30) + ($total_price * 0.01);
+        $delivery_price = 120 + ($total_price * 0.01);
     }
 
     return $delivery_price;
