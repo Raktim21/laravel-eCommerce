@@ -61,18 +61,6 @@ class Handler extends ExceptionHandler
             }
         });
 
-
-        // if ($this->isHttpException($exception)) {
-        //     return $this->renderHttpException($exception);
-        // } else {
-        //     // Handle all 500 errors with a common message.
-        //     return response()->json(['error' => 'Internal Server Error'], 500);
-        // }
-
-
-        // $this->renderable(function (GeneralJsonException $e,Request $request) {
-
-        // });
     }
 
 
@@ -82,7 +70,6 @@ class Handler extends ExceptionHandler
         if ($this->isHttpException($exception)) {
             return $this->renderHttpException($exception);
         } else {
-            Log::info($exception);
             return response()->json([
                 'status' => false,
                 'errors' => ['Internal Server Error']

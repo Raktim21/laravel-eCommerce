@@ -25,6 +25,7 @@ Route::group(['middleware' => ['ApiAuth']], function() {
         Route::post('shop_review', 'storeReview');
         Route::post('track_order', 'getOrderStatus');
         Route::post('chat_order', 'order');
+        Route::get('available_promo_codes', 'getPromos');
     });
 });
 

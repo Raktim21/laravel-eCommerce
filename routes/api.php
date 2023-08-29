@@ -608,6 +608,7 @@ Route::group(['prefix' => 'user'], function () {
             Route::get('order-detail/{id}','orderDetail')->middleware('gzip');
             Route::post('user-product-review',  'postReview');
             Route::get('cancel-order/{id}', 'cancelOrder');
+            Route::get('available-promo-codes', 'getPromos')->middleware('gzip');
         });
 
         Route::get('order/invoice/{order_id}', [GenerateReportController::class, 'invoicePDF']);

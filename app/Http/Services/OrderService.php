@@ -79,7 +79,6 @@ class OrderService
             $new_order->update([
                 'sub_total_amount'      => $total,
                 'promo_discount'        => ($request->promo_discount * $total)/100,
-                'delivery_cost'         => $request->delivery_method_id == 1 ? getDeliveryCharge($request->delivery_address_id, $weight, $total) : 0
             ]);
 
             if($request->delivery_method_id == 1 && (new GeneralSettingService(new GeneralSetting()))->getSetting()->delivery_status == 1) {
@@ -181,7 +180,7 @@ class OrderService
                     "pickupMerchantPhone"  => $pickup->phone,
                     "productSizeWeight"    => "standard",
                     "productBrief"         => $name,
-                    "packagePrice"         => $order->total_amount,
+                    "packagePrice"         => $order->total_amount + 2,
                     "max_weight"           => $weight.'kg',
                     "deliveryOption"       => "regular",
                     "custname"             => $order->user->name,
@@ -294,7 +293,6 @@ class OrderService
             $new_order->update([
                 'sub_total_amount'      => $total,
                 'promo_discount'        => $discount,
-                'delivery_cost'         => getDeliveryCharge($request->delivery_address_id, $weight, $total)
             ]);
 
             DB::commit();
@@ -400,7 +398,6 @@ class OrderService
             $new_order->update([
                 'sub_total_amount'      => $total,
                 'promo_discount'        => $discount,
-                'delivery_cost'         => getDeliveryCharge($address->id, $weight, $total)
             ]);
 
             DB::commit();

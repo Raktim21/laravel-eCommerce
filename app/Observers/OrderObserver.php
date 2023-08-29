@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Http\Services\GeneralSettingService;
+use App\Mail\OrdersMail;
 use App\Models\CustomerCart;
 use App\Models\GeneralSetting;
 use App\Models\Inventory;
@@ -16,6 +17,7 @@ use App\Notifications\CustomerOrderDeliveryNotification;
 use App\Notifications\OrderDeliveryNotification;
 use App\Notifications\OrderPlacedNotification;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Mail;
 
 class OrderObserver
 {
@@ -61,9 +63,9 @@ class OrderObserver
 
 //        notify admins about new order
 
-//            foreach ($admins as $admin) {
-//                $admin->notify(new OrderPlacedNotification($order));
-//            }
+            foreach ($admins as $admin) {
+                $admin->notify(new OrderPlacedNotification($order));
+            }
 
 //        delete customer cart
             if(auth()->guard('user-api')->check())
@@ -71,9 +73,8 @@ class OrderObserver
                 CustomerCart::where('user_id',auth()->user()->id)->delete();
             }
 
-//        email user and admins
-            notifyUser($order->order_number);
-//            notifyAdmins($order->order_number);
+//        email user
+            $this->notifyUser($order->order_number);
         }
     }
 
@@ -83,10 +84,14 @@ class OrderObserver
         if($order->total_amount == 0)
         {
             $tax = $this->calculateTax($order->sub_total_amount);
+            $delivery_charge = $order->delivery_method_id == 1 ?
+                getDeliveryCharge($order->delivery_address_id, $order->sub_total_amount + $tax - $order->promo_discount) : 0;
+
             $order->additional_charges          = $tax;
-            $order->total_amount                = $order->sub_total_amount + $tax - $order->promo_discount + $order->delivery_cost;
+            $order->total_amount                = $order->sub_total_amount + $tax - $order->promo_discount + $delivery_charge;
+            $order->delivery_cost               = $delivery_charge;
             $order->paid_amount                 = $order->delivery_method_id == 2 ?
-            $order->sub_total_amount + $tax - $order->promo_discount + $order->delivery_cost : 0;
+                $order->sub_total_amount + $tax - $order->promo_discount + $order->delivery_cost : 0;
         }
     }
 
@@ -147,5 +152,21 @@ class OrderObserver
         }
 
         return $tax_total;
+    }
+
+    private function notifyUser($order_number): void
+    {
+        try {
+            $to = auth()->user()->username;
+
+            $message = "You have recently placed a new order. Your order number is {$order_number}. We will notify you shortly when the order is ready for shipment.";
+
+            $mail_data = [
+                'user' => auth()->user()->name,
+                'body' => $message
+            ];
+
+            Mail::to($to)->queue(new OrdersMail($mail_data));
+        } catch (\Throwable $th) {}
     }
 }

@@ -11,10 +11,7 @@ class Contact extends Model
 
     protected $table = 'contact_forms';
 
-    protected $guarded = ['user_id'];
-
-    protected $fillable = ['user_id','guest_session_id','first_name','last_name',
-        'email','phone','message','ip_address'];
+    protected $guarded = ['id','user_id','guest_session_id','ip_address'];
 
     protected $hidden = ['updated_at'];
 
