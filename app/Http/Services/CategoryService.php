@@ -36,7 +36,7 @@ class CategoryService
         }
         return $this->category->clone()->when(!$isAdmin || \request()->input('status') == 1, function ($q) {
             return $q->where('status', 1);
-        })->with('subCategories')->latest()->orderBy('ordering')->get();
+        })->with('subCategories')->orderBy('ordering')->get();
     }
 
     public function get($id, $getSubCat)
