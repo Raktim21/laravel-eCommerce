@@ -23,7 +23,9 @@ class CategoryController extends Controller
 
     public function index()
     {
-        $data = $this->service->getAll(request()->input('is_paginated') ?? 1, true);
+        $data = Cache::remember('categories', 24*60*60, function () {
+            return $this->service->getAll(request()->input('is_paginated') ?? 1, true);
+        });
 
         return response()->json([
             'status' => true,

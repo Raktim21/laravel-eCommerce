@@ -32,11 +32,11 @@ class CategoryService
                         });
                 })
                 ->orderBy('ordering')
-                ->with('subCategories')->paginate(25)->appends(request()->except('page'));
+                ->with('subCategories')->paginate(35)->appends(request()->except('page'));
         }
         return $this->category->clone()->when(!$isAdmin || \request()->input('status') == 1, function ($q) {
             return $q->where('status', 1);
-        })->with('subCategories')->latest()->orderBy('ordering')->get();
+        })->with('subCategories')->orderBy('ordering')->get();
     }
 
     public function get($id, $getSubCat)
@@ -59,6 +59,7 @@ class CategoryService
 
         saveImage($request->file('image'), '/uploads/images/category/', $category, 'image');
 
+        Cache::delete('allCategories');
         Cache::delete('allCategory');
         Cache::delete('categories');
     }
@@ -79,6 +80,7 @@ class CategoryService
             saveImage($request->file('image'), '/uploads/images/category/', $category, 'image');
         }
 
+        Cache::delete('allCategories');
         Cache::delete('allCategory');
         Cache::delete('categories');
     }
@@ -90,6 +92,7 @@ class CategoryService
         try {
             $category->delete();
             deleteFile($category->image);
+            Cache::delete('allCategories');
             Cache::delete('allCategory');
             Cache::delete('categories');
             return true;
@@ -107,6 +110,7 @@ class CategoryService
                 'ordering' => $key + 1,
             ]);
         }
+        Cache::delete('allCategories');
         Cache::delete('allCategory');
         Cache::delete('categories');
     }
@@ -121,6 +125,7 @@ class CategoryService
         }
 
         $this->category->clone()->whereIn('id',$request->ids)->delete();
+        Cache::delete('allCategories');
         Cache::delete('allCategory');
         Cache::delete('categories');
     }
@@ -132,6 +137,10 @@ class CategoryService
         $status = $cat->status == 1 ? 0 : 1;
 
         $cat->update(['status' => $status]);
+
+        Cache::delete('allCategories');
+        Cache::delete('allCategory');
+        Cache::delete('categories');
     }
 
 }

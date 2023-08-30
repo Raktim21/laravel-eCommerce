@@ -62,6 +62,7 @@ class GeneralSettingController extends Controller
     public function deliveryStatusUpdate(StatusUpdateRequest $request)
     {
         $this->service->updateDeliveryStatus($request);
+        Cache::delete('orderStatuses');
 
         return response()->json([
             'status'  => true,

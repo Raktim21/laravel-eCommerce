@@ -9,6 +9,7 @@ use App\Http\Services\BrandService;
 use App\Models\Brand;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -26,7 +27,9 @@ class BrandController extends Controller
 
     public function index()
     {
-        $data = $this->service->getAll(!request()->input('is_paginated'));
+        $data = Cache::remember('allBrands', 60*24*24, function () {
+            return $this->service->getAll(!request()->input('is_paginated'));
+        });
 
         return response()->json([
             'status' => true,

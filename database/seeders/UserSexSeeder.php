@@ -16,12 +16,6 @@ class UserSexSeeder extends Seeder
      */
     public function run()
     {
-        // DB::table('user_sexes')->insert([
-        //     ['id' => 1, 'name' => 'Male'],
-        //     ['id' => 2, 'name' => 'Female'],
-        //     ['id' => 3, 'name' => 'Preferred Not To Say']
-        // ]);
-
         UserSex::create([
             'name' => 'Male'
         ]);

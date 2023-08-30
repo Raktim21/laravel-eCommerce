@@ -242,8 +242,12 @@ class OrderController extends Controller
 
     public function orderStatusList(): \Illuminate\Http\JsonResponse
     {
-        $data = Cache::remember('orderStatuses', 24*60*60, function() {
-            return OrderStatus::whereNot('name', 'Delivered')->get();
+        $active = GeneralSetting::first()->delivery_status;
+
+        $data = Cache::remember('orderStatuses', 24*60*60, function() use($active) {
+            return OrderStatus::when($active == 1, function($q) {
+                return $q->whereNot('name', 'Delivered');
+            })->get();
         });
         return response()->json([
             'status' => true,
