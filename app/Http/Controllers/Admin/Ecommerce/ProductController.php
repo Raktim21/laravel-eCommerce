@@ -9,6 +9,7 @@ use App\Http\Requests\ProductStoreRequest;
 use App\Http\Requests\ProductUpdateRequest;
 use App\Http\Services\ProductService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
@@ -91,7 +92,6 @@ class ProductController extends Controller
             return 'done';
         }
     }
-
 
 
     public function detail($id)
@@ -197,7 +197,9 @@ class ProductController extends Controller
 
     public function abuseReports()
     {
-        $data = $this->service->getAbuseReports();
+        $data = Cache::remember('abuseReports', 60*60*24, function () {
+            return $this->service->getAbuseReports();
+        });
 
         return response()->json([
             'status' => true,
@@ -208,6 +210,7 @@ class ProductController extends Controller
     public function changeAbuseStatus(Request $request, $id)
     {
         $this->service->changeAbuseStatus($request->status, $id);
+        Cache::delete('abuseReports');
 
         return response()->json([
             'status' => true
@@ -216,7 +219,9 @@ class ProductController extends Controller
 
     public function restockRequests()
     {
-        $data = $this->service->getAllRestock();
+        $data = Cache::remember('productRestockRequests', 24*60*60, function () {
+            return $this->service->getAllRestock();
+        });
 
         return response()->json([
             'status'    => true,
@@ -226,7 +231,9 @@ class ProductController extends Controller
 
     public function reviewGetAll()
     {
-        $data = $this->service->getAllReviews();
+        $data = Cache::remember('allProductReviews', 24*60*60, function () {
+            return $this->service->getAllReviews();
+        });
 
         return response()->json([
             'status'    => true,
@@ -236,7 +243,9 @@ class ProductController extends Controller
 
     public function getReview($id)
     {
-        $data = $this->service->getReview($id);
+        $data = Cache::remember('productReview'.$id, 24*60*60*7, function () use ($id) {
+            return $this->service->getReview($id);
+        });
 
         return response()->json([
             'status'    => true,

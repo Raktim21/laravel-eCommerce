@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class ProductBrand extends Model
 {
@@ -18,6 +19,21 @@ class ProductBrand extends Model
     public static function boot()
     {
         parent::boot();
+
+        static::created(function($brand) {
+            Cache::delete('brands');
+            forgetCaches('brandList');
+        });
+
+        static::updated(function($brand) {
+            Cache::delete('brands');
+            forgetCaches('brandList');
+        });
+
+        static::deleted(function($brand) {
+            Cache::delete('brands');
+            forgetCaches('brandList');
+        });
 
         static::deleting(function($brand) {
             Product::withTrashed()->where('brand_id',$brand->id)->update([

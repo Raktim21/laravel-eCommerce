@@ -76,7 +76,6 @@ class OrderController extends Controller
     {
         $validate = Validator::make(request()->all(), [
             'user_address_id' => 'required|exists:user_addresses,id',
-            'total_weight'    => 'required|numeric|max:5',
             'total_price'     => 'required|numeric'
         ]);
 
@@ -87,7 +86,7 @@ class OrderController extends Controller
                 'errors' => $validate->errors()->all()
             ], 422);
         }
-        $delivery_charge = getDeliveryCharge(request()->input('user_address_id'),request()->input('total_weight'),request()->input('total_price'));
+        $delivery_charge = getDeliveryCharge(request()->input('user_address_id'),request()->input('total_price'));
 
         return response()->json([
             'status' => true,
@@ -101,7 +100,9 @@ class OrderController extends Controller
 
     public function detail($id): \Illuminate\Http\JsonResponse
     {
-        $data = $this->service->getData($id);
+        $data = Cache::remember('orderDetail'.$id, 24*60*60, function () use ($id) {
+            return $this->service->getData($id);
+        });
 
         return response()->json([
                 'status' => true,
@@ -216,7 +217,7 @@ class OrderController extends Controller
 
     public function paymentMethodList(): \Illuminate\Http\JsonResponse
     {
-        $data = Cache::remember('paymentMethods', 60*60, function () {
+        $data = Cache::rememberForever('paymentMethods', function () {
             return OrderPaymentMethod::where('is_active',1)->latest()->get();
         });
 
@@ -229,7 +230,7 @@ class OrderController extends Controller
 
     public function shippingMethodList(): \Illuminate\Http\JsonResponse
     {
-        $data = Cache::remember('shippingMethods', 60*60, function () {
+        $data = Cache::rememberForever('shippingMethods', function () {
             return OrderDeliveryMethod::where('is_active',1)->latest()->get();
         });
 
@@ -244,11 +245,12 @@ class OrderController extends Controller
     {
         $active = GeneralSetting::first()->delivery_status;
 
-        $data = Cache::remember('orderStatuses', 24*60*60, function() use($active) {
+        $data = Cache::remember('orderStatuses', 24*60*60*7, function() use($active) {
             return OrderStatus::when($active == 1, function($q) {
                 return $q->whereNot('name', 'Delivered');
             })->get();
         });
+
         return response()->json([
             'status' => true,
             'data'   => $data
@@ -258,7 +260,7 @@ class OrderController extends Controller
 
     public function getAdditionalChargeList(): \Illuminate\Http\JsonResponse
     {
-        $data = Cache::remember('additionalCharges', 60*60*24, function () {
+        $data = Cache::remember('orderAdditionalCharges', 60*60*24*7, function () {
             return $this->service->getCharges();
         });
 
@@ -291,8 +293,6 @@ class OrderController extends Controller
 
         $this->service->storeOrderCharges($request);
 
-        Cache::forget('additionalCharges');
-
         return response()->json(['status' => true], 201);
     }
 
@@ -319,7 +319,6 @@ class OrderController extends Controller
         }
 
         $this->service->updateOrderCharge($request, $id);
-        Cache::forget('additionalCharges');
 
         return response()->json(['status' => true]);
     }
@@ -327,7 +326,6 @@ class OrderController extends Controller
     public function deleteCharge($id): \Illuminate\Http\JsonResponse
     {
         $this->service->deleteOrderCharge($id);
-        Cache::forget('additionalCharges');
 
         return response()->json(['status' => true]);
     }

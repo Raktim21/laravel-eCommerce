@@ -7,6 +7,7 @@ use App\Http\Requests\ContactBulkDeleteRequest;
 use App\Http\Services\ContactService;
 use App\Models\Contact;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class ContactController extends Controller
@@ -22,7 +23,9 @@ class ContactController extends Controller
 
     public function index()
     {
-        $data = $this->service->getAll();
+        $data = Cache::remember('contactList'.request()->get('page', 1), 60*10, function () {
+            return $this->service->getAll();
+        });
 
         return response()->json([
             'status' => true,

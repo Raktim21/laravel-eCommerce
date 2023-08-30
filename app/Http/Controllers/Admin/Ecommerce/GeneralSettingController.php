@@ -39,7 +39,6 @@ class GeneralSettingController extends Controller
     public function update(GeneralSettingRequest $request): \Illuminate\Http\JsonResponse
     {
         $this->service->updateSetting($request);
-        Cache::forget('general');
 
         return response()->json([
             'status'  => true,
@@ -49,7 +48,9 @@ class GeneralSettingController extends Controller
 
     public function deliveryStatus()
     {
-        $data = $this->service->getDeliveryStatus();
+        $data = Cache::remember('deliveryStatus', 60*60*24, function () {
+            return $this->service->getDeliveryStatus();
+        });
 
         return response()->json([
             'status'  => true,
@@ -62,7 +63,6 @@ class GeneralSettingController extends Controller
     public function deliveryStatusUpdate(StatusUpdateRequest $request)
     {
         $this->service->updateDeliveryStatus($request);
-        Cache::delete('orderStatuses');
 
         return response()->json([
             'status'  => true,
@@ -96,7 +96,6 @@ class GeneralSettingController extends Controller
         }
 
         (new AssetService())->storeFAQ($request);
-        Cache::forget('faqs');
 
         return response()->json([
             'status'    => true,
@@ -118,7 +117,6 @@ class GeneralSettingController extends Controller
         }
 
         (new AssetService())->updateFAQ($request, $id);
-        Cache::forget('faqs');
 
         return response()->json([
             'status'    => true,
@@ -128,7 +126,6 @@ class GeneralSettingController extends Controller
     public function faqDelete($id)
     {
         (new AssetService())->deleteFAQ($id);
-        Cache::forget('faqs');
 
         return response()->json([
             'status'    => true,
@@ -150,7 +147,6 @@ class GeneralSettingController extends Controller
         }
 
         (new AssetService())->orderFAQ($request);
-        Cache::forget('faqs');
 
         return response()->json([
             'status'    => true,

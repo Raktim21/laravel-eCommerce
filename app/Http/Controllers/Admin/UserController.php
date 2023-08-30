@@ -12,6 +12,7 @@ use App\Http\Requests\UserProfileUpdateRequest;
 use App\Http\Requests\UserRegistrationRequest;
 use App\Http\Services\AuthService;
 use App\Http\Services\UserService;
+use Illuminate\Support\Facades\Cache;
 
 class UserController extends Controller
 {
@@ -24,7 +25,9 @@ class UserController extends Controller
 
     public function userList(): \Illuminate\Http\JsonResponse
     {
-        $data = $this->service->getAllUser(false);
+        $data = Cache::remember('userList'.request()->get('page', 1), 24*60*60, function () {
+            return $this->service->getAllUser(false);
+        });
 
         return response()->json([
             'status'  => true,
@@ -53,7 +56,9 @@ class UserController extends Controller
 
     function userDetail($id): \Illuminate\Http\JsonResponse
     {
-        $result = $this->service->show($id, false);
+        $result = Cache::remember('userDetail'.$id, 24*60*60, function () use ($id) {
+            return $this->service->show($id, false);
+        });
 
         if($result && !is_null($result['shop_branch_id']))
         {
@@ -72,7 +77,9 @@ class UserController extends Controller
 
     public function userOrder($id): \Illuminate\Http\JsonResponse
     {
-        $data = $this->service->getOrders($id);
+        $data = Cache::remember('userOrders'.$id, 24*60*60*60, function () use ($id) {
+            return $this->service->getOrders($id);
+        });
 
         return response()->json([
             'status'    => true,
@@ -119,7 +126,9 @@ class UserController extends Controller
 
     public function userAddressList($id): \Illuminate\Http\JsonResponse
     {
-        $data = $this->service->getUserAddress($id);
+        $data = Cache::remember('userAddresses'.$id, 24*60*60*7, function() use ($id) {
+            return $this->service->getUserAddress($id);
+        });
 
         return response()->json([
             'status'    => true,

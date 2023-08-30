@@ -1,7 +1,9 @@
 <?php
 
+use App\Models\OrderAdditionalCharge;
 use App\Models\OrderPickupAddress;
 use App\Models\UserAddress;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 
 function peperfly(): array
@@ -51,12 +53,18 @@ function getDeliveryCharge($address_id, $total_price): float|int
 
         if ($address->upazila->district_id == $pickup_address->upazila->district_id) {
             $delivery_price = 55;
-        }else{
-            $delivery_price = 120 + (($total_price + 120) * 0.01);
+        } else {
+            $delivery_price = 90 + (($total_price + 90) * 0.01);
         }
 
     }else {
         $delivery_price = 120 + (($total_price + 120) * 0.01);
+    }
+
+    $taxes = OrderAdditionalCharge::where('status', 1)->get();
+
+    foreach ($taxes as $tax) {
+        $delivery_price += ($tax->is_percentage==1 ? (($tax->amount*$total_price)/100) : $tax->amount);
     }
 
     return $delivery_price;
@@ -78,4 +86,16 @@ function sendMessengerResponse($response, $route): void
         curl_close($ch);
     } catch (Throwable $e)
     {}
+}
+
+function forgetCaches($prefix): void
+{
+    for ($i=1; $i < 1000; $i++) {
+        $key = $prefix . $i;
+        if (Cache::has($key)) {
+            Cache::forget($key);
+        } else {
+            break;
+        }
+    }
 }

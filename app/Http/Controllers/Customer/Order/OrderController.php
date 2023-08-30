@@ -227,6 +227,8 @@ class OrderController extends Controller
 
             DB::commit();
 
+            Cache::delete('allProductReviews');
+
             return response()->json([
                 'status' => true,
             ], 201);

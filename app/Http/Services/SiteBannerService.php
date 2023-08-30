@@ -93,8 +93,6 @@ class SiteBannerService
         }
 
         $site_banner->save();
-
-        Cache::delete('siteBanners');
     }
 
 }

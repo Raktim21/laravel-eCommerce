@@ -39,7 +39,7 @@ class BrandService
             saveImage($request->file('image'), '/uploads/images/brands/', $brand, 'image');
         }
 
-        Cache::forget('allBrands');
+        Cache::forget('brands');
     }
 
 
@@ -58,7 +58,7 @@ class BrandService
             saveImage($request->file('image'), '/uploads/images/brands/', $brand, 'image');
         }
 
-        Cache::forget('allBrands');
+        Cache::forget('brands');
     }
 
 
@@ -69,7 +69,7 @@ class BrandService
         try {
             $brand->delete();
             deleteFile($brand->image);
-            Cache::forget('allBrands');
+            Cache::forget('brands');
             return true;
         }
         catch (QueryException $e)
@@ -90,6 +90,6 @@ class BrandService
         }
 
         $this->brand->clone()->whereIn('id',$request->ids)->delete();
-        Cache::forget('allBrands');
+        Cache::forget('brands');
     }
 }

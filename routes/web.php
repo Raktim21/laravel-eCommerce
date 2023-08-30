@@ -16,25 +16,6 @@ use GuzzleHttp\Client;
 |
 */
 
-// Route::get('/test', function () {
-//     // dd('ok');
-//     $client = new Client();
-//     $response = $client->post(peperfly()['paperFlyUrl'] . '/API-Order-Tracking/', [
-//         'headers' => [
-//             'paperflykey' => peperfly()['paperFlyKey']
-//         ],
-//         'auth' => peperfly()['credential'],
-//         'json' => ["ReferenceNumber" => 'GLAMDESMITH-ORD-12546332548'],
-//     ]);
-
-//     // dd($response);
-//     // return $response;
-
-//     $data = json_decode($response->getBody()->getContents(), true);
-
-//     dd($data);
-// });
-
 Route::get('/crone-job', [CroneController::class, 'crone'])->name('crone.job');
 
 Route::controller(GoogleFacebookController::class)->group(function () {

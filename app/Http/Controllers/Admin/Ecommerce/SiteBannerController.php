@@ -20,7 +20,7 @@ class SiteBannerController extends Controller
 
     public function index()
     {
-        $data = Cache::remember('siteBanners', 60*60*24, function () {
+        $data = Cache::remember('siteBanners', 60*60*24*7, function () {
             return $this->service->get();
         });
 

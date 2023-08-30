@@ -28,7 +28,7 @@ class AdminAuthController extends Controller
 
     public function me()
     {
-        $data = Cache::remember('admin_auth_profile', 60*60*24, function () {
+        $data = Cache::remember('adminAuthProfile', 60*60*24, function () {
             return $this->service->profile();
         });
 

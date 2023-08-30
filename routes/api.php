@@ -149,7 +149,9 @@ Route::group(['prefix' => 'admin'], function () {
         //Clear Cache
         Route::get('clear-cache',function(){
             Artisan::call('cache:clear');
-            return "Cache is cleared";
+            return response()->json([
+                'status' => true,
+            ]);
         });
 
         Route::get('change-language',function(){

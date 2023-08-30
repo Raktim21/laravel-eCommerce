@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class OrderPickupAddress extends Model
 {
@@ -23,5 +24,18 @@ class OrderPickupAddress extends Model
     public function union()
     {
         return $this->belongsTo(Union::class);
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($address) {
+            Cache::delete('pickupAddress');
+        });
+
+        static::updated(function ($address) {
+            Cache::delete('pickupAddress');
+        });
     }
 }

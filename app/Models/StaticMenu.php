@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class StaticMenu extends Model
 {
@@ -13,24 +14,47 @@ class StaticMenu extends Model
     protected $guarded = ['id'];
     protected $hidden = ['created_at','updated_at'];
 
+    public function parentMenu() {
+        return $this->belongsTo(StaticMenu::class, 'parent_menu_id');
+    }
 
-    public function staticContent(){
+    public function childMenus() {
+        return $this->hasMany(StaticMenu::class, 'parent_menu_id');
+    }
+
+    public function staticContent() {
         return $this->belongsTo(StaticContent::class, 'static_contents_id');
     }
 
-    public function staticMenuType(){
+    public function staticMenuType() {
         return $this->belongsTo(StaticMenuType::class, 'static_menu_type_id');
     }
 
-
-    public function scopeSearch($query)
+    public static function boot()
     {
-        $title       = request()->title;
+        parent::boot();
 
-        if ($title && $title != 'null') {
-            $query->where('menu_name', 'LIKE', "%{$title}%");
-        }
+        static::created(function ($menu) {
+            Cache::delete('staticMenus');
+            forgetCaches('staticMenuList');
+        });
 
-        return $query;
+        static::updated(function ($menu) {
+            Cache::delete('staticMenus');
+            forgetCaches('staticMenuList');
+            Cache::delete('staticMenuDetail'.$menu->id);
+            Cache::delete('static_menus');
+
+            foreach ($menu->childMenus() as $item)
+            {
+                Cache::delete('staticMenuDetail'.$item->id);
+            }
+        });
+
+        static::deleted(function ($menu) {
+            Cache::delete('staticMenus');
+            forgetCaches('staticMenuList');
+            Cache::delete('staticMenuDetail'.$menu->id);
+        });
     }
 }

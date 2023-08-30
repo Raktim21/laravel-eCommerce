@@ -24,7 +24,7 @@ class BannerService
 
     public function read($id)
     {
-        return $this->banner->clone()->findOrFail($id);
+        return $this->banner->clone()->find($id);
     }
 
     public function store(Request $request)
@@ -37,8 +37,6 @@ class BannerService
             saveImage($request->file('image'), '/uploads/images/banner/', $banner, 'image');
 
             DB::commit();
-            Cache::delete('allBanner');
-            Cache::delete('banners');
             return true;
         }
         catch (\Throwable $th)
@@ -61,8 +59,6 @@ class BannerService
             saveImage($request->image, '/uploads/images/banner/', $banner, 'image');
 
             DB::commit();
-            Cache::delete('allBanner');
-            Cache::delete('banners');
 
             return true;
         } catch (\Throwable $th)
@@ -76,8 +72,6 @@ class BannerService
         $banner = $this->banner->clone()->findOrFail($id);
         deleteFile($banner->image);
         $banner->delete();
-        Cache::delete('allBanner');
-        Cache::delete('banners');
     }
 
     public function multipleDeletes(Request $request)
@@ -90,8 +84,6 @@ class BannerService
         }
 
         $this->banner->clone()->whereIn('id',$request->ids)->delete();
-        Cache::delete('allBanner');
-        Cache::delete('banners');
     }
 
 }
