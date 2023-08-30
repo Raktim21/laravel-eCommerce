@@ -70,10 +70,13 @@ class Handler extends ExceptionHandler
         if ($this->isHttpException($exception)) {
             return $this->renderHttpException($exception);
         } else {
-            return response()->json([
-                'status' => false,
-                'errors' => ['Internal Server Error']
-            ], 500);
+
+            if (request()->ajax() || request()->wantsJson() || $request->is('api/*') ) {
+                return response()->json([
+                    'status' => false,
+                    'errors' => ['Internal Server Error']
+                ], 500);
+            }
         }
     }
 
