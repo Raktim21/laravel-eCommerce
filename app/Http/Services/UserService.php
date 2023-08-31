@@ -261,6 +261,12 @@ class UserService
         $user = $this->user->clone()->findOrfail($id);
 
         if($user->hasRole('Customer')) {
+            $user->addresses()->delete();
+            $user->contactForms()->delete();
+            $user->cart()->delete();
+            $user->wishlist()->delete();
+            $user->requests()->delete();
+            $user->messenger_subscriptions()->delete();
             $user->delete();
             return true;
         }

@@ -23,7 +23,7 @@ class SubCategoryController extends Controller
         $this->service = $service;
     }
 
-    public function getList($category_id)
+    public function getList($category_id): \Illuminate\Http\JsonResponse
     {
         $data = Cache::remember('subCategories'.$category_id, 24*60*60*7, function () use ($category_id) {
             return $this->service->getSubCategories($category_id);
@@ -36,7 +36,7 @@ class SubCategoryController extends Controller
     }
 
 
-    public function store(SubCategoryRequest $request)
+    public function store(SubCategoryRequest $request): \Illuminate\Http\JsonResponse
     {
         $this->service->store($request);
 
@@ -46,8 +46,7 @@ class SubCategoryController extends Controller
     }
 
 
-
-    public function update(SubCategoryRequest $request,$id)
+    public function update(SubCategoryRequest $request,$id): \Illuminate\Http\JsonResponse
     {
         $this->service->update($request, $id);
 
@@ -57,8 +56,7 @@ class SubCategoryController extends Controller
     }
 
 
-
-    public function destroy($id)
+    public function destroy($id): \Illuminate\Http\JsonResponse
     {
         $this->service->delete($id);
 
@@ -67,7 +65,7 @@ class SubCategoryController extends Controller
         ]);
     }
 
-    public function bulkDelete(SubCategoryBulkDeleteRequest $request)
+    public function bulkDelete(SubCategoryBulkDeleteRequest $request): \Illuminate\Http\JsonResponse
     {
         $this->service->multipleDelete($request);
 

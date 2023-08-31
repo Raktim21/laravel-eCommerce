@@ -40,6 +40,7 @@ class ProductReview extends Model
             forgetCaches('allProductReviews');
             Cache::delete('productReview'.$review->id);
             Cache::delete('product_reviews');
+            forgetCaches('product_reviews');
         });
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Requests\SubscriberRequest;
 use App\Http\Services\SubscriberService;
 use App\Models\Subscriber;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class SubscriberController extends Controller
@@ -19,9 +20,11 @@ class SubscriberController extends Controller
     }
 
 
-    public function index()
+    public function index(): \Illuminate\Http\JsonResponse
     {
-        $data = $this->service->getAll();
+        $data = Cache::remember('subscriberList'.request()->get('page', 1), 24*60*60*7, function () {
+            return $this->service->getAll();
+        });
 
         return response()->json([
             'status' => true,
@@ -30,7 +33,7 @@ class SubscriberController extends Controller
     }
 
 
-    public function create(SubscriberRequest $request)
+    public function create(SubscriberRequest $request): \Illuminate\Http\JsonResponse
     {
         $this->service->store($request);
 

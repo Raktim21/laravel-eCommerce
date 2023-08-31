@@ -72,7 +72,7 @@ class OrderController extends Controller
             return response()->json([
                 'status'    => false,
                 'errors'    => ['The selected promo code is invalid.']
-            ], 422);
+            ], 400);
         }
     }
 
@@ -146,7 +146,7 @@ class OrderController extends Controller
 
     public function orderDetail($id)
     {
-        $order = Cache::remember('order_detail'.$id, 24*60*60, function () use ($id) {
+        $order = Cache::remember('customer_order_detail'.$id, 24*60*60, function () use ($id) {
             return $this->service->getData($id);
         });
 
@@ -275,7 +275,7 @@ class OrderController extends Controller
         return false;
     }
 
-    public function cancelOrder($id)
+    public function cancelOrder($id): \Illuminate\Http\JsonResponse
     {
         $order = Order::findOrFail($id);
 
@@ -293,7 +293,7 @@ class OrderController extends Controller
         ]);
     }
 
-    public function getPromos()
+    public function getPromos(): \Illuminate\Http\JsonResponse
     {
         $data = Cache::remember('customer_available_promos'.auth()->user()->id, 60*10, function () {
             return (new PromoCodeService(new PromoCode()))->getUserPromos(auth()->user()->id);

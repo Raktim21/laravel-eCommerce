@@ -131,8 +131,11 @@ class CustomerAuthController extends Controller
 
     public function deleteAccount(): \Illuminate\Http\JsonResponse
     {
+        $id = auth()->user()->id;
+
         if($this->service->deleteAccount(request()->cookie('customer_refresh_token')))
         {
+            Cache::delete('customer_auth_profile'.$id);
             return response()->json([
                 'status' => true,
             ])->cookie('customer_refresh_token',null,43200,null,null,true,true);
@@ -141,9 +144,7 @@ class CustomerAuthController extends Controller
     }
 
 
-//    no use
-
-    public function sendVerificationCode()
+    public function sendVerificationCode(): \Illuminate\Http\JsonResponse
     {
         if (auth()->guard('user-api')->user()->email_verified_at)
         {
@@ -188,7 +189,7 @@ class CustomerAuthController extends Controller
     }
 
 
-    public function emailVerification(Request $request)
+    public function emailVerification(Request $request): \Illuminate\Http\JsonResponse
     {
         $validated = Validator::make($request->all(), [
             'code' => 'required|numeric',
@@ -208,6 +209,8 @@ class CustomerAuthController extends Controller
             $code->user->email_verified_at = Carbon::now();
             $code->user->save();
             $code->delete();
+
+            Cache::delete('customer_auth_profile'.auth()->user()->id);
 
             return response()->json([
                 'status'  => true,

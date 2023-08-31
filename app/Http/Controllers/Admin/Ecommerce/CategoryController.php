@@ -22,27 +22,12 @@ class CategoryController extends Controller
 
     public function index(): \Illuminate\Http\JsonResponse
     {
-        $status = request()->input('is_paginated') ?? 1;
+        $data = $this->service->getAll(!request()->input('is_paginated'), true);
 
-        if($status == 1) {
-            $data = Cache::remember('categoryList'.request()->get('page', 1), 24*60*60*7, function () {
-                return $this->service->getAll(1, true);
-            });
-
-            return response()->json([
-                'status' => true,
-                'data'   => $data
-            ], $data->isEmpty() ? 204 : 200);
-        } else {
-            $data = Cache::remember('categories', 24*60*60*7, function () {
-                return $this->service->getAll(0, true);
-            });
-
-            return response()->json([
-                'status' => true,
-                'data'   => $data
-            ], count($data) == 0 ? 204 : 200);
-        }
+        return response()->json([
+            'status' => true,
+            'data'   => $data
+        ]);
     }
 
 

@@ -37,6 +37,7 @@ class StaticMenu extends Model
         static::created(function ($menu) {
             Cache::delete('staticMenus');
             forgetCaches('staticMenuList');
+            Cache::delete('static_menus');
         });
 
         static::updated(function ($menu) {
@@ -44,17 +45,21 @@ class StaticMenu extends Model
             forgetCaches('staticMenuList');
             Cache::delete('staticMenuDetail'.$menu->id);
             Cache::delete('static_menus');
+            Cache::delete('static_menu_detail'.$menu->id);
 
             foreach ($menu->childMenus() as $item)
             {
                 Cache::delete('staticMenuDetail'.$item->id);
+                Cache::delete('static_menu_detail'.$menu->id);
             }
         });
 
         static::deleted(function ($menu) {
             Cache::delete('staticMenus');
             forgetCaches('staticMenuList');
+            Cache::delete('static_menus');
             Cache::delete('staticMenuDetail'.$menu->id);
+            Cache::delete('static_menu_detail'.$menu->id);
         });
     }
 }

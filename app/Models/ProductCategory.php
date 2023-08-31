@@ -30,19 +30,22 @@ class ProductCategory extends Model
     {
         parent::boot();
 
-        static::created(function($category) {
-            Cache::delete('categories');
-            forgetCaches('categoryList');
+        static::created(function ($category) {
+            Cache::delete('all_categories');
         });
 
-        static::updated(function($category) {
-            Cache::delete('categories');
-            forgetCaches('categoryList');
+        static::updated(function ($category) {
+            Cache::delete('all_categories');
+
+            foreach ($category->products as $item)
+            {
+                Cache::delete('product_detail_'.$item->id);
+                Cache::delete('productDetail'.$item->id);
+            }
         });
 
-        static::deleted(function($category) {
-            Cache::delete('categories');
-            forgetCaches('categoryList');
+        static::deleted(function ($category) {
+            Cache::delete('all_categories');
         });
     }
 }

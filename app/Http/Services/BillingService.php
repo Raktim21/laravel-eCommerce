@@ -24,7 +24,10 @@ class BillingService
 
     public function getCart()
     {
-        return $this->bill->clone()->with('user','guest')
+        return $this->bill->clone()->with('guest')
+            ->with(['user' => function($q) {
+                return $q->select('id','username','name','phone')->withTrashed();
+            }])
             ->with(['items' => function($q) {
                 return $q->with(['combinations' => function($q1) {
                     $q1->select('id','product_id','selling_price','weight','deleted_at')
@@ -43,7 +46,10 @@ class BillingService
 
     public function getData($id)
     {
-        return $this->bill->clone()->with('user','guest')
+        return $this->bill->clone()->with('guest')
+            ->with(['user' => function($q) {
+                return $q->withTrashed();
+            }])
             ->with(['items' => function($q) {
                 return $q->with(['combinations' => function($q1) {
                     $q1->select('id','product_id','selling_price','weight','deleted_at')
@@ -88,19 +94,6 @@ class BillingService
         }
     }
 
-    public function deleteBill($id): bool
-    {
-        $bill = $this->bill->clone()->findOrFail($id);
-
-        if($bill->is_ordered == 1)
-        {
-            return false;
-        }
-
-        $bill->delete();
-
-        return true;
-    }
 
     public function convert($id)
     {

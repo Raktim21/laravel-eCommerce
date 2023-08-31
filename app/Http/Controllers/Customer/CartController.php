@@ -24,9 +24,7 @@ class CartController extends Controller
 
     public function cartList()
     {
-        $data = Cache::remember('customer_cart', 24*60*60, function () {
-            return $this->service->getCart();
-        });
+        $data = $this->service->getCart();
 
         return response()->json([
             'status'  => true,

@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Validator;
 
 class ThemeSettingController extends Controller
 {
-    //Call the model globally for use
     protected $themeCustomizer;
 
     public function __construct(ThemeCustomizer $themeCustomizer)

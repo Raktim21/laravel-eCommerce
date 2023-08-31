@@ -172,7 +172,7 @@ class ProductService
         Cache::clear();
     }
 
-    public function delete($id)
+    public function delete($id): bool
     {
         $product = $this->product->clone()->findOrFail($id);
 
@@ -191,7 +191,7 @@ class ProductService
 
     }
 
-    public function multipleDelete(Request $request)
+    public function multipleDelete(Request $request): bool
     {
         DB::beginTransaction();
         try {
@@ -212,7 +212,7 @@ class ProductService
 
     public function imageDelete($id): void
     {
-        $image = ProductImages::find($id);
+        $image = ProductImages::findOrFail($id);
         deleteFile($image->image);
         $image->delete();
     }
