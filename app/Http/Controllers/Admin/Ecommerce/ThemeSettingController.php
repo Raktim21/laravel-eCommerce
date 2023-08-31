@@ -23,7 +23,9 @@ class ThemeSettingController extends Controller
 
     public function index()
     {
-        $theme = $this->themeCustomizer->newQuery()->orderBy('ordering')->get();
+        $theme = Cache::remember('themeCustomizer', 60*60*24, function () {
+            return $this->themeCustomizer->newQuery()->orderBy('ordering')->get();
+        });
 
         return response()->json([
             'status' => true,
@@ -189,6 +191,7 @@ class ThemeSettingController extends Controller
         }
 
         $theme_log->delete();
+        Artisan::call('cache:clear');
 
         return response()->json([
            'status' => true,

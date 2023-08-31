@@ -18,7 +18,7 @@ class ProfileController extends Controller
 
     public function permissions(): \Illuminate\Http\JsonResponse
     {
-        $data = Cache::remember('auth-permissions', 60*60*24, function () {
+        $data = Cache::remember('authPermissions', 60*60*24, function () {
             return $this->service->getAuthPermissions();
         });
 
@@ -32,7 +32,7 @@ class ProfileController extends Controller
     {
         $this->service->update($request, auth()->guard('user-api')->user()->id, true, true);
 
-        Cache::delete('admin_auth_profile');
+        Cache::delete('adminAuthProfile');
 
         return response()->json(['status' => true]);
     }
@@ -41,7 +41,7 @@ class ProfileController extends Controller
     {
         $this->service->updateAvatar($request, auth()->guard('admin-api')->user()->id, true);
 
-        Cache::delete('admin_auth_profile');
+        Cache::delete('adminAuthProfile');
 
         return response()->json(['status' => true]);
     }

@@ -40,8 +40,7 @@ use Illuminate\Support\Facades\Validator;
 
 class FrontendController extends Controller
 {
-
-    public function general()
+    public function general(): \Illuminate\Http\JsonResponse
     {
         $data = Cache::remember('general', 24*60*60, function () {
             return (new GeneralSettingService(new GeneralSetting()))->getSetting();
@@ -53,7 +52,7 @@ class FrontendController extends Controller
         ], is_null($data) ? 204 : 200);
     }
 
-    public function theme()
+    public function theme(): \Illuminate\Http\JsonResponse
     {
         $data = Cache::remember('theme', 60*60, function () {
             return ThemeCustomizer::orderBy('ordering')->get();
@@ -66,7 +65,7 @@ class FrontendController extends Controller
     }
 
 
-    public function home()
+    public function home(): \Illuminate\Http\JsonResponse
     {
         $theme = Cache::remember('themeCustomizer', 60*60*24, function () {
             return ThemeCustomizer::get();
@@ -162,18 +161,20 @@ class FrontendController extends Controller
     }
 
 
-
-    public function staticMenu(){
-        $data = StaticMenu::with('staticMenuType')->latest()->get();
+    public function staticMenu(): \Illuminate\Http\JsonResponse
+    {
+        $data = Cache::remember('static_menus', 24*60*60, function () {
+            return StaticMenu::with('staticMenuType')->latest()->get();
+        });
 
         return response()->json([
             'status' => true,
             'data'   => $data
-         ], $data->isEmpty() ? 204 : 200);
+         ], count($data) == 0 ? 204 : 200);
     }
 
 
-    public function getBanners()
+    public function getBanners(): \Illuminate\Http\JsonResponse
     {
         $data = Cache::remember('siteBanners', 60*60*24, function () {
             return SiteBanners::first();
@@ -186,7 +187,8 @@ class FrontendController extends Controller
     }
 
 
-    public function staticMenuContent($id){
+    public function staticMenuContent($id): \Illuminate\Http\JsonResponse
+    {
         $data = StaticMenu::with('staticContent')->find($id);
 
         return response()->json([
@@ -196,9 +198,9 @@ class FrontendController extends Controller
     }
 
 
-    public function category()
+    public function category(): \Illuminate\Http\JsonResponse
     {
-        $data = Cache::remember('allCategories', 60*60, function () {
+        $data = Cache::remember('allCategories', 60*60*24, function () {
             return (new CategoryService(new ProductCategory()))->getAll(1, false);
         });
 
@@ -208,9 +210,12 @@ class FrontendController extends Controller
         ], count($data) == 0 ? 204 : 200);
     }
 
+
     public function getSubCategoryList($category_id): \Illuminate\Http\JsonResponse
     {
-        $data = (new SubCategoryService(new ProductSubCategory()))->getSubCategories($category_id);
+        $data = Cache::remember('sub_categories', 24*60*60, function () use($category_id) {
+            return (new SubCategoryService(new ProductSubCategory()))->getSubCategories($category_id);
+        });
 
         return response()->json([
             'status'        => true,
@@ -219,10 +224,9 @@ class FrontendController extends Controller
     }
 
 
-
-    public function brand()
+    public function brand(): \Illuminate\Http\JsonResponse
     {
-        $data = Cache::remember('allBrands', 60*60, function () {
+        $data = Cache::remember('brands', 60*60*24, function () {
             return (new BrandService(new ProductBrand()))->getAll(false);
         });
 
@@ -232,7 +236,8 @@ class FrontendController extends Controller
         ], count($data) == 0 ? 204 : 200);
     }
 
-    public function productFilter(HomepageRequest $request)
+
+    public function productFilter(HomepageRequest $request): \Illuminate\Http\JsonResponse
     {
         $data = (new ProductService(new Product()))->getAll($request, 0);
 
@@ -242,7 +247,8 @@ class FrontendController extends Controller
         ], $data->isEmpty() ? 204 : 200);
     }
 
-    public function productReviews($product_id)
+
+    public function productReviews($product_id): \Illuminate\Http\JsonResponse
     {
         $data = (new ProductService(new Product()))->getReviewsByProduct($product_id);
 
@@ -253,8 +259,7 @@ class FrontendController extends Controller
     }
 
 
-
-    public function productSearchSuggestions()
+    public function productSearchSuggestions(): \Illuminate\Http\JsonResponse
     {
         $validator = Validator::make(request()->all(), [
             'name' => 'required|string',
@@ -276,9 +281,11 @@ class FrontendController extends Controller
     }
 
 
-    public function productDetails($id)
+    public function productDetails($id): \Illuminate\Http\JsonResponse
     {
-        $data = (new ProductService(new Product()))->get($id);
+        $data = Cache::remember('product_detail_'.$id, 60*60*24, function () use ($id) {
+            return (new ProductService(new Product()))->get($id);
+        });
 
         return response()->json([
             'status' => true,
@@ -289,7 +296,7 @@ class FrontendController extends Controller
 
     public function paymentMethods()
     {
-        $data = Cache::remember('paymentMethods', 60*60*24, function () {
+        $data = Cache::remember('payment_methods', PHP_INT_MAX, function () {
             return OrderPaymentMethod::where('is_active',1)->latest()->get();
         });
 
@@ -299,9 +306,10 @@ class FrontendController extends Controller
         ], count($data) == 0 ? 204 : 200);
     }
 
+
     public function additionalCharges()
     {
-        $data = Cache::remember('additionalCharges', 24*60*60, function () {
+        $data = Cache::remember('additionalCharges', 24*60*60*7, function () {
             return OrderAdditionalCharge::where('status', 1)->get();
         });
 
@@ -314,7 +322,7 @@ class FrontendController extends Controller
 
     public function deliveryMethods()
     {
-        $data = Cache::remember('shippingMethods', 60*60*24, function () {
+        $data = Cache::remember('shippingMethods', PHP_INT_MAX, function () {
             return OrderDeliveryMethod::where('is_active',1)->whereNot('id', 2)->get();
         });
 
@@ -344,14 +352,17 @@ class FrontendController extends Controller
         ], 201);
     }
 
+
     public function restockRequest(RestockRequest $request)
     {
         ProductRestockRequest::create([
             'user_id'       => auth()->guard('user-api')->user()->id,
             'product_id'    => $request->product_id,
         ]);
+        Cache::delete('productRestockRequests');
         return response()->json(['status' => true], 201);
     }
+
 
     public function reportProduct(ProductAbuseReportRequest $request)
     {
@@ -364,8 +375,11 @@ class FrontendController extends Controller
             'complaint_notes'   => $request->complaint_notes,
         ]);
 
+        Cache::delete('abuseReports');
+
         return response()->json(['status' => true], 201);
     }
+
 
     public function faqList()
     {
@@ -378,6 +392,7 @@ class FrontendController extends Controller
             'data'      => $data
         ], count($data)==0 ? 204 : 200);
     }
+
 
     public function flashSale()
     {

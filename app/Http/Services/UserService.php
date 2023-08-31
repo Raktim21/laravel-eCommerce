@@ -10,7 +10,6 @@ use App\Models\UserProfile;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
@@ -47,7 +46,7 @@ class UserService
                     $q1->where('name', 'like', '%'.request()->input('search').'%')
                         ->orWhere('username', 'like', '%'.request()->input('search').'%')
                         ->orWhere('phone', 'like', '%'.request()->input('search').'%');
-                })->whereNull('shop_branch_id');
+                })->where('is_active', 1)->whereNull('shop_branch_id');
             })
             ->when($isAdmin, function ($q) {
                 return $q->where(function ($q1) {
@@ -88,8 +87,6 @@ class UserService
             if ($request->hasFile('avatar')) {
                 saveImage($request->file('avatar'), '/uploads/admin/avatars/', $profile, 'image');
             }
-
-            Cache::delete('admin_dashboard_data');
 
             DB::commit();
             return true;
@@ -314,11 +311,9 @@ class UserService
     }
 
 
-
     public function adminAddress()
     {
-        return OrderPickupAddress::with('union','upazila.district.division.country')
-            ->latest()->first();
+        return OrderPickupAddress::with('union','upazila.district.division.country')->first();
     }
 
     public function updateAdminAddress(Request $request): void

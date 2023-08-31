@@ -10,6 +10,7 @@ use App\Http\Services\PromoCodeService;
 use App\Models\PromoCode;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class PromocodeController extends Controller
@@ -25,7 +26,9 @@ class PromocodeController extends Controller
 
     public function index()
     {
-        $data = $this->service->getList();
+        $data = Cache::remember('promoCodeList'.request()->get('page', 1), 24*60*60, function () {
+            return $this->service->getList();
+        });
 
         return response()->json([
             'status' => true,
@@ -69,7 +72,9 @@ class PromocodeController extends Controller
 
     public function detail($id)
     {
-        $data = $this->service->get($id);
+        $data = Cache::remember('promoCodeDetail'.$id, 24*60*60, function () use ($id) {
+            return $this->service->get($id);
+        });
 
         return response()->json([
             'status' => true,

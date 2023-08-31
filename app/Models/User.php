@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Spatie\Permission\Traits\HasRoles;
@@ -125,16 +126,40 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(ProductAbuseReport::class, 'user_id');
     }
 
-    public function emailVerificationCode()
+    public static function boot()
     {
-        return $this->hasOne(EmailVerificationCode::class, 'user_id');
-    }
+        parent::boot();
 
-    public function scopeSearch($query)
-    {
-        $search = request()->search;
-        return $query->when($search, function ($q) use ($search) {
-            return $q->where('name', 'like', "%$search%")->orWhere('username', 'like', "%$search%")->orWhere('phone', 'like', "%$search%");
+        static::created(function ($user) {
+            if($user->shop_branch_id)
+            {
+                forgetCaches('adminList');
+            } else {
+                forgetCaches('userList');
+            }
+        });
+
+        static::updated(function ($user) {
+            if($user->shop_branch_id)
+            {
+                forgetCaches('adminList');
+                Cache::delete('adminDetail'.$user->id);
+            } else {
+                forgetCaches('userList');
+                Cache::delete('userDetail'.$user->id);
+            }
+        });
+
+        static::deleted(function ($user) {
+            if($user->shop_branch_id)
+            {
+                forgetCaches('adminList');
+                Cache::delete('adminDetail'.$user->id);
+            } else {
+                forgetCaches('userList');
+                Cache::delete('userDetail'.$user->id);
+                Cache::delete('userAddresses'.$user->id);
+            }
         });
     }
 }

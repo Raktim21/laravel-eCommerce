@@ -7,6 +7,7 @@ use App\Http\Requests\RoleCreateRequest;
 use App\Http\Requests\RoleUpdateRequest;
 use App\Http\Services\RoleService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Permission;
@@ -23,11 +24,28 @@ class AdminRoleController extends Controller
     }
 
 
-    public function roleList()
+    public function permissionList()
     {
+        $data = Cache::rememberForever('permissions', function () {
+            return $this->service->permissions();
+        });
+
         return response()->json([
             'status' => true,
-            'data'   => $this->service->roles(),
+            'data'   => $data,
+        ]);
+    }
+
+
+    public function roleList()
+    {
+        $data = Cache::remember('adminRoles', 24*60*60*60, function () {
+            return $this->service->roles();
+        });
+
+        return response()->json([
+            'status' => true,
+            'data'   => $data,
         ]);
     }
 
@@ -35,7 +53,10 @@ class AdminRoleController extends Controller
 
     public function roleDetail($id)
     {
-        $data = $this->service->getRole($id);
+        $data = Cache::remember('roleDetail'.$id, 24*60*60*60, function () use ($id) {
+            return $this->service->getRole($id);
+        });
+
         return response()->json([
             'status'=> true,
             'data'  => $data,
@@ -45,7 +66,11 @@ class AdminRoleController extends Controller
 
     public function roleUpdate(RoleUpdateRequest $request, $id)
     {
-        if($this->service->updateRole($request, $id)) {
+        if($this->service->updateRole($request, $id))
+        {
+            Cache::delete('roleDetail'.$id);
+            Cache::delete('adminRoles');
+
             return response()->json([
                 'status' => true,
             ]);
@@ -55,14 +80,4 @@ class AdminRoleController extends Controller
             'errors'        => ['Role of super admin or customer can not be updated.']
         ], 400);
     }
-
-
-    public function permissionList()
-    {
-        return response()->json([
-            'status' => true,
-            'data'   => $this->service->permissions(),
-        ]);
-    }
-
 }

@@ -16,6 +16,7 @@ use App\Models\User;
 use App\Notifications\CustomerOrderDeliveryNotification;
 use App\Notifications\OrderDeliveryNotification;
 use App\Notifications\OrderPlacedNotification;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
 
@@ -98,6 +99,7 @@ class OrderObserver
 
     public function updated(Order $order)
     {
+        Cache::delete('orderDetail'.$order->id);
         if ($order->delivery_status == 'Delivered' || $order->delivery_status == 'Picked' || $order->delivery_status == 'Cancelled') {
             if ($order->delivery_status == 'Delivered') {
 

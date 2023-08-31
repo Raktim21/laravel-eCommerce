@@ -29,8 +29,6 @@ class SponsorService
         ]);
 
         saveImage($request->file('image'), '/uploads/images/sponsors/', $sponsor, 'image');
-
-        Cache::forget('sponsors');
     }
 
     public function update(Request $request, $id)
@@ -48,8 +46,6 @@ class SponsorService
 
             saveImage($request->file('image'), '/uploads/images/sponsors/', $sponsor, 'image');
         }
-
-        Cache::forget('sponsors');
     }
 
     public function delete($id)
@@ -57,8 +53,6 @@ class SponsorService
         $sponsor = $this->sponsor->clone()->findOrfail($id);
         deleteFile($sponsor->image);
         $sponsor->delete();
-
-        Cache::forget('sponsors');
     }
 
     public function multipleDelete(Request $request)
@@ -71,6 +65,5 @@ class SponsorService
         }
 
         $this->sponsor->clone()->whereIn('id',$request->ids)->delete();
-        Cache::forget('sponsors');
     }
 }

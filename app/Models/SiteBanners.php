@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class SiteBanners extends Model
 {
@@ -12,4 +13,17 @@ class SiteBanners extends Model
     protected $guarded = ['id'];
 
     protected $hidden = ['created_at','updated_at'];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($banner) {
+            Cache::delete('siteBanners');
+        });
+
+        static::updated(function ($banner) {
+            Cache::delete('siteBanners');
+        });
+    }
 }

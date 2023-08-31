@@ -58,16 +58,24 @@ class FlashSaleService
         }
     }
 
-    public function updateSaleStatus(): void
+    public function updateSaleStatus(): bool
     {
         $sale = FlashSale::first();
 
         if($sale)
         {
+            if($sale->status == 0 && $sale->end_date < Carbon::now())
+            {
+                return false;
+            }
             $status = $sale->status == 0 ? 1 : 0;
 
             $sale->update(['status' => $status]);
+
+            return true;
         }
+
+        return false;
     }
 
 }

@@ -7,6 +7,7 @@ use App\Http\Requests\DateRequest;
 use App\Http\Requests\YearRequest;
 use App\Http\Services\ReportService;
 use App\Models\Product;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class SalesReportController extends Controller
@@ -21,7 +22,9 @@ class SalesReportController extends Controller
 
     public function generalReport()
     {
-        $data = $this->service->getGeneralData();
+        $data = Cache::remember('generalReport', 60*60, function () {
+            return $this->service->getGeneralData();
+        });
 
         return response()->json([
             'status' => true,
@@ -32,7 +35,9 @@ class SalesReportController extends Controller
 
     public function mostViewedProducts()
     {
-        $data = $this->service->getProducts();
+        $data = Cache::remember('mostViewedProducts', 60*60, function () {
+            return $this->service->getProducts();
+        });
 
         return response()->json([
             'status' => true,
@@ -43,7 +48,11 @@ class SalesReportController extends Controller
 
     public function newUsers(YearRequest $request)
     {
-        $data = $this->service->getUsers($request->year ?? date('Y'));
+        $year = $request->year ?? date('Y');
+
+        $data = Cache::remember('newUsers'.$year, 60*60, function () use ($year) {
+            return $this->service->getUsers($year);
+        });
 
         return response()->json([
             'status'  => true,
@@ -87,7 +96,11 @@ class SalesReportController extends Controller
 
     public function salesData(YearRequest $request)
     {
-        $data = $this->service->sales($request->year ?? date('Y'));
+        $year = $request->year ?? date('Y');
+
+        $data = Cache::remember('salesData'.$year, 60*60, function () use ($year) {
+            return $this->service->sales($year);
+        });
 
         return response()->json([
             'status'  => true,

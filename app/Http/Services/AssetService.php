@@ -11,6 +11,7 @@ use App\Models\Union;
 use App\Models\Upazila;
 use App\Models\UserSex;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class AssetService
 {
@@ -67,6 +68,7 @@ class AssetService
             'answer'        => $request->answer,
             'ordering'      => FAQ::count() + 1
         ]);
+        Cache::forget('faqs');
     }
 
     public function updateFAQ(Request $request, $id): void
@@ -75,11 +77,13 @@ class AssetService
             'question'      => $request->question,
             'answer'        => $request->answer
         ]);
+        Cache::forget('faqs');
     }
 
     public function deleteFAQ($id): void
     {
         FAQ::findOrFail($id)->delete();
+        Cache::forget('faqs');
     }
 
     public function orderFAQ(Request $request): void
@@ -87,5 +91,6 @@ class AssetService
         foreach ($request->ids as $key => $id) {
             FAQ::find($id)->update(['ordering' => $key + 1]);
         }
+        Cache::forget('faqs');
     }
 }
