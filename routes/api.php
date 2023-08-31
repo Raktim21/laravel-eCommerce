@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\Ecommerce\GeneralSettingController;
 use App\Http\Controllers\Admin\Ecommerce\OrderController;
 use App\Http\Controllers\Admin\Ecommerce\ProductController;
 use App\Http\Controllers\Admin\Ecommerce\PromocodeController;
+use App\Http\Controllers\Admin\Ecommerce\SeoSettingController;
 use App\Http\Controllers\Admin\Ecommerce\SiteBannerController;
 use App\Http\Controllers\Admin\Ecommerce\SponsorController;
 use App\Http\Controllers\Admin\Ecommerce\SubCategoryController;
@@ -535,6 +536,13 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::post('static-menu-update/{id}', 'staticMenuUpdate');
                 Route::delete('static-menu-delete/{id}', 'staticMenuDelete');
                 Route::post('static-menu-status-change/{id}', 'staticMenuStatusChange');
+            });
+        });
+
+        Route::controller(SeoSettingController::class)->group(function () {
+            Route::group(['middleware' => ['permission:view/update seo setting']], function() {
+                Route::get('seo-setting', 'index')->middleware('gzip');
+                Route::post('seo-setting-update', 'update');
             });
         });
 
