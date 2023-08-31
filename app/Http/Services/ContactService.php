@@ -38,7 +38,7 @@ class ContactService
 
     public function delete($id): void
     {
-        $this->contact->clone()->find($id)->delete();
+        $this->contact->clone()->findOrFail($id)->delete();
     }
 
     public function multipleDeletes(Request $request): void
