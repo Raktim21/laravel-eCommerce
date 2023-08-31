@@ -42,7 +42,8 @@ class RolePermissionSeeder extends Seeder
             'create/update/delete billing',
             'create/update/delete static content',
             'manage role',
-            'manage inbox'
+            'manage inbox',
+            'view/update seo setting',
         ];
 
         foreach ($permissions as $value) {
