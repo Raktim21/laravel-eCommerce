@@ -92,7 +92,7 @@ class Product extends Model
 
     public function inventories()
     {
-        return $this->hasManyThrough(Inventory::class, ProductCombination::class);
+        return $this->hasManyThrough(Inventory::class, ProductCombination::class, 'product_id', 'product_combination_id');
     }
 
     public function defaultCombination()

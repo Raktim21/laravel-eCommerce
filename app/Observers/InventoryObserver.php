@@ -17,7 +17,7 @@ class InventoryObserver
 
     public function updated(Inventory $inventory)
     {
-        Cache::delete('productDetail'.$inventory->combination->product_id);
+        Cache::clear();
         if($inventory->stock_quantity > $this->previous_quantity)
         {
             $requests = ProductRestockRequest::where('product_id', $inventory->combination->product_id)

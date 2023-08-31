@@ -176,6 +176,14 @@ class OrderController extends Controller
 
         $status = OrderStatus::findOrFail($request->status);
 
+        if(GeneralSetting::first()->delivery_status == 1 && $request->status == 4)
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => ['Order status cannot be changed to delivered when default delivery system is enabled.']
+            ], 400);
+        }
+
         if ($order->order_status_id > $status->id) {
             return response()->json([
                 'status' => false,

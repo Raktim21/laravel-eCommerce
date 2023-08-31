@@ -67,6 +67,7 @@ class FrontendController extends Controller
 
     public function home(): \Illuminate\Http\JsonResponse
     {
+        Cache::clear();
         $theme = ThemeCustomizer::orderBy('id')->get();
 
         $data = array();
@@ -91,10 +92,13 @@ class FrontendController extends Controller
 
         if($theme[3]['is_active'] == 1) {
             $data['featured_products'] = Cache::remember('allProductsFeatured', 60*60*24, function () {
-                return Product::whereHas('productCombinations.inventory')->where('is_featured', 1)->where('status', 1)
+                return Product::where('is_featured', 1)
+                    ->where('status', 1)
                     ->select('id','category_id','category_sub_id','description','name','slug','uuid','thumbnail_image',
                         'display_price','previous_display_price','view_count')
                     ->with('productReviewRating')
+                    ->withSum('inventories', 'stock_quantity')
+                    ->with('inventories')
                     ->with('subCategory','category')
                     ->inRandomOrder()->take(8)->get();
             });
@@ -102,10 +106,11 @@ class FrontendController extends Controller
 
         if($theme[4]['is_active'] == 1 && FlashSale::first() != null && FlashSale::first()->status == 1) {
             $data['sale_products'] = Cache::remember('productOnSale', 60*60*24, function () {
-                return  Product::whereHas('inventories')->where('is_on_sale',1)->where('status', 1)
+                return  Product::where('is_on_sale',1)->where('status', 1)
                     ->select('id','category_id','category_sub_id','description','name','slug','uuid','thumbnail_image',
                         'display_price','previous_display_price','view_count')
                     ->with('productReviewRating')
+                    ->withSum('inventories', 'stock_quantity')
                     ->with('subCategory','category')
                     ->latest()->take(20)->get();
             });
@@ -114,10 +119,11 @@ class FrontendController extends Controller
         if($theme[6]['is_active'] == 1) {
             $data['new_products'] = Cache::remember('productsNew', 60*60*24, function () {
 
-                return Product::whereHas('inventories')->where('status', 1)
+                return Product::where('status', 1)
                     ->select('id','category_id','category_sub_id','description','name','slug','uuid','thumbnail_image',
                         'display_price','previous_display_price','view_count')
                     ->with('productReviewRating')
+                    ->withSum('inventories', 'stock_quantity')
                     ->with('subCategory','category')
                     ->latest()->take(12)->get();
             });
@@ -126,10 +132,11 @@ class FrontendController extends Controller
         if($theme[7]['is_active'] == 1) {
             $data['discount_products'] = Cache::remember('productDiscount', 60*60*24, function () {
 
-                return Product::whereHas('inventories')->where('status', 1)->whereNotNull('previous_display_price')
+                return Product::where('status', 1)->whereNotNull('previous_display_price')
                     ->select('id','category_id','category_sub_id','description','name','slug','uuid','thumbnail_image',
                         'display_price','previous_display_price','view_count')
                     ->with('productReviewRating')
+                    ->withSum('inventories', 'stock_quantity')
                     ->with('subCategory','category')
                     ->latest()->take(16)->get();
             });
@@ -143,10 +150,11 @@ class FrontendController extends Controller
 
         if($theme[9]['is_active'] == 1) {
             $data['popular_products'] = Cache::remember('productPopular', 60*60*24, function () {
-                return Product::whereHas('inventories')->where('status', 1)
+                return Product::where('status', 1)
                     ->select('id','category_id','category_sub_id','description','name','slug','uuid','thumbnail_image',
                         'display_price','previous_display_price','view_count')
                     ->with('productReviewRating')
+                    ->withSum('inventories', 'stock_quantity')
                     ->with('subCategory','category')
                     ->orderByDesc('sold_count')->take(12)->get();
             });
