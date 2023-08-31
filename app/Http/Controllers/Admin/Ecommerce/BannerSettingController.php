@@ -6,8 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\BannerSettingRequest;
 use App\Http\Services\BannerService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Artisan;
-use OpenApi\Annotations as OA;
+use Illuminate\Support\Facades\Cache;
 
 class BannerSettingController extends Controller
 {
@@ -21,10 +20,14 @@ class BannerSettingController extends Controller
 
     public function index()
     {
+        $data = Cache::remember('banners', 60*24*60, function () {
+            return $this->service->getAll();
+        });
+
         return response()->json([
             'status' => true,
-            'data' => $this->service->getAll()
-        ]);
+            'data' => $data
+        ], count($data)==0 ? 204 : 200);
 
     }
 
@@ -33,7 +36,6 @@ class BannerSettingController extends Controller
     {
         if($this->service->store($request))
         {
-            Artisan::call('cache:clear');
             return response()->json([
                 'status' => true,
             ], 201);
@@ -48,10 +50,14 @@ class BannerSettingController extends Controller
 
     public function detail($id)
     {
+        $data = Cache::remember('bannerSettingDetail'.$id, 24*60*60*7, function () use ($id) {
+            return $this->service->read($id);
+        });
+
         return response()->json([
             'status' => true,
-            'data' => $this->service->read($id)
-        ]);
+            'data' => $data
+        ], is_null($data) ? 204 : 200);
     }
 
 
@@ -59,7 +65,6 @@ class BannerSettingController extends Controller
     {
         if($this->service->update($request, $id))
         {
-            Artisan::call('cache:clear');
             return response()->json([
                 'status' => true,
             ]);

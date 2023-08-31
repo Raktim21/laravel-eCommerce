@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class Order extends Model
 {
@@ -71,5 +72,4 @@ class Order extends Model
     {
         return $this->belongsTo(OrderPaymentStatus::class, 'payment_status_id');
     }
-
 }

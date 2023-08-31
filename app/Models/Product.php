@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class Product extends Model
@@ -91,7 +92,7 @@ class Product extends Model
 
     public function inventories()
     {
-        return $this->hasManyThrough(Inventory::class, ProductCombination::class);
+        return $this->hasManyThrough(Inventory::class, ProductCombination::class, 'product_id', 'product_combination_id');
     }
 
     public function defaultCombination()
@@ -151,5 +152,16 @@ class Product extends Model
 
     }
 
+    public static function boot()
+    {
+        parent::boot();
 
+        static::created(function ($product) {
+            Cache::clear();
+        });
+
+        static::updated(function ($product) {
+            Cache::clear();
+        });
+    }
 }

@@ -26,9 +26,9 @@ class AdminAuthController extends Controller
     }
 
 
-    public function me()
+    public function me(): \Illuminate\Http\JsonResponse
     {
-        $data = Cache::remember('admin_auth_profile', 60*60*24, function () {
+        $data = Cache::remember('adminAuthProfile'.auth()->user()->id, 60*60*24, function () {
             return $this->service->profile();
         });
 
@@ -39,28 +39,13 @@ class AdminAuthController extends Controller
     }
 
 
-    public function logout()
-    {
-        if($this->service->logout(request()->cookie('admin_refresh_token')))
-        {
-            return response()->json([
-                'status'    => true,
-            ])->cookie('admin_refresh_token', null, 43200, null, null, true, true );
-        }
-
-        return response()->json([
-            'status'  => false,
-            'error'   => 'Unauthorized'
-        ],401);
-    }
-
-
-    public function refresh()
+    public function refresh(): \Illuminate\Http\JsonResponse
     {
         return $this->service->refresh(1, request()->cookie('admin_refresh_token'));
     }
 
-    public function resetPassword(ResetPasswordRequest $request)
+
+    public function resetPassword(ResetPasswordRequest $request): \Illuminate\Http\JsonResponse
     {
         $token = $this->service->resetPWD($request, 1);
 
@@ -70,12 +55,31 @@ class AdminAuthController extends Controller
         ]);
     }
 
-    public function confirmPassword(ConfirmPasswordRequest $request)
+
+    public function confirmPassword(ConfirmPasswordRequest $request): \Illuminate\Http\JsonResponse
     {
         $this->service->confirmPWD($request);
 
         return response()->json([
             'status' => true,
         ]);
+    }
+
+
+    public function logout()
+    {
+        $id = auth()->user()->id;
+        if($this->service->logout(request()->cookie('admin_refresh_token')))
+        {
+            Cache::delete('adminAuthProfile'.$id);
+            return response()->json([
+                'status'    => true,
+            ])->cookie('admin_refresh_token', null, 43200, null, null, true, true );
+        }
+
+        return response()->json([
+            'status'  => false,
+            'errors'  => ['Unauthorized']
+        ],401);
     }
 }

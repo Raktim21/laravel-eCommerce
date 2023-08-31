@@ -55,6 +55,16 @@ class SendMailController extends Controller
 
     public function sendReply(Request $request, $id)
     {
+        $contact = Contact::findOrFail($id);
+
+        if($contact->reply_from_merchant)
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => ['Reply has already been sent to this customer.']
+            ], 400);
+        }
+
         $validate = Validator::make($request->all(),[
             'subject' => 'required|string|min:3',
             'body' => 'required|string|min:5',
@@ -69,7 +79,7 @@ class SendMailController extends Controller
             ], 422);
         }
 
-        $recipient  = Contact::findOrFail($id)->email;
+        $recipient  = $contact->email;
         $subject    = $request->subject;
         $body       = $request->body;
         $attachment = request()->file('attachment');
@@ -85,21 +95,16 @@ class SendMailController extends Controller
                         'mime' => $attachment->getClientMimeType()
                     ]);
                 }
-
             });
 
-            return response()->json([
-                'status' => true,
+            $contact->update([
+                'reply_from_merchant'   => $request->body
             ]);
-        } catch (\Throwable $th)
-        {
-            return response()->json([
-                'status'  => false,
-                'errors'  => ['No email server is configured.']
-            ], 400);
-        }
+        } catch (\Throwable $th) {}
 
-
+        return response()->json([
+            'status' => true,
+        ]);
     }
 
 

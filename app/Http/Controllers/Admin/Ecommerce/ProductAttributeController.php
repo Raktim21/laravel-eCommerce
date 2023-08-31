@@ -18,6 +18,7 @@ use App\Models\ProductCombinationValue;
 use App\Models\ProductCombinationVariant;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -46,6 +47,7 @@ class ProductAttributeController extends Controller
 
             if($msg == 'done')
             {
+                Cache::clear();
                 return response()->json([
                     'status' => true,
                 ], 201);
@@ -87,6 +89,7 @@ class ProductAttributeController extends Controller
             $this->addNewCombination($variant);
 
             DB::commit();
+            Cache::clear();
             return response()->json([
                 'status' => true,
             ], 201);
@@ -154,6 +157,7 @@ class ProductAttributeController extends Controller
          }
 
          $attr->update(['name' => $request->name]);
+         Cache::clear();
 
          return response()->json([
              'status' => true,
@@ -203,6 +207,7 @@ class ProductAttributeController extends Controller
                  $variant->delete();
              }
              DB::commit();
+             Cache::clear();
              return response()->json(['status' => true]);
          } catch (QueryException $e) {
              DB::rollback();
@@ -279,7 +284,7 @@ class ProductAttributeController extends Controller
             ProductCombinationValue::whereIn('att_value_id',$attributeValuesToDelete)->delete();
 
             DB::commit();
-
+            Cache::clear();
             return response()->json([
                 'status' => true,
             ]);
@@ -345,6 +350,7 @@ class ProductAttributeController extends Controller
         }
 
         $variant->update(['name' => $request->name]);
+        Cache::clear();
 
         return response()->json([
             'status' => true,
@@ -437,6 +443,7 @@ class ProductAttributeController extends Controller
             ]);
 
             DB::commit();
+            Cache::clear();
 
             return response()->json(['status' => true]);
         } catch (QueryException $e) {
@@ -461,6 +468,7 @@ class ProductAttributeController extends Controller
         $combo->inventory()->delete();
 
         $combo->update(['is_active' => 0]);
+        Cache::clear();
 
         return response()->json([
             'status'    => true,
@@ -482,6 +490,7 @@ class ProductAttributeController extends Controller
         $combo->inventory()->restore();
 
         $combo->update(['is_active' => 1]);
+        Cache::clear();
 
         return response()->json([
             'status'    => true,

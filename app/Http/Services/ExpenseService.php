@@ -6,6 +6,7 @@ use App\Models\Expense;
 use App\Models\ExpenseCategory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class ExpenseService
 {
@@ -32,11 +33,15 @@ class ExpenseService
         ExpenseCategory::create([
             'name' => $request->name,
         ]);
+
+        Cache::delete('expenseCategories');
     }
 
     public function updateCategory(Request $request, $id): void
     {
         ExpenseCategory::findOrFail($id)->update(['name' => $request->name]);
+
+        Cache::delete('expenseCategories');
     }
 
     public function deleteCategory($id): bool
@@ -45,6 +50,7 @@ class ExpenseService
 
         if ($category->expences->count() == 0) {
             $category->delete();
+            Cache::delete('expenseCategories');
             return true;
         } else {
             return false;
@@ -60,6 +66,8 @@ class ExpenseService
             'event_date'            => $request->event_date,
             'description'           => $request->description
         ]);
+
+        Cache::delete('expenses');
     }
 
     public function updateExpense(Request $request, $id): void
@@ -71,11 +79,14 @@ class ExpenseService
             'event_date' => Carbon::parse($request->event_date),
             'description' => $request->description
         ]);
+
+        Cache::delete('expenses');
     }
 
     public function deleteExpense($id): void
     {
         $this->expense->clone()->findOrFail($id)->delete();
+        Cache::delete('expenses');
     }
 
     public function multipleCategoryDelete(Request $request): void
@@ -86,5 +97,6 @@ class ExpenseService
     public function multipleExpenseDelete(Request $request): void
     {
         $this->expense->clone()->whereIn('id',$request->ids)->delete();
+        Cache::delete('expenses');
     }
 }

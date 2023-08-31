@@ -8,6 +8,7 @@ use App\Http\Requests\CartBulkDeleteRequest;
 use App\Http\Requests\CartUpdateRequest;
 use App\Http\Services\CartService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class CartController extends Controller
@@ -43,7 +44,6 @@ class CartController extends Controller
             {
                 return response()->json([
                     'status' => true,
-//                'data'   => array('user_unique_id' => $response)
                 ], 201);
             }
             return response()->json([
@@ -169,17 +169,7 @@ class CartController extends Controller
             ], 422);
         }
 
-        $response = $this->service->addCartFromWishlist($request);
-
-        if ($response != 'user' && !request()->cookie('customer_unique_token')) {
-            return response()->json([
-                'status' => true,
-            ])->cookie('customer_unique_token', $response, 43200, null, null, false, false);
-        }
-
-        return response()->json([
-            'status' => true,
-        ]);
+        return $this->service->addCartFromWishlist($request);
     }
 
 }

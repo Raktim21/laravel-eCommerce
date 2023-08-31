@@ -5,13 +5,10 @@ namespace App\Http\Services;
 use App\Models\CustomerCart;
 use App\Models\Inventory;
 use App\Models\OrderAdditionalCharge;
-use App\Models\Product;
-use App\Models\UserAddress;
 use App\Models\Wishlist;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class CartService
 {
@@ -84,7 +81,6 @@ class CartService
         if ($user_cart) {
             $user_cart->product_quantity = $request->quantity;
             $user_cart->save();
-
             return true;
 
         }else {
@@ -102,7 +98,6 @@ class CartService
 
         if ($cart) {
             $cart->delete();
-
             return true;
         }else {
             return false;
@@ -145,11 +140,11 @@ class CartService
 
         foreach ($full_cart as $cart)
         {
-            $total_weight += $cart->product_quantity * $cart->productCombination->weight;
+//            $total_weight += $cart->product_quantity * $cart->productCombination->weight;
             $total_price  += $cart->product_quantity * $cart->productCombination->selling_price;
         }
 
-        return getDeliveryCharge($id , $total_weight, $total_price);
+        return getDeliveryCharge($id , $total_price);
     }
 
     public function convertToAuthCart(Request $request): void
@@ -182,53 +177,109 @@ class CartService
 
         $wishlist = Wishlist::where('secret_key', $request->wishlist_secret_key)->first();
 
-        if(auth()->guard('user-api')->check())
+        if(is_null($wishlist) || count($wishlist->items) == 0)
         {
-            foreach ($wishlist->items as $item) {
+            return response()->json([
+                'status' => false,
+                'errors' => ['Wishlist Not Found']
+            ], 404);
+        }
 
-                $is_valid = Inventory::where('product_combination_id', $item->product_combination_id)->where('stock_quantity', '>', 0)->exists();
+        $total_item = count($wishlist->items);
+        $added_item = 0;
 
-                if ($is_valid) {
-                    $exist_product = $this->cart->clone()->where('user_id', auth()->guard('user-api')->user()->id)->where('product_combination_id',$item->product_combination_id)->first();
+        DB::beginTransaction();
 
-                    if ($exist_product)
-                    {
-                        $exist_product->product_quantity += 1;
-                        $exist_product->save();
-                    } else {
-                        $this->cart->product_combination_id  = $item->product_combination_id;
-                        $this->cart->product_quantity        = 1;
-                        $this->cart->user_id                 = auth()->guard('user-api')->user()->id;
-                        $this->cart->save();
+        try {
+            if (auth()->guard('user-api')->check()) {
+                foreach ($wishlist->items as $item) {
+
+                    $is_valid = Inventory::where('product_combination_id', $item->product_combination_id)->where('stock_quantity', '>', 0)->exists();
+
+                    if ($is_valid) {
+                        $added_item += 1;
+                        $exist_product = $this->cart->clone()->where('user_id', auth()->guard('user-api')->user()->id)->where('product_combination_id', $item->product_combination_id)->first();
+
+                        if ($exist_product) {
+                            $exist_product->product_quantity += 1;
+                            $exist_product->save();
+                        } else {
+                            $this->cart->product_combination_id = $item->product_combination_id;
+                            $this->cart->product_quantity = 1;
+                            $this->cart->user_id = auth()->guard('user-api')->user()->id;
+                            $this->cart->save();
+                        }
                     }
                 }
-            }
-            return 'user';
-        } else {
-            foreach ($wishlist->items as $item) {
+                DB::commit();
 
-                $is_valid = Inventory::where('product_combination_id', $item->product_combination_id)->where('stock_quantity', '>', 0)->exists();
+                if($added_item == 0)
+                {
+                    return response()->json([
+                        'status' => false,
+                        'errors' => ['The items are currently not available.']
+                    ], 422);
+                } else {
+                    $s = $total_item . $total_item == 1 ? ' item has' : ' items have';
+                    return response()->json([
+                        'status' => true,
+                        'message'=> $total_item==$added_item ? 'All items have been added to cart.' : $added_item . ' out of ' . $s . ' been added to cart.'
+                    ]);
+                }
+            } else {
+                foreach ($wishlist->items as $item) {
 
-                if ($is_valid) {
-                    $exist_product = !is_null(request()->cookie('customer_unique_token')) ?
-                        $this->cart->clone()->where('guest_session_id', request()->cookie('customer_unique_token'))
-                            ->where('product_combination_id', $item->product_combination_id)->first() : null;
+                    $is_valid = Inventory::where('product_combination_id', $item->product_combination_id)->where('stock_quantity', '>', 0)->exists();
 
-                    if ($exist_product)
-                    {
-                        $exist_product->product_quantity += 1;
-                        $exist_product->save();
-                    }
-                    else
-                    {
-                        $this->cart->product_combination_id  = $item->product_combination_id;
-                        $this->cart->product_quantity        = 1;
-                        $this->cart->guest_session_id        = request()->cookie('customer_unique_token') ?? uniqid('GUEST-');
-                        $this->cart->save();
+                    if ($is_valid) {
+                        $added_item += 1;
+                        $exist_product = !is_null(request()->cookie('customer_unique_token')) ?
+                            $this->cart->clone()->where('guest_session_id', request()->cookie('customer_unique_token'))
+                                ->where('product_combination_id', $item->product_combination_id)->first() : null;
+
+                        if ($exist_product) {
+                            $exist_product->product_quantity += 1;
+                            $exist_product->save();
+                        } else {
+                            $this->cart->product_combination_id = $item->product_combination_id;
+                            $this->cart->product_quantity = 1;
+                            $this->cart->guest_session_id = request()->cookie('customer_unique_token') ?? uniqid('GUEST-');
+                            $this->cart->save();
+                        }
                     }
                 }
+                DB::commit();
+                if($added_item == 0)
+                {
+                    return response()->json([
+                        'status' => false,
+                        'errors' => ['The items are currently not available.']
+                    ], 422);
+                }
+                else if(is_null(request()->cookie('customer_unique_token')))
+                {
+                    $s = $total_item == 1 ? ' item has' : ' items have';
+                    return response()->json([
+                        'status'  => true,
+                        'message' => $total_item==$added_item ? 'All items have been added to cart.' : $added_item . ' out of ' . $total_item . $s . ' been added to cart.'
+                    ])->cookie('customer_unique_token', $this->cart->guest_session_id, 43200, null, null, false, false);
+                } else {
+                    $s = $total_item == 1 ? ' item has' : ' items have';
+
+                    return response()->json([
+                        'status' => true,
+                        'message'=> $total_item==$added_item ? 'All items have been added to cart.' : $added_item . ' out of ' . $total_item . $s . ' been added to cart.'
+                    ]);
+                }
             }
-            return request()->cookie('customer_unique_token') ? null : $this->cart->guest_session_id;
+        } catch(QueryException $ex)
+        {
+            DB::rollback();
+
+            return response()->json([
+                'status' => false,
+                'errors' => ['Something went wrong.']
+            ], 500);
         }
     }
 

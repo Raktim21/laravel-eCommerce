@@ -15,7 +15,5 @@ class FlashSaleObserver
         {
             Product::where('is_on_sale', 1)->update(['is_on_sale' => 0]);
         }
-
-        Cache::delete('flash_sale');
     }
 }

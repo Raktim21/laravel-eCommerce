@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\Ecommerce\GeneralSettingController;
 use App\Http\Controllers\Admin\Ecommerce\OrderController;
 use App\Http\Controllers\Admin\Ecommerce\ProductController;
 use App\Http\Controllers\Admin\Ecommerce\PromocodeController;
+use App\Http\Controllers\Admin\Ecommerce\SeoSettingController;
 use App\Http\Controllers\Admin\Ecommerce\SiteBannerController;
 use App\Http\Controllers\Admin\Ecommerce\SponsorController;
 use App\Http\Controllers\Admin\Ecommerce\SubCategoryController;
@@ -149,7 +150,9 @@ Route::group(['prefix' => 'admin'], function () {
         //Clear Cache
         Route::get('clear-cache',function(){
             Artisan::call('cache:clear');
-            return "Cache is cleared";
+            return response()->json([
+                'status' => true,
+            ]);
         });
 
         Route::get('change-language',function(){
@@ -287,7 +290,6 @@ Route::group(['prefix' => 'admin'], function () {
         });
 
         Route::get('subscriber-list',[SubscriberController::class, 'index'])->middleware('gzip');
-        Route::get('contact-us-list', [ContactController::class, 'index'])->middleware('gzip');
 
         Route::controller(SiteBannerController::class)->group(function () {
 
@@ -440,10 +442,19 @@ Route::group(['prefix' => 'admin'], function () {
 
         });
 
+        Route::controller(ContactController::class)->group(function () {
+
+            Route::group(['middleware' => ['permission:manage inbox']], function() {
+                Route::get('contact-us-list', 'index')->middleware('gzip');
+                Route::delete('contact-us-delete/{id}', 'destroy');
+            });
+
+        });
+
         Route::controller(AdminDashboardController::class)->group(function () {
 
             Route::get('dashboard','index')->middleware('gzip');
-            Route::get('global-data','global_data');
+            Route::get('global-data','pending_order_count');
         });
 
         Route::controller(ThemeSettingController::class)->group(function () {
@@ -504,7 +515,6 @@ Route::group(['prefix' => 'admin'], function () {
 
             Route::group(['middleware' => ['permission:create/update/delete billing']], function() {
                 Route::post('billing-cart-store', 'cartStore');
-                Route::delete('billing-cart-delete/{id}', 'cartDelete');
                 Route::get('convert-billing-to-order/{id}', 'convertBilling');
             });
         });
@@ -525,6 +535,13 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::post('static-menu-update/{id}', 'staticMenuUpdate');
                 Route::delete('static-menu-delete/{id}', 'staticMenuDelete');
                 Route::post('static-menu-status-change/{id}', 'staticMenuStatusChange');
+            });
+        });
+
+        Route::controller(SeoSettingController::class)->group(function () {
+            Route::group(['middleware' => ['permission:view/update seo setting']], function() {
+                Route::get('seo-setting', 'index')->middleware('gzip');
+                Route::post('seo-setting-update', 'update');
             });
         });
 
@@ -608,6 +625,7 @@ Route::group(['prefix' => 'user'], function () {
             Route::get('order-detail/{id}','orderDetail')->middleware('gzip');
             Route::post('user-product-review',  'postReview');
             Route::get('cancel-order/{id}', 'cancelOrder');
+            Route::get('available-promo-codes', 'getPromos')->middleware('gzip');
         });
 
         Route::get('order/invoice/{order_id}', [GenerateReportController::class, 'invoicePDF']);

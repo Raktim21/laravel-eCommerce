@@ -42,7 +42,7 @@ class OrderService
             $new_order = $this->order->newQuery()->create([
                 'shop_branch_id'             => auth()->guard('admin-api')->user()->shop_branch_id,
                 'user_id'               => $request->user_id,
-                'order_number'          => uniqid('ORD-'),
+                'order_number'          => 'ORD-' . implode('-', str_split(hexdec(uniqid()), 4)),
                 'order_status_id'       => $request->delivery_method_id == 2 ? 4 : 2,
                 'order_status_updated_by' => auth()->guard('admin-api')->user()->id,
                 'payment_method_id'     => 1,
@@ -79,7 +79,6 @@ class OrderService
             $new_order->update([
                 'sub_total_amount'      => $total,
                 'promo_discount'        => ($request->promo_discount * $total)/100,
-                'delivery_cost'         => $request->delivery_method_id == 1 ? getDeliveryCharge($request->delivery_address_id, $weight, $total) : 0
             ]);
 
             if($request->delivery_method_id == 1 && (new GeneralSettingService(new GeneralSetting()))->getSetting()->delivery_status == 1) {
@@ -97,7 +96,7 @@ class OrderService
 
     public function getData($id)
     {
-        return Order::with('items.reviews','paymentMethod','status',
+        return $this->order->clone()->with('items.reviews','paymentMethod','status',
             'deliveryMethod')
             ->with(['deliveryAddress' => function($q) {
                 return $q->withTrashed()->with('upazila.district.division.country','union');
@@ -117,7 +116,7 @@ class OrderService
 
     public function getOrderList($addedByAdmin)
     {
-        return $this->order->newQuery()
+        return $this->order->clone()
             ->when($addedByAdmin==true, function ($q) {
                 return $q->where('delivery_method_id', 2);
             })
@@ -157,6 +156,23 @@ class OrderService
             ->paginate(15)->appends(request()->except('page'));
     }
 
+    public function getUserOrder($user_id)
+    {
+        return $this->order->clone()->where('user_id', $user_id)->withCount('items')
+            ->when(request()->input('delivery_status')=='delivered', function ($q) {
+                return $q->where('order_status_id', 4);
+            })
+            ->join('users', 'orders.user_id', '=', 'users.id')
+            ->join('order_payment_methods', 'orders.payment_method_id', '=', 'order_payment_methods.id')
+            ->join('order_statuses', 'orders.order_status_id', '=', 'order_statuses.id')
+            ->join('order_payment_statuses', 'orders.payment_status_id', '=', 'order_payment_statuses.id')
+            ->join('order_delivery_methods', 'orders.delivery_method_id', '=', 'order_delivery_methods.id')
+            ->select('orders.*', 'users.name', 'order_statuses.name as order_status', 'order_payment_statuses.name as payment_status',
+                'order_payment_methods.name as payment_method', 'order_delivery_methods.name as shipping_method')
+            ->orderBy('orders.id', 'DESC')
+            ->get();
+    }
+
     public function paperFlyOrder($order, $weight): void
     {
         $client = new Client();
@@ -181,7 +197,7 @@ class OrderService
                     "pickupMerchantPhone"  => $pickup->phone,
                     "productSizeWeight"    => "standard",
                     "productBrief"         => $name,
-                    "packagePrice"         => $order->total_amount,
+                    "packagePrice"         => $order->total_amount + 2,
                     "max_weight"           => $weight.'kg',
                     "deliveryOption"       => "regular",
                     "custname"             => $order->user->name,
@@ -240,7 +256,7 @@ class OrderService
         try {
             $new_order = Order::create([
                 'user_id'                   => auth()->user()->id,
-                'order_number'              => uniqid('ORD-'),
+                'order_number'              => 'ORD-' . implode('-', str_split(hexdec(uniqid()), 4)),
                 'payment_method_id'         => $request->payment_method_id,
                 'delivery_method_id'        => 1,
                 'delivery_address_id'       => $request->delivery_address_id,
@@ -294,7 +310,6 @@ class OrderService
             $new_order->update([
                 'sub_total_amount'      => $total,
                 'promo_discount'        => $discount,
-                'delivery_cost'         => getDeliveryCharge($request->delivery_address_id, $weight, $total)
             ]);
 
             DB::commit();
@@ -351,9 +366,9 @@ class OrderService
                 'phone_no'                  => $request->phone_no
             ]);
 
-            $new_order = Order::create([
+            $new_order = $this->order->clone()->create([
                 'user_id'                   => $user->id,
-                'order_number'              => uniqid('ORD-'),
+                'order_number'              => 'ORD-' . implode('-', str_split(hexdec(uniqid()), 4)),
                 'payment_method_id'         => $request->payment_method_id,
                 'delivery_method_id'        => $request->delivery_method_id,
                 'delivery_address_id'       => $address->id,
@@ -400,7 +415,6 @@ class OrderService
             $new_order->update([
                 'sub_total_amount'      => $total,
                 'promo_discount'        => $discount,
-                'delivery_cost'         => getDeliveryCharge($address->id, $weight, $total)
             ]);
 
             DB::commit();
@@ -417,7 +431,7 @@ class OrderService
 
     public function getCharges()
     {
-        return OrderAdditionalCharge::all();
+        return OrderAdditionalCharge::get();
     }
 
     public function storeOrderCharges(Request $request)

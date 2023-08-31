@@ -10,6 +10,7 @@ use App\Http\Services\PromoCodeService;
 use App\Models\PromoCode;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class PromocodeController extends Controller
@@ -23,9 +24,11 @@ class PromocodeController extends Controller
     }
 
 
-    public function index()
+    public function index(): \Illuminate\Http\JsonResponse
     {
-        $data = $this->service->getList();
+        $data = Cache::remember('promoCodeList'.request()->get('page', 1), 24*60*60, function () {
+            return $this->service->getList();
+        });
 
         return response()->json([
             'status' => true,
@@ -34,7 +37,7 @@ class PromocodeController extends Controller
     }
 
 
-    public function store(PromoCreateRequest $request)
+    public function store(PromoCreateRequest $request): \Illuminate\Http\JsonResponse
     {
         if($this->service->store($request))
         {
@@ -50,7 +53,21 @@ class PromocodeController extends Controller
         }
     }
 
-    public function update(PromoUpdateRequest $request, $id)
+
+    public function detail($id): \Illuminate\Http\JsonResponse
+    {
+        $data = Cache::remember('promoCodeDetail'.$id, 24*60*60, function () use ($id) {
+            return $this->service->get($id);
+        });
+
+        return response()->json([
+            'status' => true,
+            'data' => $data
+        ], is_null($data) ? 204 : 200);
+    }
+
+
+    public function update(PromoUpdateRequest $request, $id): \Illuminate\Http\JsonResponse
     {
         $this->service->update($request, $id);
         return response()->json([
@@ -58,22 +75,11 @@ class PromocodeController extends Controller
         ]);
     }
 
-    public function updateStatus($id)
+    public function updateStatus($id): \Illuminate\Http\JsonResponse
     {
         $this->service->updateStatus($id);
         return response()->json([
             'status' => true,
         ]);
-    }
-
-
-    public function detail($id)
-    {
-        $data = $this->service->get($id);
-
-        return response()->json([
-            'status' => true,
-            'data' => $data
-        ], is_null($data) ? 204 : 200);
     }
 }

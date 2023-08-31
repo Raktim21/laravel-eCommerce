@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class Expense extends Model
 {
@@ -22,57 +23,20 @@ class Expense extends Model
         return $this->belongsTo(ExpenseCategory::class, 'expense_category_id');
     }
 
-
-
-    public function scopeSearch($query)
+    public static function boot()
     {
-        $title       = request()->title;
-        $category_id = request()->expence_category_id;
-        $minAmount   = request()->min_amount;
-        $maxAmount   = request()->max_amount;
-        $startDate   = request()->start_date;
-        $endDate     = request()->end_date;
+        parent::boot();
 
-        if ($title && $title != 'null') {
-            $query->where('title', 'LIKE', "%{$title}%");
-        }
+        static::created(function ($expense) {
+            forgetCaches('expenseList');
+        });
 
-        if ($category_id && $category_id != 'null') {
-            $query->where('expence_category_id', $category_id);
-        }
+        static::updated(function ($expense) {
+            forgetCaches('expenseList');
+        });
 
-
-
-        if ($minAmount != 'null' && $maxAmount != 'null') {
-            if($minAmount || $maxAmount){
-                if ($minAmount && !$maxAmount) {
-                    $query->where('amount', '>=', $minAmount);
-                }elseif (!$minAmount && $maxAmount) {
-                    $query->where('amount', '<=', $maxAmount);
-                }else {
-                    $query->whereBetween('amount', [$minAmount, $maxAmount]);
-                }
-            }
-        }
-
-
-
-        if ($startDate != 'null' && $endDate != 'null') {
-            if($startDate || $endDate){
-                if ($startDate && !$endDate) {
-                    $query->where('date', '>=', Carbon::parse($startDate));
-                }elseif (!$startDate && $endDate) {
-                    $query->where('date', '<=', Carbon::parse($endDate)->addHours(23)->addMinutes(59)->addSeconds(59));
-                }else {
-                    $query->whereBetween('date', [Carbon::parse($startDate), Carbon::parse($endDate)->addHours(23)->addMinutes(59)->addSeconds(59)]);
-                }
-            }
-        }
-
-
-
-
-        return $query;
-
+        static::deleted(function ($expense) {
+            forgetCaches('expenseList');
+        });
     }
 }

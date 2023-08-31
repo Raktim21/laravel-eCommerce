@@ -18,7 +18,6 @@ class PromoCodeObserver
             foreach ($exist_users as $user)
             {
                 $psid = $user->user->profile->messenger_psid;
-
                 if(!is_null($psid))
                 {
                     $payload = array(
@@ -26,6 +25,8 @@ class PromoCodeObserver
                         'page_id'           => (new GeneralSettingService(new GeneralSetting()))->getSetting()->facebook_page_id,
                         'coupon_code'       => $code->code,
                         'title'             => $code->title,
+                        'description'       => $code->is_global_product == 1 ? 'Applicable for all products.' :
+                            'Applicable for specific products only.'
                     );
 
                     sendMessengerResponse($payload, 'offers');

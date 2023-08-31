@@ -69,6 +69,8 @@ class OrderStatusCommand extends Command
 
 
                 } catch (\Exception $e) {
+
+                    
                 }
             }
         }

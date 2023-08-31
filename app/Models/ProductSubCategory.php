@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class ProductSubCategory extends Model
 {
@@ -19,10 +20,34 @@ class ProductSubCategory extends Model
     {
         parent::boot();
 
+        static::created(function ($sub_category) {
+            Cache::delete('subCategories'.$sub_category->category_id);
+            Cache::delete('all_categories');
+            Cache::delete('sub_categories'.$sub_category->category_id);
+        });
+
+        static::updated(function ($sub_category) {
+            Cache::delete('subCategories'.$sub_category->category_id);
+            Cache::delete('all_categories');
+            Cache::delete('sub_categories'.$sub_category->category_id);
+
+            foreach ($sub_category->products as $item)
+            {
+                Cache::delete('product_detail_'.$item->id);
+                Cache::delete('productDetail'.$item->id);
+            }
+        });
+
         static::deleting(function($sub_category) {
             Product::withTrashed()->where('category_sub_id',$sub_category->id)->update([
                 'category_sub_id' => null,
             ]);
+        });
+
+        static::deleted(function ($sub_category) {
+            Cache::delete('subCategories'.$sub_category->category_id);
+            Cache::delete('all_categories');
+            Cache::delete('sub_categories'.$sub_category->category_id);
         });
     }
 

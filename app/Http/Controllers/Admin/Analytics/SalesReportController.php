@@ -7,6 +7,7 @@ use App\Http\Requests\DateRequest;
 use App\Http\Requests\YearRequest;
 use App\Http\Services\ReportService;
 use App\Models\Product;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class SalesReportController extends Controller
@@ -19,9 +20,11 @@ class SalesReportController extends Controller
     }
 
 
-    public function generalReport()
+    public function generalReport(): \Illuminate\Http\JsonResponse
     {
-        $data = $this->service->getGeneralData();
+        $data = Cache::remember('generalReport', 60*60, function () {
+            return $this->service->getGeneralData();
+        });
 
         return response()->json([
             'status' => true,
@@ -30,20 +33,13 @@ class SalesReportController extends Controller
     }
 
 
-    public function mostViewedProducts()
+    public function newUsers(YearRequest $request): \Illuminate\Http\JsonResponse
     {
-        $data = $this->service->getProducts();
+        $year = $request->year ?? date('Y');
 
-        return response()->json([
-            'status' => true,
-            'data' => $data
-        ], is_null($data) ? 204 : 200);
-    }
-
-
-    public function newUsers(YearRequest $request)
-    {
-        $data = $this->service->getUsers($request->year ?? date('Y'));
+        $data = Cache::remember('newUsers'.$year, 60*60, function () use ($year) {
+            return $this->service->getUsers($year);
+        });
 
         return response()->json([
             'status'  => true,
@@ -52,9 +48,11 @@ class SalesReportController extends Controller
     }
 
 
-    public function mostPurchasedUsers(DateRequest $request)
+    public function mostPurchasedUsers(DateRequest $request): \Illuminate\Http\JsonResponse
     {
-        $data = $this->service->getMostActiveUsers($request);
+        $data = Cache::remember('activeUsers'.$request->start_date.$request->end_date, 60*60, function () use ($request) {
+            return $this->service->getMostActiveUsers($request);
+        });
 
         return response()->json([
             'status' => true,
@@ -63,9 +61,11 @@ class SalesReportController extends Controller
     }
 
 
-    public function mostSoldProducts(DateRequest $request)
+    public function mostOrderedCategories(DateRequest $request): \Illuminate\Http\JsonResponse
     {
-        $data = $this->service->soldProducts($request);
+        $data = Cache::remember('mostOrderedCategories'.$request->start_date.$request->end_date, 60*60, function () use ($request) {
+            return $this->service->orderedCategories($request);
+        });
 
         return response()->json([
             'status' => true,
@@ -74,7 +74,48 @@ class SalesReportController extends Controller
     }
 
 
-    public function productReport(DateRequest $request, $product_id)
+    public function mostViewedProducts(): \Illuminate\Http\JsonResponse
+    {
+        $data = Cache::remember('mostViewedProducts', 60*60, function () {
+            return $this->service->getProducts();
+        });
+
+        return response()->json([
+            'status' => true,
+            'data' => $data
+        ], is_null($data) ? 204 : 200);
+    }
+
+
+    public function mostSoldProducts(DateRequest $request): \Illuminate\Http\JsonResponse
+    {
+        $data = Cache::remember('mostSoldProducts'.$request->start_date.$request->end_date, 60*60, function () use ($request) {
+            return $this->service->soldProducts($request);
+        });
+
+        return response()->json([
+            'status' => true,
+            'data' => $data
+        ]);
+    }
+
+
+    public function salesData(YearRequest $request): \Illuminate\Http\JsonResponse
+    {
+        $year = $request->year ?? date('Y');
+
+        $data = Cache::remember('salesData'.$year, 60*60, function () use ($year) {
+            return $this->service->sales($year);
+        });
+
+        return response()->json([
+            'status'  => true,
+            'data' => $data
+        ]);
+    }
+
+
+    public function productReport(DateRequest $request, $product_id): \Illuminate\Http\JsonResponse
     {
         $data = $this->service->productData($request, $product_id);
 
@@ -82,27 +123,5 @@ class SalesReportController extends Controller
             'status' => true,
             'data' => $data
         ], is_null($data) ? 204 : 200);
-    }
-
-
-    public function salesData(YearRequest $request)
-    {
-        $data = $this->service->sales($request->year ?? date('Y'));
-
-        return response()->json([
-            'status'  => true,
-            'data' => $data
-        ]);
-    }
-
-
-    public function mostOrderedCategories(DateRequest $request)
-    {
-        $data = $this->service->orderedCategories($request);
-
-        return response()->json([
-            'status' => true,
-            'data' => $data
-        ]);
     }
 }

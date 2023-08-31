@@ -4,27 +4,30 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class FlashSale extends Model
 {
     use HasFactory;
-    
+
     protected $guarded = ['id','created_at','updated_at'];
 
     protected $hidden = ['created_at', 'updated_at'];
 
-    public function scopeSearch($query){
+    public static function boot()
+    {
+        parent::boot();
 
-        $name       = request()->name;
-        $start_date = request()->start_date;
-        $end_date   = request()->end_date;
+        static::created(function ($sale) {
+            Cache::delete('flash_sale');
+            Cache::delete('flashSale');
+            Cache::delete('productOnSale');
+        });
 
-        return  $query->when($name,function($query,$name){
-                    return $query->where('name','like','%'.$name.'%');
-                })->when($start_date,function($query,$start_date){
-                    return $query->whereDate('start_date','>=',$start_date);
-                })->when($end_date,function($query,$end_date){
-                    return $query->whereDate('end_date','<=',$end_date);
-                });
+        static::updated(function ($sale) {
+            Cache::delete('flash_sale');
+            Cache::delete('flashSale');
+            Cache::delete('productOnSale');
+        });
     }
 }

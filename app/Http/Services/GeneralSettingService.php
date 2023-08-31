@@ -4,7 +4,7 @@ namespace App\Http\Services;
 
 use App\Models\GeneralSetting;
 use Illuminate\Http\Request;
-use Mews\Purifier\Facades\Purifier;
+use Illuminate\Support\Facades\Cache;
 
 class GeneralSettingService
 {
@@ -63,8 +63,9 @@ class GeneralSettingService
             deleteFile($this->setting->site_favicon);
             saveImage($request->file('favicon'), '/uploads/images/general-setting/', $this->setting, 'favicon');
         }
+        Cache::delete('generalSetting');
+        Cache::delete('general');
     }
-
 
 
     public function getDeliveryStatus()
@@ -76,5 +77,7 @@ class GeneralSettingService
     {
         $this->setting->delivery_status = $request->delivery_status;
         $this->setting->save();
+        Cache::delete('orderStatuses');
+        Cache::delete('deliveryStatus');
     }
 }

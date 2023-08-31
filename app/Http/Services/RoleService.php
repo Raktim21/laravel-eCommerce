@@ -3,7 +3,6 @@
 namespace App\Http\Services;
 
 use App\Http\Requests\RoleUpdateRequest;
-use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -45,6 +44,6 @@ class RoleService
 
     public function permissions()
     {
-        return Permission::all();
+        return Permission::get();
     }
 }

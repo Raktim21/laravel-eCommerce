@@ -3,6 +3,7 @@
 use App\Http\Controllers\System\CroneController;
 use App\Http\Controllers\System\GoogleFacebookController;
 use Illuminate\Support\Facades\Route;
+use GuzzleHttp\Client;
 
 /*
 |--------------------------------------------------------------------------

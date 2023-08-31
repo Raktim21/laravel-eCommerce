@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Ecommerce;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FlashSaleCreateRequest;
 use App\Http\Services\FlashSaleService;
+use Illuminate\Support\Facades\Cache;
 
 class FlashSaleController extends Controller
 {
@@ -17,7 +18,9 @@ class FlashSaleController extends Controller
 
     public function index(): \Illuminate\Http\JsonResponse
     {
-        $data = $this->service->getSale();
+        $data = Cache::remember('flashSale', 60*60*24, function () {
+            return $this->service->getSale();
+        });
 
         return response()->json([
             'status' => true,
@@ -43,8 +46,13 @@ class FlashSaleController extends Controller
 
     public function changeStatus()
     {
-        $this->service->updateSaleStatus();
-
-        return response()->json(['status' => true]);
+        if($this->service->updateSaleStatus())
+        {
+            return response()->json(['status' => true]);
+        }
+        return response()->json([
+            'status' => false,
+            'errors' => ['Flash sale cannot be activated due to exceeding time limit.']
+        ], 422);
     }
 }

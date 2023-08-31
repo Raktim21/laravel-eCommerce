@@ -9,6 +9,7 @@ use App\Http\Requests\AvatarUpdateRequest;
 use App\Http\Requests\PickupAddressRequest;
 use App\Http\Requests\UserProfileUpdateRequest;
 use App\Http\Services\UserService;
+use Illuminate\Support\Facades\Cache;
 
 class AdminController extends Controller
 {
@@ -49,7 +50,9 @@ class AdminController extends Controller
 
     public function adminDetail($id): \Illuminate\Http\JsonResponse
     {
-        $data = $this->service->show($id, true);
+        $data = Cache::remember('adminDetail'.$id, 24*60*60, function () use ($id) {
+            return $this->service->show($id, true);
+        });
 
         if($data && is_null($data['shop_branch_id']))
         {
@@ -73,9 +76,7 @@ class AdminController extends Controller
         return response()->json([
             'status'  => true,
         ]);
-
     }
-
 
 
     public function adminUpdateAvatar(AvatarUpdateRequest $request, $id)
@@ -107,7 +108,9 @@ class AdminController extends Controller
 
     public function pickUpAddress()
     {
-        $data = $this->service->adminAddress();
+        $data = Cache::remember('pickupAddress', 60*60*24, function () {
+            return $this->service->adminAddress();
+        });
 
         return response()->json([
             'status'  => true,

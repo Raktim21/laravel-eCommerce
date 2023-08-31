@@ -17,9 +17,9 @@ use Illuminate\Support\Facades\DB;
 
 class AdminDashboardController extends Controller
 {
-    public function index()
+    public function index(): \Illuminate\Http\JsonResponse
     {
-        $data = Cache::remember('admin_dashboard_data', 60*60*24, function () {
+        $data = Cache::remember('adminDashboardData', 60*30, function () {
 
             $admin_model     = User::query()->role(['Super Admin', 'Merchant']);
 
@@ -127,11 +127,15 @@ class AdminDashboardController extends Controller
         ], is_null($data) ? 204 : 200);
     }
 
-    public function global_data()
+    public function pending_order_count(): \Illuminate\Http\JsonResponse
     {
+        $data = Cache::remember('pendingOrders', 60*5, function () {
+            return Order::where('order_status_id', 1)->count();
+        });
+
         return response()->json([
             'status'    => true,
-            'data'      => Order::where('order_status_id', 1)->count(),
+            'data'      => $data,
         ]);
     }
 }

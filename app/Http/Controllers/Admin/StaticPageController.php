@@ -8,18 +8,29 @@ use App\Models\StaticMenu;
 use App\Models\StaticMenuType;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
+use Mews\Purifier\Facades\Purifier;
 
 class StaticPageController extends Controller
 {
 
-    public function staticContent(){
-
-        $data = StaticContent::search()->latest()->paginate(10);
+    public function staticContent()
+    {
+        if(\request()->input('is_paginated'))
+        {
+            $data = Cache::remember('staticContents', 24 * 60 * 60 * 7, function () {
+                return StaticContent::latest()->get();
+            });
+        }
+        else {
+            $data = Cache::remember('staticContentList'.request()->get('page', 1), 24 * 60 * 60 * 7, function () {
+                return StaticContent::latest()->paginate(10);
+            });
+        }
 
         return response()->json([
-           'success' => true,
+           'status' => true,
            'data' => $data
         ]);
     }
@@ -34,36 +45,38 @@ class StaticPageController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'success' => false,
-                'message' => $validator->errors()->all()
+                'status' => false,
+                'errors' => $validator->errors()->all()
             ],422);
         }
 
-        $data = new StaticContent();
-        $data->title = $request->title;
-        $data->description = $request->description;
-        $data->save();
+        StaticContent::create([
+            'title'         => $request->title,
+            'description'   => Purifier::clean($request->description)
+        ]);
 
         return response()->json([
-            'success' => true,
-            'message' => 'Menu content created successfully.'
-        ],200);
+            'status' => true,
+        ],201);
     }
 
 
 
-    public function staticContentDetail($id){
-        $data = StaticContent::find($id);
+    public function staticContentDetail($id)
+    {
+        $data = Cache::remember('staticContent'.$id, 60*60*24*7, function () use ($id) {
+            return StaticContent::find($id);
+        });
 
         return response()->json([
-            'success' => true,
-            'data' => $data
+            'status' => true,
+            'data'   => $data
         ],is_null($data) ? 204 : 200);
     }
 
 
-    public function staticContentUpdate(Request $request,$id){
-
+    public function staticContentUpdate(Request $request,$id)
+    {
         $validator = Validator::make($request->all(), [
             'title'       => 'required|string|max:500|min:3',
             'description' => 'required',
@@ -71,8 +84,8 @@ class StaticPageController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'success' => false,
-                'message' => $validator->errors()->all()
+                'status' => false,
+                'errors' => $validator->errors()->all()
             ],422);
         }
 
@@ -80,32 +93,32 @@ class StaticPageController extends Controller
 
         if (!$data) {
             return response()->json([
-                'success' => false,
-                'message' => 'Menu content not found.'
+                'status' => false,
+                'errors' => ['Menu content not found.']
             ],404);
         }
 
         if ($data->is_updatable == 0) {
 
             return response()->json([
-                'success' => false,
-                'message' => 'You can not update this content.'
-            ],404);
+                'status' => false,
+                'errors' => ['You can not update this content.']
+            ],400);
         }
 
-        $data->title = $request->title;
-        $data->description = $request->description;
-        $data->save();
+        $data->update([
+            'title'         => $request->title,
+            'description'   => Purifier::clean($request->description)
+        ]);
 
         return response()->json([
-            'success' => true,
-            'message' => 'Menu content updated successfully.'
+            'status' => true,
         ]);
     }
 
 
-    public function staticContentDelete($id){
-
+    public function staticContentDelete($id)
+    {
         $data = StaticContent::find($id);
 
         if (!$data) {
@@ -141,21 +154,30 @@ class StaticPageController extends Controller
     }
 
 
-    public function staticMenu(){
-
-        $data = StaticMenu::with('staticContent','staticMenuType')->latest()->paginate(10);
+    public function staticMenu(): \Illuminate\Http\JsonResponse
+    {
+        if(request()->input('is_paginated'))
+        {
+            $data = Cache::remember('staticMenus', 24 * 60 * 60 * 7, function () {
+                return StaticMenu::with('staticContent','staticMenuType')->latest()->get();
+            });
+        } else {
+            $data = Cache::remember('staticMenuList'.request()->get('page', 1), 24*60*60*7, function () {
+                return StaticMenu::with('staticContent','staticMenuType')->latest()->paginate(10);
+            });
+        }
 
         return response()->json([
            'status' => true,
            'data'   => $data
-        ], $data->isEmpty() ? 204 : 200);
+        ]);
     }
 
 
-    public function staticMenuStore(Request $request){
-
+    public function staticMenuStore(Request $request)
+    {
         $validator = Validator::make($request->all(), [
-            'menu_name'           => 'required|string|max:200|min:3',
+            'menu_name'           => 'required|string|max:200|min:3|unique:static_menus,menu_name',
             'parent_menu_id'      => 'nullable|exists:static_menus,id',
             'static_contents_id'  => 'required|exists:static_contents,id',
             'static_menu_type_id' => 'required|exists:static_menu_types,id',
@@ -163,18 +185,17 @@ class StaticPageController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'success' => false,
-                'message' => $validator->errors()->all()
+                'status' => false,
+                'errors' => $validator->errors()->all()
             ],422);
         }
 
-
-        $data = new StaticMenu();
-        $data->menu_name = $request->menu_name;
-        $data->parent_menu_id = $request->parent_menu_id;
-        $data->static_contents_id = $request->static_contents_id;
-        $data->static_menu_type_id = $request->static_menu_type_id;
-        $data->save();
+        StaticMenu::create([
+            'menu_name'             => $request->menu_name,
+            'parent_menu_id'        => $request->parent_menu_id,
+            'static_contents_id'    => $request->static_contents_id,
+            'static_menu_type_id'   => $request->static_menu_type_id
+        ]);
 
         return response()->json([
             'status' => true,
@@ -182,18 +203,21 @@ class StaticPageController extends Controller
     }
 
 
-    public function staticMenuDetail($id){
-        $data = StaticMenu::with('staticContent')->find($id);
+    public function staticMenuDetail($id)
+    {
+        $data = Cache::remember('staticMenuDetail'.$id, 24*60*60*7, function () use ($id) {
+            return StaticMenu::with('staticContent')->find($id);
+        });
 
         return response()->json([
-            'success' => true,
+            'status' => true,
             'data' => $data
         ], is_null($data) ? 204 : 200);
     }
 
 
-    public function staticMenuUpdate(Request $request,$id){
-
+    public function staticMenuUpdate(Request $request,$id)
+    {
         $validator = Validator::make($request->all(), [
             'menu_name'           => 'required|string|max:200|min:3',
             'parent_menu_id'      => 'nullable|exists:static_menus,id',
@@ -203,8 +227,8 @@ class StaticPageController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'success' => false,
-                'message' => $validator->errors()->all()
+                'status' => false,
+                'errors' => $validator->errors()->all()
             ],422);
         }
 
@@ -222,14 +246,15 @@ class StaticPageController extends Controller
             return response()->json([
                 'status' => false,
                 'errors' => ['You can not update this Menu.']
-            ],404);
+            ],400);
         }
 
-        $data->menu_name           = $request->menu_name;
-        $data->parent_menu_id      = $request->parent_menu_id ?? null;
-        $data->static_contents_id  = $request->static_contents_id;
-        $data->static_menu_type_id = $request->static_menu_type_id;
-        $data->save();
+        $data->update([
+            'menu_name'             => $request->menu_name,
+            'parent_menu_id'        => $request->parent_menu_id ?? null,
+            'static_contents_id'    => $request->static_contents_id,
+            'static_menu_type_id'   => $request->static_menu_type_id
+        ]);
 
         return response()->json([
             'status' => true,
@@ -237,8 +262,8 @@ class StaticPageController extends Controller
     }
 
 
-    public function staticMenuDelete($id){
-
+    public function staticMenuDelete($id)
+    {
         $data = StaticMenu::find($id);
 
         if (!$data) {
@@ -252,7 +277,7 @@ class StaticPageController extends Controller
 
             return response()->json([
                 'status' => false,
-                'errors' => ['You can not delete this Menu.']
+                'errors' => ['You can not delete this menu.']
             ],400);
         }
 
@@ -266,8 +291,8 @@ class StaticPageController extends Controller
         {
             return response()->json([
                 'status' => false,
-                'errors' => ['S']
-            ]);
+                'errors' => ['You can not delete this menu.']
+            ], 400);
         }
 
     }
@@ -275,25 +300,27 @@ class StaticPageController extends Controller
 
     public function staticMenuTypes()
     {
-        $data = StaticMenuType::latest()->get();
+        $data = Cache::rememberForever('staticMenuTypes', function() {
+            return StaticMenuType::get();
+        });
 
         return response()->json([
            'status' => true,
            'data'    => $data,
-        ],count($data)==0 ? 204 : 200);
+        ]);
     }
 
 
-    public function staticMenuStatusChange(Request $request,$id){
-
+    public function staticMenuStatusChange(Request $request,$id)
+    {
         $validator = Validator::make($request->all(), [
             'status' => 'required|in:0,1',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'success' => false,
-                'message' => $validator->errors()->all()
+                'status' => false,
+                'errors' => $validator->errors()->all()
             ],422);
         }
 
@@ -311,9 +338,7 @@ class StaticPageController extends Controller
 
         return response()->json([
             'status' => true,
-            'message' => 'Menu status updated successfully.'
-        ],200);
-        
+        ]);
     }
 
 }

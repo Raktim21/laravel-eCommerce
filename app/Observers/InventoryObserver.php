@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Inventory;
 use App\Models\ProductRestockRequest;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 
 class InventoryObserver
@@ -16,6 +17,7 @@ class InventoryObserver
 
     public function updated(Inventory $inventory)
     {
+        Cache::clear();
         if($inventory->stock_quantity > $this->previous_quantity)
         {
             $requests = ProductRestockRequest::where('product_id', $inventory->combination->product_id)

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class ExpenseCategory extends Model
 {
@@ -15,21 +16,26 @@ class ExpenseCategory extends Model
 
     protected $hidden = ['created_at','updated_at'];
 
-    public function expences()
+    public function expenses()
     {
         return $this->hasMany(Expense::class, 'expense_category_id');
     }
 
-    public function scopeSearch($query)
+    public static function boot()
     {
-        $name       = request()->name;
+        parent::boot();
 
-        if ($name && $name != 'null') {
-            $query->where('name', 'LIKE', "%{$name}%");
-        }
+        static::created(function ($cat) {
+            Cache::delete('expenseCategories');
+        });
 
-        return $query;
+        static::updated(function ($cat) {
+            Cache::delete('expenseCategories');
+            forgetCaches('expenseList');
+        });
 
+        static::deleted(function ($cat) {
+            Cache::delete('expenseCategories');
+        });
     }
-
 }

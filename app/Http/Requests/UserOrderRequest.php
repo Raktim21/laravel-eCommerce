@@ -98,7 +98,7 @@ class UserOrderRequest extends FormRequest
             'payment_method_id.required'   => 'Please select a payment method',
             'delivery_method_id.required'  => 'Please select a shipping method',
             'delivery_address_id.required' => 'Please select a shipping address',
-            'delivery_remarks.string'        => 'Please enter a valid delivery notes',
+            'delivery_remarks.string'      => 'Please enter a valid delivery notes',
         ];
     }
 

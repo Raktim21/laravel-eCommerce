@@ -25,7 +25,7 @@ class GeneralSettingController extends Controller
 
     public function detail()
     {
-        $data = Cache::remember('general', 24*60*60, function () {
+        $data = Cache::remember('generalSetting', 24*60*60*7, function () {
             return $this->service->getSetting();
         });
 
@@ -39,7 +39,6 @@ class GeneralSettingController extends Controller
     public function update(GeneralSettingRequest $request): \Illuminate\Http\JsonResponse
     {
         $this->service->updateSetting($request);
-        Cache::forget('general');
 
         return response()->json([
             'status'  => true,
@@ -49,7 +48,9 @@ class GeneralSettingController extends Controller
 
     public function deliveryStatus()
     {
-        $data = $this->service->getDeliveryStatus();
+        $data = Cache::remember('deliveryStatus', 60*60*24*7, function () {
+            return $this->service->getDeliveryStatus();
+        });
 
         return response()->json([
             'status'  => true,
@@ -70,7 +71,7 @@ class GeneralSettingController extends Controller
 
     public function faqList(): \Illuminate\Http\JsonResponse
     {
-        $data = Cache::remember('faqs', 24*60*60, function () {
+        $data = Cache::remember('faqs', 24*60*60*7, function () {
             return (new AssetService())->getFaqs();
         });
 
@@ -95,7 +96,6 @@ class GeneralSettingController extends Controller
         }
 
         (new AssetService())->storeFAQ($request);
-        Cache::forget('faqs');
 
         return response()->json([
             'status'    => true,
@@ -117,7 +117,6 @@ class GeneralSettingController extends Controller
         }
 
         (new AssetService())->updateFAQ($request, $id);
-        Cache::forget('faqs');
 
         return response()->json([
             'status'    => true,
@@ -127,7 +126,6 @@ class GeneralSettingController extends Controller
     public function faqDelete($id)
     {
         (new AssetService())->deleteFAQ($id);
-        Cache::forget('faqs');
 
         return response()->json([
             'status'    => true,
@@ -149,7 +147,6 @@ class GeneralSettingController extends Controller
         }
 
         (new AssetService())->orderFAQ($request);
-        Cache::forget('faqs');
 
         return response()->json([
             'status'    => true,

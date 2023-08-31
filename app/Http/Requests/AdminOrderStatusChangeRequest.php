@@ -27,7 +27,7 @@ class AdminOrderStatusChangeRequest extends FormRequest
     public function rules()
     {
         return [
-            'status'            => 'required|exists:order_statuses,id|not_in:4',
+            'status'            => 'required|exists:order_statuses,id',
             'shop_branch_id'    => 'required|exists:shop_branches,id',
             'merchant_remarks'  => 'sometimes|string|max:490'
         ];

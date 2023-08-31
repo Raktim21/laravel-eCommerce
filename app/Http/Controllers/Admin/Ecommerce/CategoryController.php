@@ -20,19 +20,18 @@ class CategoryController extends Controller
     }
 
 
-
-    public function index()
+    public function index(): \Illuminate\Http\JsonResponse
     {
-        $data = $this->service->getAll(request()->input('is_paginated') ?? 1, true);
+        $data = $this->service->getAll(!request()->input('is_paginated'), true);
 
         return response()->json([
             'status' => true,
             'data'   => $data
-        ], $data->isEmpty() ? 204 : 200);
+        ]);
     }
 
 
-    public function store(CategoryStoreRequest $request)
+    public function store(CategoryStoreRequest $request): \Illuminate\Http\JsonResponse
     {
         $this->service->store($request);
 
@@ -42,7 +41,7 @@ class CategoryController extends Controller
     }
 
 
-    public function update(CategoryUpdateRequest $request, $id)
+    public function update(CategoryUpdateRequest $request, $id): \Illuminate\Http\JsonResponse
     {
         $this->service->update($request, $id);
 
@@ -52,21 +51,7 @@ class CategoryController extends Controller
     }
 
 
-    public function destroy($id)
-    {
-        if($this->service->delete($id)) {
-            return response()->json([
-                'status' => true,
-            ]);
-        }
-        return response()->json([
-            'status' => false,
-            'errors' => ['Selected category cannot be deleted.']
-        ], 400);
-    }
-
-
-    public function reorder(ReOrderRequest $request)
+    public function reorder(ReOrderRequest $request): \Illuminate\Http\JsonResponse
     {
         $this->service->shuffleCategories($request);
 
@@ -83,6 +68,20 @@ class CategoryController extends Controller
         return response()->json([
             'status'  => true,
         ]);
+    }
+
+
+    public function destroy($id): \Illuminate\Http\JsonResponse
+    {
+        if($this->service->delete($id)) {
+            return response()->json([
+                'status' => true,
+            ]);
+        }
+        return response()->json([
+            'status' => false,
+            'errors' => ['Selected category cannot be deleted.']
+        ], 400);
     }
 
 

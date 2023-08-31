@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class PromoCode extends Model
 {
@@ -28,5 +29,20 @@ class PromoCode extends Model
     public function users()
     {
         return $this->belongsToMany(User::class, 'promo_users', 'promo_id');
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($code) {
+            forgetCaches('promoCodeList');
+            forgetCaches('customer_promo');
+        });
+
+        static::updated(function ($code) {
+            forgetCaches('promoCodeList');
+            Cache::delete('promoCodeDetail'.$code->id);
+        });
     }
 }

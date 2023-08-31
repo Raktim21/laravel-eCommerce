@@ -10,6 +10,7 @@ use App\Models\Expense;
 use App\Models\ExpenseCategory;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class ExpenseController extends Controller
@@ -22,9 +23,12 @@ class ExpenseController extends Controller
     }
 
 
-    public function categoryIndex()
+    public function categoryIndex(): \Illuminate\Http\JsonResponse
     {
-        $data = $this->service->getCategories();
+        $data = Cache::remember('expenseCategories', 60*60*24*7, function () {
+            return $this->service->getCategories();
+        });
+
         return response()->json([
             'status'        => true,
             'data'          => $data,
@@ -32,7 +36,7 @@ class ExpenseController extends Controller
     }
 
 
-    public function categoryStore(Request $request)
+    public function categoryStore(Request $request): \Illuminate\Http\JsonResponse
     {
         $validator = Validator::make($request->all(),[
             'name'  => 'required|string|max:50|unique:expense_categories,name',
@@ -53,7 +57,7 @@ class ExpenseController extends Controller
     }
 
 
-    public function categoryUpdate(Request $request,$id)
+    public function categoryUpdate(Request $request,$id): \Illuminate\Http\JsonResponse
     {
         $validator = Validator::make($request->all(),[
             'name'  => 'required|string|max:255|unique:expense_categories,name,'.$id,
@@ -74,7 +78,7 @@ class ExpenseController extends Controller
     }
 
 
-    public function categoryDelete($id)
+    public function categoryDelete($id): \Illuminate\Http\JsonResponse
     {
         if ($this->service->deleteCategory($id))
         {
@@ -91,9 +95,11 @@ class ExpenseController extends Controller
     }
 
 
-    public function expenseIndex()
+    public function expenseIndex(): \Illuminate\Http\JsonResponse
     {
-        $data = $this->service->getExpenses();
+        $data = Cache::remember('expenseList'.request()->get('page', 1), 24*60*60, function () {
+            return $this->service->getExpenses();
+        });
 
         return response()->json([
             'status'           => true,
@@ -102,7 +108,7 @@ class ExpenseController extends Controller
     }
 
 
-    public function expenseStore(ExpenceRequest $request)
+    public function expenseStore(ExpenceRequest $request): \Illuminate\Http\JsonResponse
     {
         $this->service->storeExpense($request);
 
@@ -112,7 +118,7 @@ class ExpenseController extends Controller
     }
 
 
-    public function expenseUpdate(ExpenceRequest $request, $id)
+    public function expenseUpdate(ExpenceRequest $request, $id): \Illuminate\Http\JsonResponse
     {
         $this->service->updateExpense($request, $id);
 
@@ -121,7 +127,7 @@ class ExpenseController extends Controller
         ]);
     }
 
-    public function expenseDelete($id)
+    public function expenseDelete($id): \Illuminate\Http\JsonResponse
     {
         $this->service->deleteExpense($id);
 
@@ -130,7 +136,7 @@ class ExpenseController extends Controller
         ]);
     }
 
-    public function categoryBulkDelete(ExpenseCategoryBulkDeleteRequest $request)
+    public function categoryBulkDelete(ExpenseCategoryBulkDeleteRequest $request): \Illuminate\Http\JsonResponse
     {
         $this->service->multipleCategoryDelete($request);
 
@@ -140,7 +146,7 @@ class ExpenseController extends Controller
     }
 
 
-    public function expenseBulkDelete(Request $request)
+    public function expenseBulkDelete(Request $request): \Illuminate\Http\JsonResponse
     {
         $this->service->multipleExpenseDelete($request);
 

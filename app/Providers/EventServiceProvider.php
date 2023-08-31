@@ -7,12 +7,14 @@ use App\Models\FlashSale;
 use App\Models\Inventory;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\ProductCombination;
 use App\Models\PromoCode;
 use App\Models\PromoUser;
 use App\Observers\BillingCartObserver;
 use App\Observers\FlashSaleObserver;
 use App\Observers\InventoryObserver;
 use App\Observers\OrderObserver;
+use App\Observers\ProductCombinationObserver;
 use App\Observers\ProductObserver;
 use App\Observers\PromoCodeObserver;
 use App\Observers\PromoUserObserver;
@@ -48,6 +50,7 @@ class EventServiceProvider extends ServiceProvider
         PromoUser::observe(PromoUserObserver::class);
         Inventory::observe(InventoryObserver::class);
         FlashSale::observe(FlashSaleObserver::class);
+        ProductCombination::observe(ProductCombinationObserver::class);
     }
 
     /**

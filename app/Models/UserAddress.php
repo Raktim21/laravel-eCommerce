@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 
 class UserAddress extends Model
 {
@@ -50,5 +51,27 @@ class UserAddress extends Model
     public function remove()
     {
         $this->delete();
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($address) {
+            Cache::delete('customer_addresses'.$address->user_id);
+            Cache::delete('userAddresses'.$address->user_id);
+            Cache::delete('customer_auth_profile'.$address->user_id);
+        });
+
+        static::updated(function ($address) {
+            Cache::delete('customer_addresses'.$address->user_id);
+            Cache::delete('userAddresses'.$address->user_id);
+        });
+
+        static::deleted(function ($address) {
+            Cache::delete('customer_addresses'.$address->user_id);
+            Cache::delete('userAddresses'.$address->user_id);
+            Cache::delete('customer_auth_profile'.$address->user_id);
+        });
     }
 }
