@@ -68,7 +68,6 @@ class AssetService
             'answer'        => $request->answer,
             'ordering'      => FAQ::count() + 1
         ]);
-        Cache::forget('faqs');
     }
 
     public function updateFAQ(Request $request, $id): void
@@ -77,13 +76,12 @@ class AssetService
             'question'      => $request->question,
             'answer'        => $request->answer
         ]);
-        Cache::forget('faqs');
+
     }
 
     public function deleteFAQ($id): void
     {
         FAQ::findOrFail($id)->delete();
-        Cache::forget('faqs');
     }
 
     public function orderFAQ(Request $request): void
@@ -91,6 +89,5 @@ class AssetService
         foreach ($request->ids as $key => $id) {
             FAQ::find($id)->update(['ordering' => $key + 1]);
         }
-        Cache::forget('faqs');
     }
 }

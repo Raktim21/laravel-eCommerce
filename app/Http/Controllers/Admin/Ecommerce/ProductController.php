@@ -65,38 +65,11 @@ class ProductController extends Controller
     }
 
 
-    private function validateAttributes($attribute_list): string
-    {
-        $data = json_decode($attribute_list, true);
-
-        if(!is_array($data)) {
-            return 'The attribute field must be an array.';
-        }
-        if(count($data) > 3) {
-            return 'Upto 3 attributes can be added.';
-        }
-
-        $validator = Validator::make($data, [
-            '*.name'        => 'required|string|distinct',
-            '*.values'      => 'required|array|min:1',
-        ], [
-            '*.values.required'   => 'The attribute value field is required.',
-            '*.values.array'      => 'The attribute value field must be an array.',
-            '*.name.distinct'     => 'Two attribute names must not be similar.',
-            '*.variants.min'      => 'The attribute value field must have at least 1 value.'
-        ]);
-
-        if($validator->fails()) {
-            return $validator->errors()->first();
-        } else {
-            return 'done';
-        }
-    }
-
-
     public function detail($id)
     {
-        $data = $this->service->get($id);
+        $data = Cache::remember('productDetail'.$id, 2*60*60, function () use ($id) {
+            return $this->service->get($id);
+        });
 
         return response()->json([
             'status' => true,
@@ -253,4 +226,32 @@ class ProductController extends Controller
         ], is_null($data) ? 204 : 200);
     }
 
+
+    private function validateAttributes($attribute_list): string
+    {
+        $data = json_decode($attribute_list, true);
+
+        if(!is_array($data)) {
+            return 'The attribute field must be an array.';
+        }
+        if(count($data) > 3) {
+            return 'Upto 3 attributes can be added.';
+        }
+
+        $validator = Validator::make($data, [
+            '*.name'        => 'required|string|distinct',
+            '*.values'      => 'required|array|min:1',
+        ], [
+            '*.values.required'   => 'The attribute value field is required.',
+            '*.values.array'      => 'The attribute value field must be an array.',
+            '*.name.distinct'     => 'Two attribute names must not be similar.',
+            '*.variants.min'      => 'The attribute value field must have at least 1 value.'
+        ]);
+
+        if($validator->fails()) {
+            return $validator->errors()->first();
+        } else {
+            return 'done';
+        }
+    }
 }

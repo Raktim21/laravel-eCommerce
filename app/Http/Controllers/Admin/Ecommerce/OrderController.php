@@ -27,6 +27,49 @@ class OrderController extends Controller
     }
 
 
+    public function paymentMethodList(): \Illuminate\Http\JsonResponse
+    {
+        $data = Cache::rememberForever('paymentMethods', function () {
+            return OrderPaymentMethod::where('is_active',1)->latest()->get();
+        });
+
+        return response()->json([
+            'status' => true,
+            'data'   => $data
+        ], count($data) == 0 ? 204 : 200);
+    }
+
+
+    public function shippingMethodList(): \Illuminate\Http\JsonResponse
+    {
+        $data = Cache::rememberForever('shippingMethods', function () {
+            return OrderDeliveryMethod::where('is_active',1)->latest()->get();
+        });
+
+        return response()->json([
+            'status' => true,
+            'data'   => $data
+        ], count($data) == 0 ? 204 : 200);
+    }
+
+
+    public function orderStatusList(): \Illuminate\Http\JsonResponse
+    {
+        $active = GeneralSetting::first()->delivery_status;
+
+        $data = Cache::remember('orderStatuses', 24*60*60*7, function() use($active) {
+            return OrderStatus::when($active == 1, function($q) {
+                return $q->whereNot('name', 'Delivered');
+            })->get();
+        });
+
+        return response()->json([
+            'status' => true,
+            'data'   => $data
+        ]);
+    }
+
+
     public function index(OrderSearchRequest $request): \Illuminate\Http\JsonResponse
     {
         $order = $this->service->getOrderList(false);
@@ -100,7 +143,7 @@ class OrderController extends Controller
 
     public function detail($id): \Illuminate\Http\JsonResponse
     {
-        $data = Cache::remember('orderDetail'.$id, 24*60*60, function () use ($id) {
+        $data = Cache::remember('orderDetail'.$id, 24*60*60*7, function () use ($id) {
             return $this->service->getData($id);
         });
 
@@ -215,49 +258,6 @@ class OrderController extends Controller
     }
 
 
-    public function paymentMethodList(): \Illuminate\Http\JsonResponse
-    {
-        $data = Cache::rememberForever('paymentMethods', function () {
-            return OrderPaymentMethod::where('is_active',1)->latest()->get();
-        });
-
-        return response()->json([
-            'status' => true,
-            'data'   => $data
-        ], count($data) == 0 ? 204 : 200);
-    }
-
-
-    public function shippingMethodList(): \Illuminate\Http\JsonResponse
-    {
-        $data = Cache::rememberForever('shippingMethods', function () {
-            return OrderDeliveryMethod::where('is_active',1)->latest()->get();
-        });
-
-        return response()->json([
-            'status' => true,
-            'data'   => $data
-        ], count($data) == 0 ? 204 : 200);
-    }
-
-
-    public function orderStatusList(): \Illuminate\Http\JsonResponse
-    {
-        $active = GeneralSetting::first()->delivery_status;
-
-        $data = Cache::remember('orderStatuses', 24*60*60*7, function() use($active) {
-            return OrderStatus::when($active == 1, function($q) {
-                return $q->whereNot('name', 'Delivered');
-            })->get();
-        });
-
-        return response()->json([
-            'status' => true,
-            'data'   => $data
-        ]);
-    }
-
-
     public function getAdditionalChargeList(): \Illuminate\Http\JsonResponse
     {
         $data = Cache::remember('orderAdditionalCharges', 60*60*24*7, function () {
@@ -269,6 +269,7 @@ class OrderController extends Controller
             'data'      => $data
         ], count($data)==0 ? 204 : 200);
     }
+
 
     public function storeCharge(Request $request): \Illuminate\Http\JsonResponse
     {
@@ -296,6 +297,7 @@ class OrderController extends Controller
         return response()->json(['status' => true], 201);
     }
 
+
     public function updateCharge(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         $validate = Validator::make($request->all(), [
@@ -322,6 +324,7 @@ class OrderController extends Controller
 
         return response()->json(['status' => true]);
     }
+
 
     public function deleteCharge($id): \Illuminate\Http\JsonResponse
     {
