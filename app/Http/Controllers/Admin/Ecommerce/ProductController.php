@@ -219,7 +219,7 @@ class ProductController extends Controller
 
     public function restockRequests()
     {
-        $data = Cache::remember('productRestockRequests', 24*60*60, function () {
+        $data = Cache::remember('productRestockRequests'.request()->get('page', 1), 24*60*60, function () {
             return $this->service->getAllRestock();
         });
 
@@ -231,7 +231,7 @@ class ProductController extends Controller
 
     public function reviewGetAll()
     {
-        $data = Cache::remember('allProductReviews', 24*60*60, function () {
+        $data = Cache::remember('allProductReviews'.request()->get('page', 1), 24*60*60, function () {
             return $this->service->getAllReviews();
         });
 

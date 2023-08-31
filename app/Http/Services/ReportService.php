@@ -116,7 +116,7 @@ class ReportService
             )->where('product_id','=',$product_id)->first();
 
         $product_data = Product::with('productImages')
-            ->select('id','name','description','short_description','thumbnail','price','discount_amount')
+            ->select('id','name','description','short_description','thumbnail','display_price','previous_display_price')
             ->find($product_id);
 
         $division_data = DB::table('orders')

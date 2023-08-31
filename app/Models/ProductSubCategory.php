@@ -22,10 +22,14 @@ class ProductSubCategory extends Model
 
         static::created(function ($sub_category) {
             Cache::delete('subCategories'.$sub_category->category_id);
+            forgetCaches('categoryList');
+            Cache::delete('categories');
         });
 
         static::updated(function ($sub_category) {
             Cache::delete('subCategories'.$sub_category->category_id);
+            forgetCaches('categoryList');
+            Cache::delete('categories');
         });
 
         static::deleting(function($sub_category) {
@@ -36,6 +40,8 @@ class ProductSubCategory extends Model
 
         static::deleted(function ($sub_category) {
             Cache::delete('subCategories'.$sub_category->category_id);
+            forgetCaches('categoryList');
+            Cache::delete('categories');
         });
     }
 

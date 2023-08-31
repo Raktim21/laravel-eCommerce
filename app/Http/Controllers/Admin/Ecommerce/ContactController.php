@@ -21,7 +21,7 @@ class ContactController extends Controller
     }
 
 
-    public function index()
+    public function index(): \Illuminate\Http\JsonResponse
     {
         $data = Cache::remember('contactList'.request()->get('page', 1), 60*10, function () {
             return $this->service->getAll();

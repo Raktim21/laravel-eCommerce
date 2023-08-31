@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class ProductReview extends Model
 {
@@ -25,5 +26,20 @@ class ProductReview extends Model
     public function orderItem()
     {
         return $this->belongsTo(OrderItems::class, 'order_item_id');
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($review) {
+            forgetCaches('allProductReviews');
+        });
+
+        static::updated(function ($review) {
+            forgetCaches('allProductReviews');
+            Cache::delete('productReview'.$review->id);
+            Cache::delete('product_reviews');
+        });
     }
 }

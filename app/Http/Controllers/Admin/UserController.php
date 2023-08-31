@@ -56,7 +56,7 @@ class UserController extends Controller
 
     function userDetail($id): \Illuminate\Http\JsonResponse
     {
-        $result = Cache::remember('userDetail'.$id, 24*60*60, function () use ($id) {
+        $result = Cache::remember('userDetail'.$id, 24*60*60*7, function () use ($id) {
             return $this->service->show($id, false);
         });
 

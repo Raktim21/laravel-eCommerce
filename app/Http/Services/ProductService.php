@@ -224,16 +224,11 @@ class ProductService
         $status = $review->is_published == 1 ? 0 : 1;
         $review->is_published = $status;
         $review->save();
-        Cache::delete('product_reviews');
-        Cache::delete('allProductReviews');
-        Cache::delete('productReview'.$id);
     }
 
     public function adminReply($reply, $id)
     {
         ProductReview::findOrFail($id)->update(['reply_from_merchant' => $reply]);
-        Cache::delete('product_reviews');
-        Cache::delete('productReview'.$id);
     }
 
     public function getAbuseReports()

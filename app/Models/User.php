@@ -147,6 +147,7 @@ class User extends Authenticatable implements JWTSubject
             } else {
                 forgetCaches('userList');
                 Cache::delete('userDetail'.$user->id);
+                Cache::delete('adminAuthProfile'.$user->id);
             }
         });
 
@@ -155,6 +156,7 @@ class User extends Authenticatable implements JWTSubject
             {
                 forgetCaches('adminList');
                 Cache::delete('adminDetail'.$user->id);
+                Cache::delete('adminAuthProfile'.$user->id);
             } else {
                 forgetCaches('userList');
                 Cache::delete('userDetail'.$user->id);

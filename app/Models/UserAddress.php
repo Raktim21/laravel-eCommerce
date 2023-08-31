@@ -59,6 +59,7 @@ class UserAddress extends Model
 
         static::created(function ($address) {
             Cache::delete('userAddresses'.$address->user_id);
+            Cache::delete('customer_auth_profile'.$address->user_id);
         });
 
         static::updated(function ($address) {
@@ -67,6 +68,7 @@ class UserAddress extends Model
 
         static::deleted(function ($address) {
             Cache::delete('userAddresses'.$address->user_id);
+            Cache::delete('customer_auth_profile'.$address->user_id);
         });
     }
 }

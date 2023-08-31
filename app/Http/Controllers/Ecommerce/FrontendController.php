@@ -68,7 +68,7 @@ class FrontendController extends Controller
     public function home(): \Illuminate\Http\JsonResponse
     {
         $theme = Cache::remember('themeCustomizer', 60*60*24, function () {
-            return ThemeCustomizer::get();
+            return ThemeCustomizer::orderBy('id')->get();
         });
 
         $data = array();
@@ -139,7 +139,7 @@ class FrontendController extends Controller
 
         if($theme[8]['is_active'] == 1) {
             $data['sponsors'] = Cache::remember('sponsors', 60*60*24, function () {
-                return Sponsor::all();
+                return Sponsor::latest()->get();
             });
         }
 

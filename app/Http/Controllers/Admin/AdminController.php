@@ -22,7 +22,7 @@ class AdminController extends Controller
 
     public function adminList()
     {
-        $data = Cache::remember('adminList'.request()->input('page') ?? 1, 60*60*24, function () {
+        $data = Cache::remember('adminList'.request()->get('page', 1), 60*60*24, function () {
             return $this->service->getAllUser(true);
         });
 

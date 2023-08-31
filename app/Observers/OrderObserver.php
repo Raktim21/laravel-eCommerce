@@ -44,6 +44,8 @@ class OrderObserver
 
     public function created(Order $order)
     {
+        Cache::delete('userOrders'.$order->user_id);
+        Cache::delete('customer_auth_profile'.$order->user_id);
         if(is_null($order->shop_branch_id)) {
 
             if(request()->has('messenger_psid'))
@@ -100,6 +102,9 @@ class OrderObserver
     public function updated(Order $order)
     {
         Cache::delete('orderDetail'.$order->id);
+        Cache::delete('order_detail'.$order->id);
+        Cache::delete('userOrders'.$order->user_id);
+        Cache::delete('customer_auth_profile'.$order->user_id);
         if ($order->delivery_status == 'Delivered' || $order->delivery_status == 'Picked' || $order->delivery_status == 'Cancelled') {
             if ($order->delivery_status == 'Delivered') {
 
