@@ -4,7 +4,6 @@ namespace App\Http\Services;
 
 use App\Models\ProductSubCategory;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class SubCategoryService
@@ -38,11 +37,6 @@ class SubCategoryService
         {
             saveImage($request->file('image'), '/uploads/images/sub_categories/', $subCat, 'image');
         }
-
-        Cache::delete('sub_categories');
-        Cache::delete('allCategories');
-        Cache::delete('allCategory');
-        Cache::delete('categories');
     }
 
     public function update(Request $request, $id)
@@ -60,28 +54,16 @@ class SubCategoryService
             deleteFile($subCat->image);
             saveImage($request->file('image'), '/uploads/images/sub_categories/', $subCat, 'image');
         }
-        Cache::delete('sub_categories');
-        Cache::delete('allCategories');
-        Cache::delete('allCategory');
-        Cache::delete('categories');
     }
 
     public function delete($id)
     {
         $this->sub_category->clone()->findOrFail($id)->delete();
-        Cache::delete('sub_categories');
-        Cache::delete('allCategories');
-        Cache::delete('allCategory');
-        Cache::delete('categories');
     }
 
     public function multipleDelete(Request $request)
     {
         $this->sub_category->clone()->whereIn('id',$request->ids)->delete();
-        Cache::delete('sub_categories');
-        Cache::delete('allCategories');
-        Cache::delete('allCategory');
-        Cache::delete('categories');
     }
 
     public function getSubCategories($category_id)

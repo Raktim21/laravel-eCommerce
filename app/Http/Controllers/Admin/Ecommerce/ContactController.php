@@ -21,7 +21,7 @@ class ContactController extends Controller
     }
 
 
-    public function index()
+    public function index(): \Illuminate\Http\JsonResponse
     {
         $data = Cache::remember('contactList'.request()->get('page', 1), 60*10, function () {
             return $this->service->getAll();
@@ -35,7 +35,7 @@ class ContactController extends Controller
     }
 
 
-    public function destroy($id)
+    public function destroy($id): \Illuminate\Http\JsonResponse
     {
         $this->service->delete($id);
 
@@ -45,7 +45,7 @@ class ContactController extends Controller
     }
 
 
-    public function bulkDelete(ContactBulkDeleteRequest $request)
+    public function bulkDelete(ContactBulkDeleteRequest $request): \Illuminate\Http\JsonResponse
     {
         $this->service->multipleDeletes($request);
 

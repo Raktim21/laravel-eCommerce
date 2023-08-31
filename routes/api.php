@@ -290,7 +290,6 @@ Route::group(['prefix' => 'admin'], function () {
         });
 
         Route::get('subscriber-list',[SubscriberController::class, 'index'])->middleware('gzip');
-        Route::get('contact-us-list', [ContactController::class, 'index'])->middleware('gzip');
 
         Route::controller(SiteBannerController::class)->group(function () {
 
@@ -443,10 +442,19 @@ Route::group(['prefix' => 'admin'], function () {
 
         });
 
+        Route::controller(ContactController::class)->group(function () {
+
+            Route::group(['middleware' => ['permission:manage inbox']], function() {
+                Route::get('contact-us-list', 'index')->middleware('gzip');
+                Route::delete('contact-us-delete/{id}', 'destroy');
+            });
+
+        });
+
         Route::controller(AdminDashboardController::class)->group(function () {
 
             Route::get('dashboard','index')->middleware('gzip');
-            Route::get('global-data','global_data');
+            Route::get('global-data','pending_order_count');
         });
 
         Route::controller(ThemeSettingController::class)->group(function () {
@@ -507,7 +515,6 @@ Route::group(['prefix' => 'admin'], function () {
 
             Route::group(['middleware' => ['permission:create/update/delete billing']], function() {
                 Route::post('billing-cart-store', 'cartStore');
-                Route::delete('billing-cart-delete/{id}', 'cartDelete');
                 Route::get('convert-billing-to-order/{id}', 'convertBilling');
             });
         });

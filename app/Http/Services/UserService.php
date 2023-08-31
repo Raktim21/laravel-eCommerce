@@ -10,6 +10,7 @@ use App\Models\UserProfile;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
@@ -167,6 +168,7 @@ class UserService
         if(!$profile && $isAdmin && $request->has('role')) {
             $user->roles()->detach();
             $user->assignRole($request->role);
+            Cache::delete('permissions'.$id);
         }
     }
 
@@ -259,6 +261,12 @@ class UserService
         $user = $this->user->clone()->findOrfail($id);
 
         if($user->hasRole('Customer')) {
+            $user->addresses()->delete();
+            $user->contactForms()->delete();
+            $user->cart()->delete();
+            $user->wishlist()->delete();
+            $user->requests()->delete();
+            $user->messenger_subscriptions()->delete();
             $user->delete();
             return true;
         }

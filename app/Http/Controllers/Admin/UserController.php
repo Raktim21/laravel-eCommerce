@@ -25,9 +25,7 @@ class UserController extends Controller
 
     public function userList(): \Illuminate\Http\JsonResponse
     {
-        $data = Cache::remember('userList'.request()->get('page', 1), 24*60*60, function () {
-            return $this->service->getAllUser(false);
-        });
+        $data = $this->service->getAllUser(false);
 
         return response()->json([
             'status'  => true,
@@ -56,7 +54,7 @@ class UserController extends Controller
 
     function userDetail($id): \Illuminate\Http\JsonResponse
     {
-        $result = Cache::remember('userDetail'.$id, 24*60*60, function () use ($id) {
+        $result = Cache::remember('userDetail'.$id, 24*60*60*7, function () use ($id) {
             return $this->service->show($id, false);
         });
 

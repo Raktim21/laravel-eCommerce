@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\DB;
 
 class AdminDashboardController extends Controller
 {
-    public function index()
+    public function index(): \Illuminate\Http\JsonResponse
     {
         $data = Cache::remember('adminDashboardData', 60*30, function () {
 
@@ -127,7 +127,7 @@ class AdminDashboardController extends Controller
         ], is_null($data) ? 204 : 200);
     }
 
-    public function global_data()
+    public function pending_order_count(): \Illuminate\Http\JsonResponse
     {
         $data = Cache::remember('pendingOrders', 60*5, function () {
             return Order::where('order_status_id', 1)->count();

@@ -40,6 +40,7 @@ class StaticContent extends Model
             foreach ($content->staticMenu() as $item)
             {
                 Cache::delete('staticMenuDetail'.$item->id);
+                Cache::delete('static_menu_detail'.$item->id);
             }
         });
 

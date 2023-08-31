@@ -27,49 +27,47 @@ class ProductService
 
     public function getAll(Request $request, $isAdmin)
     {
-        {
-            return $this->product->clone()
-                ->when($isAdmin != 1, function ($q) {
-                    return $q->whereHas('inventories')->where('status', 1);
-                })
-                ->select('id', 'category_id', 'category_sub_id', 'brand_id',
-                    'uuid', 'name', 'short_description', 'display_price', 'previous_display_price', 'slug', 'thumbnail_image',
-                    'is_on_sale', 'is_featured', 'status')
-                ->when($request->search, function ($query) use ($request) {
-                    return $query->where('name', 'like', '%' . $request->search . '%');
-                })->when($request->category_id, function ($query) use ($request) {
-                    return $query->where('category_id', $request->category_id);
-                })->when($request->sub_category_id, function ($query) use ($request) {
-                    return $query->where('category_sub_id', $request->sub_category_id);
-                })->when($request->brands, function ($query) use ($request) {
-                    return $query->whereIn('brand_id', $request->brands);
-                })->when($request->flash_sale == 1, function ($query) use ($request) {
-                    return $query->where('products.is_on_sale', 1);
-                })->when($request->featured == 1, function ($query) use ($request) {
-                    return $query->where('products.is_featured', 1);
-                })->when($request->discount_product == 1, function ($query) use ($request) {
-                    return $query->whereNotNull('previous_display_price');
-                })->when($request->min_price && $request->max_price, function ($query) use ($request) {
-                    return $query->whereBetween('display_price', [$request->min_price, $request->max_price]);
-                })->with(['category' => function ($q) {
-                    return $q->select('id', 'name');
-                }])->with(['subCategory' => function ($q) {
-                    return $q->select('id', 'name');
-                }])->with(['brand' => function ($q) {
-                    return $q->select('id', 'name');
-                }])->with('productReviewRating')
-                ->when($request->sort_by, function ($query) use ($request) {
-                    if ($request->sort_by == 'price_high_to_low') {
-                        return $query->orderBy('display_price', 'desc');
-                    } else if ($request->sort_by == 'price_low_to_high') {
-                        return $query->orderBy('display_price', 'asc');
-                    } else {
-                        return $query->latest();
-                    }
-                }, function ($query) {
-                    return $query->latest('products.id');
-                })->paginate($request->per_page)->appends($request->except('page'));
-        }
+        return $this->product->clone()
+            ->when($isAdmin != 1, function ($q) {
+                return $q->whereHas('inventories')->where('status', 1);
+            })
+            ->select('id', 'category_id', 'category_sub_id', 'brand_id',
+                'uuid', 'name', 'short_description', 'display_price', 'previous_display_price', 'slug', 'thumbnail_image',
+                'is_on_sale', 'is_featured', 'status')
+            ->when($request->search, function ($query) use ($request) {
+                return $query->where('name', 'like', '%' . $request->search . '%');
+            })->when($request->category_id, function ($query) use ($request) {
+                return $query->where('category_id', $request->category_id);
+            })->when($request->sub_category_id, function ($query) use ($request) {
+                return $query->where('category_sub_id', $request->sub_category_id);
+            })->when($request->brands, function ($query) use ($request) {
+                return $query->whereIn('brand_id', $request->brands);
+            })->when($request->flash_sale == 1, function ($query) use ($request) {
+                return $query->where('products.is_on_sale', 1);
+            })->when($request->featured == 1, function ($query) use ($request) {
+                return $query->where('products.is_featured', 1);
+            })->when($request->discount_product == 1, function ($query) use ($request) {
+                return $query->whereNotNull('previous_display_price');
+            })->when($request->min_price && $request->max_price, function ($query) use ($request) {
+                return $query->whereBetween('display_price', [$request->min_price, $request->max_price]);
+            })->with(['category' => function ($q) {
+                return $q->select('id', 'name');
+            }])->with(['subCategory' => function ($q) {
+                return $q->select('id', 'name');
+            }])->with(['brand' => function ($q) {
+                return $q->select('id', 'name');
+            }])->with('productReviewRating')
+            ->when($request->sort_by, function ($query) use ($request) {
+                if ($request->sort_by == 'price_high_to_low') {
+                    return $query->orderBy('display_price', 'desc');
+                } else if ($request->sort_by == 'price_low_to_high') {
+                    return $query->orderBy('display_price', 'asc');
+                } else {
+                    return $query->latest();
+                }
+            }, function ($query) {
+                return $query->latest('products.id');
+            })->paginate($request->per_page)->appends($request->except('page'));
     }
 
     public function store(Request $request)
@@ -136,7 +134,8 @@ class ProductService
                         return $query->where('shop_branch_id', auth()->user()->shop_branch_id)
                             ->withTrashed();
                     });
-                }])->when(!auth()->guard('admin-api')->check(), function($q) {
+                }])
+                ->when(!auth()->guard('admin-api')->check(), function($q) {
                     return $q->where('is_active', 1);
                 });
             }])
@@ -173,7 +172,7 @@ class ProductService
         Cache::clear();
     }
 
-    public function delete($id)
+    public function delete($id): bool
     {
         $product = $this->product->clone()->findOrFail($id);
 
@@ -192,7 +191,7 @@ class ProductService
 
     }
 
-    public function multipleDelete(Request $request)
+    public function multipleDelete(Request $request): bool
     {
         DB::beginTransaction();
         try {
@@ -213,7 +212,7 @@ class ProductService
 
     public function imageDelete($id): void
     {
-        $image = ProductImages::find($id);
+        $image = ProductImages::findOrFail($id);
         deleteFile($image->image);
         $image->delete();
     }
@@ -224,16 +223,11 @@ class ProductService
         $status = $review->is_published == 1 ? 0 : 1;
         $review->is_published = $status;
         $review->save();
-        Cache::delete('product_reviews');
-        Cache::delete('allProductReviews');
-        Cache::delete('productReview'.$id);
     }
 
     public function adminReply($reply, $id)
     {
         ProductReview::findOrFail($id)->update(['reply_from_merchant' => $reply]);
-        Cache::delete('product_reviews');
-        Cache::delete('productReview'.$id);
     }
 
     public function getAbuseReports()

@@ -8,6 +8,7 @@ use App\Http\Requests\UserProfileUpdateRequest;
 use App\Http\Requests\PasswordUpdateRequest;
 use App\Http\Requests\UserAddressCreateRequest;
 use App\Http\Services\UserService;
+use Illuminate\Support\Facades\Cache;
 
 class ProfileController extends Controller
 {
@@ -53,7 +54,9 @@ class ProfileController extends Controller
 
     public function addressList(): \Illuminate\Http\JsonResponse
     {
-        $data = $this->service->getUserAddress(auth()->guard('user-api')->user()->id);
+        $data = Cache::remember('customer_addresses'.auth()->user()->id, 24*60*60*7, function () {
+            return $this->service->getUserAddress(auth()->guard('user-api')->user()->id);
+        });
 
         return response()->json([
             'status' => true,

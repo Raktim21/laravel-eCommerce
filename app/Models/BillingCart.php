@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class BillingCart extends Model
 {
@@ -33,5 +34,18 @@ class BillingCart extends Model
     public function guest()
     {
         return $this->belongsTo(BillingCustomer::class, 'billing_cart_customers_id');
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($bill) {
+            forgetCaches('billingList');
+        });
+
+        static::updated(function ($bill) {
+            forgetCaches('billingList');
+        });
     }
 }

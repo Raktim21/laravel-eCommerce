@@ -113,7 +113,7 @@ class PromoCodeService
         $promo->save();
     }
 
-    public function getAuthPromos($user_id): array
+    public function getUserPromos($user_id): array
     {
         $applicablePromos = [];
         $data = $this->code->clone()

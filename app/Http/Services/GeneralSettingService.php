@@ -63,6 +63,7 @@ class GeneralSettingService
             deleteFile($this->setting->site_favicon);
             saveImage($request->file('favicon'), '/uploads/images/general-setting/', $this->setting, 'favicon');
         }
+        Cache::delete('generalSetting');
         Cache::delete('general');
     }
 

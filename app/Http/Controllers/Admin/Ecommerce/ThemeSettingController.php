@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Validator;
 
 class ThemeSettingController extends Controller
 {
-    //Call the model globally for use
     protected $themeCustomizer;
 
     public function __construct(ThemeCustomizer $themeCustomizer)
@@ -76,7 +75,7 @@ class ThemeSettingController extends Controller
             'old_order' => $old_order,
         ]);
 
-        Artisan::call('cache:clear');
+        Cache::clear();
 
         return response()->json([
             'status' => true,
@@ -111,7 +110,7 @@ class ThemeSettingController extends Controller
                 'old_value' => $old_value,
             ]);
 
-            Artisan::call('cache:clear');
+            Cache::clear();
 
             return response()->json([
                 'status' => true,
@@ -147,7 +146,7 @@ class ThemeSettingController extends Controller
                 'is_active' => $request->active
             ]);
 
-            Artisan::call('cache:clear');
+            Cache::clear();
 
             return response()->json([
                 'status' => true,
@@ -191,7 +190,7 @@ class ThemeSettingController extends Controller
         }
 
         $theme_log->delete();
-        Artisan::call('cache:clear');
+        Cache::clear();
 
         return response()->json([
            'status' => true,

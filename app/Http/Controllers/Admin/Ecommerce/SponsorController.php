@@ -22,7 +22,7 @@ class SponsorController extends Controller
 
     public function index()
     {
-        $data = Cache::remember('sponsors', 60*60*24*7, function () {
+        $data = Cache::remember('sponsors', 60*60*24*30, function () {
             return $this->service->getAll();
         });
 

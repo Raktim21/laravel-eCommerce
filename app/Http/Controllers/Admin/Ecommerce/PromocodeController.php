@@ -24,7 +24,7 @@ class PromocodeController extends Controller
     }
 
 
-    public function index()
+    public function index(): \Illuminate\Http\JsonResponse
     {
         $data = Cache::remember('promoCodeList'.request()->get('page', 1), 24*60*60, function () {
             return $this->service->getList();
@@ -37,7 +37,7 @@ class PromocodeController extends Controller
     }
 
 
-    public function store(PromoCreateRequest $request)
+    public function store(PromoCreateRequest $request): \Illuminate\Http\JsonResponse
     {
         if($this->service->store($request))
         {
@@ -53,24 +53,8 @@ class PromocodeController extends Controller
         }
     }
 
-    public function update(PromoUpdateRequest $request, $id)
-    {
-        $this->service->update($request, $id);
-        return response()->json([
-            'status' => true,
-        ]);
-    }
 
-    public function updateStatus($id)
-    {
-        $this->service->updateStatus($id);
-        return response()->json([
-            'status' => true,
-        ]);
-    }
-
-
-    public function detail($id)
+    public function detail($id): \Illuminate\Http\JsonResponse
     {
         $data = Cache::remember('promoCodeDetail'.$id, 24*60*60, function () use ($id) {
             return $this->service->get($id);
@@ -80,5 +64,22 @@ class PromocodeController extends Controller
             'status' => true,
             'data' => $data
         ], is_null($data) ? 204 : 200);
+    }
+
+
+    public function update(PromoUpdateRequest $request, $id): \Illuminate\Http\JsonResponse
+    {
+        $this->service->update($request, $id);
+        return response()->json([
+            'status' => true,
+        ]);
+    }
+
+    public function updateStatus($id): \Illuminate\Http\JsonResponse
+    {
+        $this->service->updateStatus($id);
+        return response()->json([
+            'status' => true,
+        ]);
     }
 }

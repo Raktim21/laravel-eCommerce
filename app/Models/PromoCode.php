@@ -37,6 +37,7 @@ class PromoCode extends Model
 
         static::created(function ($code) {
             forgetCaches('promoCodeList');
+            forgetCaches('customer_promo');
         });
 
         static::updated(function ($code) {

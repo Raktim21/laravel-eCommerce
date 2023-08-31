@@ -42,7 +42,7 @@ class FrontendController extends Controller
 {
     public function general(): \Illuminate\Http\JsonResponse
     {
-        $data = Cache::remember('general', 24*60*60, function () {
+        $data = Cache::remember('general', 24*60*60*7, function () {
             return (new GeneralSettingService(new GeneralSetting()))->getSetting();
         });
 
@@ -61,15 +61,14 @@ class FrontendController extends Controller
         return response()->json([
             'status'    => true,
             'data'      => $data
-        ], is_null($data) ? 204 : 200);
+        ]);
     }
 
 
     public function home(): \Illuminate\Http\JsonResponse
     {
-        $theme = Cache::remember('themeCustomizer', 60*60*24, function () {
-            return ThemeCustomizer::get();
-        });
+        Cache::clear();
+        $theme = ThemeCustomizer::orderBy('id')->get();
 
         $data = array();
 
@@ -93,10 +92,13 @@ class FrontendController extends Controller
 
         if($theme[3]['is_active'] == 1) {
             $data['featured_products'] = Cache::remember('allProductsFeatured', 60*60*24, function () {
-                return Product::whereHas('productCombinations.inventory')->where('is_featured', 1)->where('status', 1)
+                return Product::where('is_featured', 1)
+                    ->where('status', 1)
                     ->select('id','category_id','category_sub_id','description','name','slug','uuid','thumbnail_image',
                         'display_price','previous_display_price','view_count')
                     ->with('productReviewRating')
+                    ->withSum('inventories', 'stock_quantity')
+                    ->with('inventories')
                     ->with('subCategory','category')
                     ->inRandomOrder()->take(8)->get();
             });
@@ -104,10 +106,11 @@ class FrontendController extends Controller
 
         if($theme[4]['is_active'] == 1 && FlashSale::first() != null && FlashSale::first()->status == 1) {
             $data['sale_products'] = Cache::remember('productOnSale', 60*60*24, function () {
-                return  Product::whereHas('inventories')->where('is_on_sale',1)->where('status', 1)
+                return  Product::where('is_on_sale',1)->where('status', 1)
                     ->select('id','category_id','category_sub_id','description','name','slug','uuid','thumbnail_image',
                         'display_price','previous_display_price','view_count')
                     ->with('productReviewRating')
+                    ->withSum('inventories', 'stock_quantity')
                     ->with('subCategory','category')
                     ->latest()->take(20)->get();
             });
@@ -116,10 +119,11 @@ class FrontendController extends Controller
         if($theme[6]['is_active'] == 1) {
             $data['new_products'] = Cache::remember('productsNew', 60*60*24, function () {
 
-                return Product::whereHas('inventories')->where('status', 1)
+                return Product::where('status', 1)
                     ->select('id','category_id','category_sub_id','description','name','slug','uuid','thumbnail_image',
                         'display_price','previous_display_price','view_count')
                     ->with('productReviewRating')
+                    ->withSum('inventories', 'stock_quantity')
                     ->with('subCategory','category')
                     ->latest()->take(12)->get();
             });
@@ -128,10 +132,11 @@ class FrontendController extends Controller
         if($theme[7]['is_active'] == 1) {
             $data['discount_products'] = Cache::remember('productDiscount', 60*60*24, function () {
 
-                return Product::whereHas('inventories')->where('status', 1)->whereNotNull('previous_display_price')
+                return Product::where('status', 1)->whereNotNull('previous_display_price')
                     ->select('id','category_id','category_sub_id','description','name','slug','uuid','thumbnail_image',
                         'display_price','previous_display_price','view_count')
                     ->with('productReviewRating')
+                    ->withSum('inventories', 'stock_quantity')
                     ->with('subCategory','category')
                     ->latest()->take(16)->get();
             });
@@ -139,16 +144,17 @@ class FrontendController extends Controller
 
         if($theme[8]['is_active'] == 1) {
             $data['sponsors'] = Cache::remember('sponsors', 60*60*24, function () {
-                return Sponsor::all();
+                return Sponsor::latest()->get();
             });
         }
 
         if($theme[9]['is_active'] == 1) {
             $data['popular_products'] = Cache::remember('productPopular', 60*60*24, function () {
-                return Product::whereHas('inventories')->where('status', 1)
+                return Product::where('status', 1)
                     ->select('id','category_id','category_sub_id','description','name','slug','uuid','thumbnail_image',
                         'display_price','previous_display_price','view_count')
                     ->with('productReviewRating')
+                    ->withSum('inventories', 'stock_quantity')
                     ->with('subCategory','category')
                     ->orderByDesc('sold_count')->take(12)->get();
             });
@@ -176,7 +182,7 @@ class FrontendController extends Controller
 
     public function getBanners(): \Illuminate\Http\JsonResponse
     {
-        $data = Cache::remember('siteBanners', 60*60*24, function () {
+        $data = Cache::remember('site_banners', 60*60*24, function () {
             return SiteBanners::first();
         });
 
@@ -189,7 +195,9 @@ class FrontendController extends Controller
 
     public function staticMenuContent($id): \Illuminate\Http\JsonResponse
     {
-        $data = StaticMenu::with('staticContent')->find($id);
+        $data = Cache::remember('static_menu_detail'.$id, 24*60*60*7, function () use ($id) {
+            return StaticMenu::with('staticContent')->find($id);
+        });
 
         return response()->json([
             'status' => true,
@@ -200,20 +208,20 @@ class FrontendController extends Controller
 
     public function category(): \Illuminate\Http\JsonResponse
     {
-        $data = Cache::remember('allCategories', 60*60*24, function () {
+        $data = Cache::remember('all_categories', 60*60*24*7, function () {
             return (new CategoryService(new ProductCategory()))->getAll(1, false);
         });
 
         return response()->json([
             'status' => true,
             'data'   => $data
-        ], count($data) == 0 ? 204 : 200);
+        ], $data->isEmpty() ? 204 : 200);
     }
 
 
     public function getSubCategoryList($category_id): \Illuminate\Http\JsonResponse
     {
-        $data = Cache::remember('sub_categories', 24*60*60, function () use($category_id) {
+        $data = Cache::remember('sub_categories'.$category_id, 24*60*60, function () use($category_id) {
             return (new SubCategoryService(new ProductSubCategory()))->getSubCategories($category_id);
         });
 
@@ -226,7 +234,7 @@ class FrontendController extends Controller
 
     public function brand(): \Illuminate\Http\JsonResponse
     {
-        $data = Cache::remember('brands', 60*60*24, function () {
+        $data = Cache::remember('brands', 60*60*24*7, function () {
             return (new BrandService(new ProductBrand()))->getAll(false);
         });
 
@@ -250,7 +258,9 @@ class FrontendController extends Controller
 
     public function productReviews($product_id): \Illuminate\Http\JsonResponse
     {
-        $data = (new ProductService(new Product()))->getReviewsByProduct($product_id);
+        $data = Cache::remember('product_reviews'.request()->get('page', 1), 24*60*60, function () use  ($product_id) {
+            return (new ProductService(new Product()))->getReviewsByProduct($product_id);
+        });
 
         return response()->json([
             'status'  => true,
@@ -283,7 +293,7 @@ class FrontendController extends Controller
 
     public function productDetails($id): \Illuminate\Http\JsonResponse
     {
-        $data = Cache::remember('product_detail_'.$id, 60*60*24, function () use ($id) {
+        $data = Cache::remember('product_detail_'.$id, 60*60*24*7, function () use ($id) {
             return (new ProductService(new Product()))->get($id);
         });
 
@@ -296,7 +306,7 @@ class FrontendController extends Controller
 
     public function paymentMethods()
     {
-        $data = Cache::remember('payment_methods', PHP_INT_MAX, function () {
+        $data = Cache::rememberForever('payment_methods', function () {
             return OrderPaymentMethod::where('is_active',1)->latest()->get();
         });
 
@@ -309,7 +319,7 @@ class FrontendController extends Controller
 
     public function additionalCharges()
     {
-        $data = Cache::remember('additionalCharges', 24*60*60*7, function () {
+        $data = Cache::remember('additional_charges', 24*60*60*7, function () {
             return OrderAdditionalCharge::where('status', 1)->get();
         });
 
@@ -322,7 +332,7 @@ class FrontendController extends Controller
 
     public function deliveryMethods()
     {
-        $data = Cache::remember('shippingMethods', PHP_INT_MAX, function () {
+        $data = Cache::rememberForever('shippingMethods', function () {
             return OrderDeliveryMethod::where('is_active',1)->whereNot('id', 2)->get();
         });
 
@@ -359,7 +369,7 @@ class FrontendController extends Controller
             'user_id'       => auth()->guard('user-api')->user()->id,
             'product_id'    => $request->product_id,
         ]);
-        Cache::delete('productRestockRequests');
+
         return response()->json(['status' => true], 201);
     }
 
@@ -374,8 +384,6 @@ class FrontendController extends Controller
             'product_id'        => $request->product_id,
             'complaint_notes'   => $request->complaint_notes,
         ]);
-
-        Cache::delete('abuseReports');
 
         return response()->json(['status' => true], 201);
     }

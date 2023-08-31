@@ -96,7 +96,7 @@ class OrderService
 
     public function getData($id)
     {
-        return Order::with('items.reviews','paymentMethod','status',
+        return $this->order->clone()->with('items.reviews','paymentMethod','status',
             'deliveryMethod')
             ->with(['deliveryAddress' => function($q) {
                 return $q->withTrashed()->with('upazila.district.division.country','union');
@@ -116,7 +116,7 @@ class OrderService
 
     public function getOrderList($addedByAdmin)
     {
-        return $this->order->newQuery()
+        return $this->order->clone()
             ->when($addedByAdmin==true, function ($q) {
                 return $q->where('delivery_method_id', 2);
             })
@@ -154,6 +154,23 @@ class OrderService
             })
             ->orderBy('orders.id', 'DESC')
             ->paginate(15)->appends(request()->except('page'));
+    }
+
+    public function getUserOrder($user_id)
+    {
+        return $this->order->clone()->where('user_id', $user_id)->withCount('items')
+            ->when(request()->input('delivery_status')=='delivered', function ($q) {
+                return $q->where('order_status_id', 4);
+            })
+            ->join('users', 'orders.user_id', '=', 'users.id')
+            ->join('order_payment_methods', 'orders.payment_method_id', '=', 'order_payment_methods.id')
+            ->join('order_statuses', 'orders.order_status_id', '=', 'order_statuses.id')
+            ->join('order_payment_statuses', 'orders.payment_status_id', '=', 'order_payment_statuses.id')
+            ->join('order_delivery_methods', 'orders.delivery_method_id', '=', 'order_delivery_methods.id')
+            ->select('orders.*', 'users.name', 'order_statuses.name as order_status', 'order_payment_statuses.name as payment_status',
+                'order_payment_methods.name as payment_method', 'order_delivery_methods.name as shipping_method')
+            ->orderBy('orders.id', 'DESC')
+            ->get();
     }
 
     public function paperFlyOrder($order, $weight): void
@@ -349,7 +366,7 @@ class OrderService
                 'phone_no'                  => $request->phone_no
             ]);
 
-            $new_order = Order::create([
+            $new_order = $this->order->clone()->create([
                 'user_id'                   => $user->id,
                 'order_number'              => 'ORD-' . implode('-', str_split(hexdec(uniqid()), 4)),
                 'payment_method_id'         => $request->payment_method_id,
@@ -414,7 +431,7 @@ class OrderService
 
     public function getCharges()
     {
-        return OrderAdditionalCharge::all();
+        return OrderAdditionalCharge::get();
     }
 
     public function storeOrderCharges(Request $request)

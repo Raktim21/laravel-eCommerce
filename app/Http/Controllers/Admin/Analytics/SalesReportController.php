@@ -20,7 +20,7 @@ class SalesReportController extends Controller
     }
 
 
-    public function generalReport()
+    public function generalReport(): \Illuminate\Http\JsonResponse
     {
         $data = Cache::remember('generalReport', 60*60, function () {
             return $this->service->getGeneralData();
@@ -33,20 +33,7 @@ class SalesReportController extends Controller
     }
 
 
-    public function mostViewedProducts()
-    {
-        $data = Cache::remember('mostViewedProducts', 60*60, function () {
-            return $this->service->getProducts();
-        });
-
-        return response()->json([
-            'status' => true,
-            'data' => $data
-        ], is_null($data) ? 204 : 200);
-    }
-
-
-    public function newUsers(YearRequest $request)
+    public function newUsers(YearRequest $request): \Illuminate\Http\JsonResponse
     {
         $year = $request->year ?? date('Y');
 
@@ -61,9 +48,11 @@ class SalesReportController extends Controller
     }
 
 
-    public function mostPurchasedUsers(DateRequest $request)
+    public function mostPurchasedUsers(DateRequest $request): \Illuminate\Http\JsonResponse
     {
-        $data = $this->service->getMostActiveUsers($request);
+        $data = Cache::remember('activeUsers'.$request->start_date.$request->end_date, 60*60, function () use ($request) {
+            return $this->service->getMostActiveUsers($request);
+        });
 
         return response()->json([
             'status' => true,
@@ -72,9 +61,11 @@ class SalesReportController extends Controller
     }
 
 
-    public function mostSoldProducts(DateRequest $request)
+    public function mostOrderedCategories(DateRequest $request): \Illuminate\Http\JsonResponse
     {
-        $data = $this->service->soldProducts($request);
+        $data = Cache::remember('mostOrderedCategories'.$request->start_date.$request->end_date, 60*60, function () use ($request) {
+            return $this->service->orderedCategories($request);
+        });
 
         return response()->json([
             'status' => true,
@@ -83,9 +74,11 @@ class SalesReportController extends Controller
     }
 
 
-    public function productReport(DateRequest $request, $product_id)
+    public function mostViewedProducts(): \Illuminate\Http\JsonResponse
     {
-        $data = $this->service->productData($request, $product_id);
+        $data = Cache::remember('mostViewedProducts', 60*60, function () {
+            return $this->service->getProducts();
+        });
 
         return response()->json([
             'status' => true,
@@ -94,7 +87,20 @@ class SalesReportController extends Controller
     }
 
 
-    public function salesData(YearRequest $request)
+    public function mostSoldProducts(DateRequest $request): \Illuminate\Http\JsonResponse
+    {
+        $data = Cache::remember('mostSoldProducts'.$request->start_date.$request->end_date, 60*60, function () use ($request) {
+            return $this->service->soldProducts($request);
+        });
+
+        return response()->json([
+            'status' => true,
+            'data' => $data
+        ]);
+    }
+
+
+    public function salesData(YearRequest $request): \Illuminate\Http\JsonResponse
     {
         $year = $request->year ?? date('Y');
 
@@ -109,13 +115,13 @@ class SalesReportController extends Controller
     }
 
 
-    public function mostOrderedCategories(DateRequest $request)
+    public function productReport(DateRequest $request, $product_id): \Illuminate\Http\JsonResponse
     {
-        $data = $this->service->orderedCategories($request);
+        $data = $this->service->productData($request, $product_id);
 
         return response()->json([
             'status' => true,
             'data' => $data
-        ]);
+        ], is_null($data) ? 204 : 200);
     }
 }

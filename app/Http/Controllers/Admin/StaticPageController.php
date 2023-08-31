@@ -103,7 +103,7 @@ class StaticPageController extends Controller
             return response()->json([
                 'status' => false,
                 'errors' => ['You can not update this content.']
-            ],404);
+            ],400);
         }
 
         $data->update([
@@ -277,7 +277,7 @@ class StaticPageController extends Controller
 
             return response()->json([
                 'status' => false,
-                'errors' => ['You can not delete this Menu.']
+                'errors' => ['You can not delete this menu.']
             ],400);
         }
 
@@ -291,7 +291,7 @@ class StaticPageController extends Controller
         {
             return response()->json([
                 'status' => false,
-                'errors' => ['You can not delete this Menu.']
+                'errors' => ['You can not delete this menu.']
             ], 400);
         }
 

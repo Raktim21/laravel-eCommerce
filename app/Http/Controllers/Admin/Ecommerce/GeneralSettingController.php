@@ -25,7 +25,7 @@ class GeneralSettingController extends Controller
 
     public function detail()
     {
-        $data = Cache::remember('general', 24*60*60, function () {
+        $data = Cache::remember('generalSetting', 24*60*60*7, function () {
             return $this->service->getSetting();
         });
 
@@ -48,7 +48,7 @@ class GeneralSettingController extends Controller
 
     public function deliveryStatus()
     {
-        $data = Cache::remember('deliveryStatus', 60*60*24, function () {
+        $data = Cache::remember('deliveryStatus', 60*60*24*7, function () {
             return $this->service->getDeliveryStatus();
         });
 
@@ -71,7 +71,7 @@ class GeneralSettingController extends Controller
 
     public function faqList(): \Illuminate\Http\JsonResponse
     {
-        $data = Cache::remember('faqs', 24*60*60, function () {
+        $data = Cache::remember('faqs', 24*60*60*7, function () {
             return (new AssetService())->getFaqs();
         });
 

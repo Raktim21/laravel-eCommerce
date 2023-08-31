@@ -30,11 +30,10 @@ class UserProfile extends Model
         static::updated(function ($profile) {
             if($profile->user->shop_branch_id)
             {
-                forgetCaches('adminList');
                 Cache::delete('adminDetail'.$profile->user_id);
             } else {
-                forgetCaches('userList');
                 Cache::delete('userDetail'.$profile->user_id);
+                Cache::delete('customer_auth_profile'.$profile->user_id);
             }
         });
     }

@@ -27,7 +27,7 @@ class BannerSettingController extends Controller
         return response()->json([
             'status' => true,
             'data' => $data
-        ]);
+        ], count($data)==0 ? 204 : 200);
 
     }
 

@@ -72,7 +72,7 @@ class OrderController extends Controller
             return response()->json([
                 'status'    => false,
                 'errors'    => ['The selected promo code is invalid.']
-            ], 422);
+            ], 400);
         }
     }
 
@@ -135,19 +135,7 @@ class OrderController extends Controller
 
     public function orderList()
     {
-        $order = Order::where('user_id',auth()->user()->id)->withCount('items')
-                ->when(request()->input('delivery_status')=='delivered', function ($q) {
-                    return $q->where('order_status_id', 4);
-                })
-                ->join('users', 'orders.user_id', '=', 'users.id')
-                ->join('order_payment_methods', 'orders.payment_method_id', '=', 'order_payment_methods.id')
-                ->join('order_statuses', 'orders.order_status_id', '=', 'order_statuses.id')
-                ->join('order_payment_statuses', 'orders.payment_status_id', '=', 'order_payment_statuses.id')
-                ->join('order_delivery_methods', 'orders.delivery_method_id', '=', 'order_delivery_methods.id')
-                ->select('orders.*', 'users.name', 'order_statuses.name as order_status', 'order_payment_statuses.name as payment_status',
-                    'order_payment_methods.name as payment_method', 'order_delivery_methods.name as shipping_method')
-                ->orderBy('orders.id', 'DESC')
-                ->get();
+        $order = $this->service->getUserOrder(auth()->user()->id);
 
         return response()->json([
             'status' => true,
@@ -158,19 +146,21 @@ class OrderController extends Controller
 
     public function orderDetail($id)
     {
-        $order = $this->service->getData($id);
+        $order = Cache::remember('customer_order_detail'.$id, 24*60*60, function () use ($id) {
+            return $this->service->getData($id);
+        });
 
         if($order && $order->user->id != auth()->guard('user-api')->user()->id) {
             return response()->json([
                 'status'    => false,
                 'errors'    => ['You are not authorized to fetch this order data.'],
-            ], 403);
+            ], 401);
         }
 
         return response()->json([
             'status' => true,
             'data'   => $order,
-        ]);
+        ], is_null($order) ? 204 : 200);
     }
 
 
@@ -226,8 +216,6 @@ class OrderController extends Controller
             $review->orderItem->save();
 
             DB::commit();
-
-            Cache::delete('allProductReviews');
 
             return response()->json([
                 'status' => true,
@@ -287,7 +275,7 @@ class OrderController extends Controller
         return false;
     }
 
-    public function cancelOrder($id)
+    public function cancelOrder($id): \Illuminate\Http\JsonResponse
     {
         $order = Order::findOrFail($id);
 
@@ -305,9 +293,11 @@ class OrderController extends Controller
         ]);
     }
 
-    public function getPromos()
+    public function getPromos(): \Illuminate\Http\JsonResponse
     {
-        $data = (new PromoCodeService(new PromoCode()))->getAuthPromos(auth()->user()->id);
+        $data = Cache::remember('customer_available_promos'.auth()->user()->id, 60*10, function () {
+            return (new PromoCodeService(new PromoCode()))->getUserPromos(auth()->user()->id);
+        });
 
         return response()->json([
             'status' => true,
