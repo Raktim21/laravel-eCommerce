@@ -200,7 +200,7 @@ class OrderController extends Controller
             ], 400);
         }
 
-        if($request->status == 2 && !$this->service->checkEligibility($order, $request->shop_branch_id))
+        if(($request->status == 2 ?? $request->status == 4) && !$this->service->checkEligibility($order, $request->shop_branch_id))
         {
             return response()->json([
                 'status'    => false,
@@ -222,6 +222,12 @@ class OrderController extends Controller
         if($request->status == 3)
         {
             $order->delivery_status = 'Cancelled';
+        }
+        if($request->status == 4)
+        {
+            $order->delivery_status    = 'Delivered';
+            $order->paid_amount        = $order->total_amount;
+            $order->payment_status_id  = 2;
         }
         $order->order_status_id = $request->status;
 

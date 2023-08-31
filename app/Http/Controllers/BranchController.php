@@ -12,8 +12,8 @@ class BranchController extends Controller
 {
     public function getAll()
     {
-        $data = Cache::remember('branches', 24*60*60, function () {
-            return Branch::get();
+        $data = Cache::remember('branches', 24*60*60*30, function () {
+            return Branch::orderBy('id')->get();
         });
 
         return response()->json([
