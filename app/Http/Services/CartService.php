@@ -10,6 +10,7 @@ use App\Models\UserAddress;
 use App\Models\Wishlist;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -62,6 +63,7 @@ class CartService
             $this->cartAddUpdate($request, $exist_product);
 
             DB::commit();
+            Cache::delete('customer_cart');
             return $this->cart->guest_session_id;
         }
         catch(QueryException $e)
@@ -84,7 +86,7 @@ class CartService
         if ($user_cart) {
             $user_cart->product_quantity = $request->quantity;
             $user_cart->save();
-
+            Cache::delete('customer_cart');
             return true;
 
         }else {
@@ -102,7 +104,7 @@ class CartService
 
         if ($cart) {
             $cart->delete();
-
+            Cache::delete('customer_cart');
             return true;
         }else {
             return false;
@@ -112,6 +114,7 @@ class CartService
     public function multipleDeletes(Request $request)
     {
         $this->cart->clone()->whereIn('id', $request->ids)->delete();
+        Cache::delete('customer_cart');
     }
 
     private function cartAddUpdate($request, $exist_product = null): void
@@ -145,11 +148,11 @@ class CartService
 
         foreach ($full_cart as $cart)
         {
-            $total_weight += $cart->product_quantity * $cart->productCombination->weight;
+//            $total_weight += $cart->product_quantity * $cart->productCombination->weight;
             $total_price  += $cart->product_quantity * $cart->productCombination->selling_price;
         }
 
-        return getDeliveryCharge($id , $total_weight, $total_price);
+        return getDeliveryCharge($id , $total_price);
     }
 
     public function convertToAuthCart(Request $request): void
@@ -174,6 +177,7 @@ class CartService
         } else {
             $this->cart->clone()->where('guest_session_id', request()->cookie('customer_unique_token'))->delete();
         }
+        Cache::delete('customer_cart');
     }
 
 
@@ -216,6 +220,7 @@ class CartService
                         }
                     }
                 }
+                Cache::delete('customer_cart');
                 DB::commit();
 
                 if($added_item == 0)
@@ -254,6 +259,7 @@ class CartService
                     }
                 }
                 DB::commit();
+                Cache::delete('customer_cart');
                 if($added_item == 0)
                 {
                     return response()->json([

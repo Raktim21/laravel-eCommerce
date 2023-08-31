@@ -8,6 +8,7 @@ use App\Http\Requests\CartBulkDeleteRequest;
 use App\Http\Requests\CartUpdateRequest;
 use App\Http\Services\CartService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class CartController extends Controller
@@ -23,7 +24,9 @@ class CartController extends Controller
 
     public function cartList()
     {
-        $data = $this->service->getCart();
+        $data = Cache::remember('customer_cart', 24*60*60, function () {
+            return $this->service->getCart();
+        });
 
         return response()->json([
             'status'  => true,
@@ -43,7 +46,6 @@ class CartController extends Controller
             {
                 return response()->json([
                     'status' => true,
-//                'data'   => array('user_unique_id' => $response)
                 ], 201);
             }
             return response()->json([

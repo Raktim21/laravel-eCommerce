@@ -9,6 +9,7 @@ use App\Http\Services\SubCategoryService;
 use App\Models\Product;
 use App\Models\SubCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -24,7 +25,9 @@ class SubCategoryController extends Controller
 
     public function getList($category_id)
     {
-        $data = $this->service->getSubCategories($category_id);
+        $data = Cache::remember('subCategories'.$category_id, 24*60*60*7, function () use ($category_id) {
+            return $this->service->getSubCategories($category_id);
+        });
 
         return response()->json([
             'status'        => true,
