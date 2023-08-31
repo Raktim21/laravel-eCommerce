@@ -75,9 +75,6 @@ class OrderObserver
             {
                 CustomerCart::where('user_id',auth()->user()->id)->delete();
             }
-
-//        email user
-            $this->notifyUser($order->order_number);
         }
     }
 
@@ -116,7 +113,6 @@ class OrderObserver
                     $admin->notify(new OrderDeliveryNotification($order));
                 }
             }
-//            User::find($order->user_id)->notify(new CustomerOrderDeliveryNotification($order));
 
             $subscription = MessengerSubscriptions::where('user_id', $order->user_id)
                 ->where('subscription_type_id', 2)->first();
@@ -141,11 +137,14 @@ class OrderObserver
                 $stock = Inventory::where('shop_branch_id', $order->shop_branch_id)
                     ->where('product_combination_id', $item['product_combination_id'])->withTrashed()->first();
 
-                $stock['stock_quantity'] -= $item['product_quantity'];
-                $stock->save();
+                if($stock)
+                {
+                    $stock['stock_quantity'] -= $item['product_quantity'];
+                    $stock->save();
 
-                $item->combination->product->sold_count += 1;
-                $item->combination->product->save();
+                    $item->combination->product->sold_count += 1;
+                    $item->combination->product->save();
+                }
             }
         }
     }
@@ -161,21 +160,5 @@ class OrderObserver
         }
 
         return $tax_total;
-    }
-
-    private function notifyUser($order_number): void
-    {
-        try {
-            $to = auth()->user()->username;
-
-            $message = "You have recently placed a new order. Your order number is {$order_number}. We will notify you shortly when the order is ready for shipment.";
-
-            $mail_data = [
-                'user' => auth()->user()->name,
-                'body' => $message
-            ];
-
-            Mail::to($to)->queue(new OrdersMail($mail_data));
-        } catch (\Throwable $th) {}
     }
 }
