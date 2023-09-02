@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Notification;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -43,69 +45,48 @@ class NotificationController extends Controller
 
                 if ($user)
                 {
-                    $notification_last_id = Notification::where('notifiable_id', auth()->user()->id)->orderByDesc('created_at')->first();
+                    $lastEventId = intval(request()->header('Last-Event-Id', 0));
 
-                    $response = new StreamedResponse(function() use ($start_time,$notification_last_id)  {
+                    return new StreamedResponse(function () use ($start_time, $lastEventId) {
 
                         do {
+                            $notifications = DB::table('notifications')
+                                ->where('notifiable_id', auth()->user()->id)
+                                ->where('is_send', 0)
+                                ->where($lastEventId != 0, function ($q) use ($lastEventId) {
+                                    return $q->where('id', '>', $lastEventId);
+                                })
+                                ->orderByDesc('created_at')
+                                ->get();
 
-                            if (!isset($_SERVER["HTTP_LAST_EVENT_ID"]) || $_SERVER["HTTP_LAST_EVENT_ID"] == 0) {
+                            foreach ($notifications as $notification)
+                            {
+                                $data = json_encode($notification->data);
+                                echo "id: {$notification->id}\n";
+                                echo "data: {$data}, {$notification->created_at}\n\n";
+                                $lastEventId = $notification->id;
 
-                                if ($notification_last_id != null) {
-
-                                    $_SERVER["HTTP_LAST_EVENT_ID"] = $notification_last_id->created_at->toDateTimeString();
-
-                                } else {
-
-                                    $_SERVER["HTTP_LAST_EVENT_ID"] = 0;
-                                }
-
+//                              Mark the notification as sent
+                                DB::table('notifications')
+                                    ->where('id', $notification->id)
+                                    ->update(['is_send' => 1]);
                             }
 
-                            $lastEventId = $_SERVER["HTTP_LAST_EVENT_ID"];
+                            ob_flush();
+                            flush();
+                            sleep(3); // polling interval
 
-                            $data_get = null;
-
-                            if ($lastEventId != 0) {
-                                $data_get = Notification::where('notifiable_id', auth()->user()->id)->where('created_at', '>', Carbon::parse($lastEventId))
-                                    ->orderBy('created_at', 'desc')
-                                    ->select('id', 'data', 'created_at' , 'read_at')->first();
-                            }
-
-                            if ($data_get) {
-
-                                $data_get->update([
-                                    'is_send' => 1
-                                ]);
-
-                                $_SERVER["HTTP_LAST_EVENT_ID"] = Carbon::parse($data_get->created_at)->toDateTimeString();
-
-                                echo 'id' . Carbon::parse($data_get->created_at)->toDateTimeString() . "\n";
-                                echo 'data: ' . json_encode($data_get) . "\n\n";
-                                ob_flush();
-                                flush();
-                                sleep(1);
-
-                            }
-//                            else {
-//                                echo 'data: ' . "No data found" . "\n\n";
-//                                ob_flush();
-//                                flush();
-//                                $lastEventId = 0;
-//                            }
-
-                        } while ($lastEventId != 0 && (time() - $start_time) < 60);
-                    });
-
-                    $response->headers->set('Content-Type', 'text/event-stream');
-                    $response->headers->set('X-Accel-Buffering', 'no');
-                    $response->headers->set('Cache-Control', 'no-cache');
-                    return $response;
+                        } while ((time() - $start_time) < 60);
+                    }, 200, [
+                        'Content-Type' => 'text/event-stream',
+                        'Cache-Control' => 'no-cache',
+                        'Connection' => 'keep-alive',
+                        'X-Accel-Buffering' => 'no'
+                    ]);
                 }
             }
-
-        } catch (\Throwable $th) {
-
+        }
+        catch (\Throwable $th) {
             return response()->json( [
                 'status'   => false,
                 'errors'   => ['Something went wrong']
