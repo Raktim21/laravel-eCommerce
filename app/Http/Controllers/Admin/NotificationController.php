@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Notification;
+use App\Models\OrderStatus;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -35,6 +37,11 @@ class NotificationController extends Controller
 
         try
         {
+            if( ob_get_level() > 0 ) {
+                for( $i=0; $i < ob_get_level(); $i++ ) ob_flush();
+                ob_end_clean();
+            }
+
             $payload = JWTAuth::manager()->getJWTProvider()->decode($token);
 
             $start_time = time();
@@ -47,10 +54,15 @@ class NotificationController extends Controller
                 {
                     return new StreamedResponse(function () use ($start_time) {
 
-                        do {
+                        echo ":" . str_repeat(" ", 2048) . "\n"; // adding 2kB padding for IE Bug
+                        echo "retry: 2000\n";
+
+                        $c = 0;
+                        while ((time() - $start_time) < 60)
+                        {
                             $notifications = DB::table('notifications')
                                 ->select('id','data','read_at','created_at')
-                                ->where('notifiable_id', auth()->user()->id)
+                                ->where('notifiable_id', 5)
                                 ->where('is_send', 0)
                                 ->orderByDesc('created_at')
                                 ->get();
@@ -65,16 +77,26 @@ class NotificationController extends Controller
                                 DB::table('notifications')
                                     ->where('id', $notification->id)
                                     ->update(['is_send' => 1]);
+                                if( ob_get_level() > 0 ) for( $i=0; $i < ob_get_level(); $i++ ) ob_flush();
+                                flush();
+
+                                $c++;
+                                if( $c % 1000 == 0 ){
+                                    gc_collect_cycles();
+                                    $c=1;
+                                }
                             }
 
-                            ob_flush();
-                            flush();
-                            sleep(3);
-                        } while ((time() - $start_time) < 60);
+
+                            if (connection_aborted()) {break;}
+
+                            usleep(50000); // 50ms
+                        }
+
                     }, 200, [
-                        'Content-Type' => 'text/event-stream',
-                        'Cache-Control' => 'no-cache',
-                        'Connection' => 'keep-alive',
+                        'Content-Type'      => 'text/event-stream',
+                        'Cache-Control'     => 'no-cache',
+                        'Connection'        => 'keep-alive',
                         'X-Accel-Buffering' => 'no'
                     ]);
                 }
@@ -87,100 +109,6 @@ class NotificationController extends Controller
             ],500 );
         }
     }
-
-
-
-
-
-//    public function index()
-//    {
-//        if (!request()->token || request()->token == null || request()->token == '' || request()->token == 'null') {
-//            return response()->json([
-//                'status'  => false,
-//                'error'   => 'Unauthenticated',
-//            ],401);
-//        }
-//
-//        $token = request()->token;
-//
-//        try
-//        {
-//            $payload = JWTAuth::manager()->getJWTProvider()->decode($token);
-//
-//            $start_time = time();
-//
-//            if ($payload && !$payload['refresh_token'])
-//            {
-//                $user = JWTAuth::setToken($token)->toUser();
-//
-//                if ($user)
-//                {
-//                    $notification_last_id = Notification::where('notifiable_id', auth()->user()->id)->orderBy('created_at', 'desc')->first();
-//
-//                    $response = new StreamedResponse(function() use ($start_time,$notification_last_id)  {
-//
-//                        do {
-//
-//                            if (!isset($_SERVER["HTTP_LAST_EVENT_ID"]) || $_SERVER["HTTP_LAST_EVENT_ID"] == 0) {
-//
-//                                if ($notification_last_id != null) {
-//
-//                                    $_SERVER["HTTP_LAST_EVENT_ID"] = $notification_last_id->created_at->toDateTimeString();
-//
-//                                }else{
-//
-//                                    $_SERVER["HTTP_LAST_EVENT_ID"] = 0;
-//                                }
-//
-//                            }
-//                            $lastEventId = $_SERVER["HTTP_LAST_EVENT_ID"];
-//
-//                            $data_get = null;
-//
-//                            if ($lastEventId != 0) {
-//                                $data_get = Notification::where('notifiable_id', auth()->user()->id)->where('created_at', '>', Carbon::parse($lastEventId))->orderBy('created_at', 'desc')
-//                                    ->select('id', 'data', 'created_at' , 'read_at')->first();
-//                            }
-//
-//                            if ($data_get) {
-//
-//                                $_SERVER["HTTP_LAST_EVENT_ID"] = Carbon::parse($data_get->created_at)->toDateTimeString();
-//
-//                                echo 'data: ' . json_encode($data_get) . "\n\n";
-//                                ob_flush();
-//                                flush();
-//
-//                                $data_get->update([
-//                                    'is_send' => 1
-//                                ]);
-//
-//                            }else {
-//                                echo 'data: ' . "No data found" . "\n\n";
-//                                ob_flush();
-//                                flush();
-//                                $lastEventId = 0;
-//                            }
-//
-//                            sleep(3);
-//
-//                        } while ($lastEventId != 0 && (time() - $start_time) < 30);
-//                    });
-//
-//                    $response->headers->set('Content-Type', 'text/event-stream');
-//                    $response->headers->set('X-Accel-Buffering', 'no');
-//                    $response->headers->set('Cache-Control', 'no-cache');
-//                    return $response;
-//                }
-//            }
-//
-//        } catch (\Throwable $th) {
-//
-//            return response()->json( [
-//                'status'   => false,
-//                'errors'   => ['Something went wrong']
-//            ],500 );
-//        }
-//    }
 
     public function getNotifications(){
 
