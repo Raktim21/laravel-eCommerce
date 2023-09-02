@@ -65,20 +65,20 @@ class Handler extends ExceptionHandler
 
 
 
-    public function render($request, Throwable $exception)
-    {
-        if ($this->isHttpException($exception)) {
-            return $this->renderHttpException($exception);
-        } else {
+    // public function render($request, Throwable $exception)
+    // {
+    //     if ($this->isHttpException($exception)) {
+    //         return $this->renderHttpException($exception);
+    //     } else {
 
-            if (request()->ajax() || request()->wantsJson() || $request->is('api/*') ) {
-                return response()->json([
-                    'status' => false,
-                    'errors' => ['Internal Server Error']
-                ], 500);
-            }
-        }
-    }
+    //         if (request()->ajax() || request()->wantsJson() || $request->is('api/*') ) {
+    //             return response()->json([
+    //                 'status' => false,
+    //                 'errors' => ['Internal Server Error']
+    //             ], 500);
+    //         }
+    //     }
+    // }
 
 
 }
