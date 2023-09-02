@@ -23,3 +23,7 @@ Route::controller(GoogleFacebookController::class)->group(function () {
     Route::get('auth/google/callback', 'handleGoogleCallback');
     Route::get('auth/facebook/callback', 'handleFacebookCallback');
 });
+
+Route::get('phpinfo',function (){
+    return phpinfo();
+});
