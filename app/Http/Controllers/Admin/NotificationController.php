@@ -33,6 +33,8 @@ class NotificationController extends Controller
 
         $token = request()->token;
 
+  
+
         try
         {
             $payload = JWTAuth::manager()->getJWTProvider()->decode($token);
