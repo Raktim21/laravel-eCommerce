@@ -63,7 +63,7 @@ class NotificationController extends Controller
                             $notifications = Notification::
                                 select('id','data','read_at','created_at')
                                 ->where('notifiable_id', '=', auth()->user()->id)
-//                                ->where('is_send', '=', 0)
+                                ->where('is_send', '=', 0)
                                 ->orderByDesc('created_at')
                                 ->get();
 
