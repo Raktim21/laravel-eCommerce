@@ -45,24 +45,21 @@ class NotificationController extends Controller
 
                 if ($user)
                 {
-                    $lastEventId = intval(request()->header('Last-Event-Id', 0));
-
-                    return new StreamedResponse(function () use ($start_time, $lastEventId) {
+                    return new StreamedResponse(function () use ($start_time) {
 
                         do {
                             $notifications = DB::table('notifications')
+                                ->select('id','data','read_at','created_at')
                                 ->where('notifiable_id', auth()->user()->id)
                                 ->where('is_send', 0)
-                                ->where('id', '>', $lastEventId)
                                 ->orderByDesc('created_at')
                                 ->get();
 
                             foreach ($notifications as $notification)
                             {
-                                $data = json_encode($notification->data);
+                                $data = json_encode($notification);
                                 echo "id: {$notification->id}\n";
-                                echo "data: {$data}, {$notification->created_at}\n\n";
-                                $lastEventId = $notification->id;
+                                echo "data: {$data}\n\n";
 
 //                              Mark the notification as sent
 //                                DB::table('notifications')
