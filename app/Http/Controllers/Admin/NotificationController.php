@@ -53,9 +53,7 @@ class NotificationController extends Controller
                             $notifications = DB::table('notifications')
                                 ->where('notifiable_id', auth()->user()->id)
                                 ->where('is_send', 0)
-                                ->where($lastEventId != 0, function ($q) use ($lastEventId) {
-                                    return $q->where('id', '>', $lastEventId);
-                                })
+                                ->where('id', '>', $lastEventId)
                                 ->orderByDesc('created_at')
                                 ->get();
 
