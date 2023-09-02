@@ -637,4 +637,4 @@ Route::group(['prefix' => 'user'], function () {
 });
 
 
-Route::get('demo-cron', [CroneController::class, 'cron']);
+Route::get('demo-cron', [CroneController::class, 'crone']);
