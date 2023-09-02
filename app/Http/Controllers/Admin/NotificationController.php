@@ -60,8 +60,8 @@ class NotificationController extends Controller
                         $c = 0;
                         while ((time() - $start_time) < 30)
                         {
-                            $notifications = DB::table('notifications')
-                                ->select('id','data','read_at','created_at')
+                            $notifications = Notification::
+                                select('id','data','read_at','created_at')
                                 ->where('notifiable_id', '=', auth()->user()->id)
                                 ->where('is_send', '=', 0)
                                 ->orderByDesc('created_at')
@@ -74,9 +74,7 @@ class NotificationController extends Controller
                                 echo "data: {$data}\n\n";
 
 //                              Mark the notification as sent
-                                DB::table('notifications')
-                                    ->where('id', $notification->id)
-                                    ->update(['is_send' => 1]);
+                                $notification->update(['is_send' => 1]);
 
                                 if( ob_get_level() > 0 ) for( $i=0; $i < ob_get_level(); $i++ ) ob_flush();
                                 flush();
