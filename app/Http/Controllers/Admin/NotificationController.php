@@ -88,7 +88,6 @@ class NotificationController extends Controller
                                 }
                             }
 
-
                             if (connection_aborted()) {break;}
 
                             usleep(50000); // 50ms
