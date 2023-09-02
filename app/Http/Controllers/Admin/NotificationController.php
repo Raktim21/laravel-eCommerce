@@ -14,7 +14,6 @@ class NotificationController extends Controller
 {
 
 
-    //constructor
     public function __construct()
     {
         \Config::set('auth.defaults.guard','admin-api');
@@ -44,7 +43,7 @@ class NotificationController extends Controller
 
                 if ($user)
                 {
-                    $notification_last_id = Notification::where('notifiable_id', auth()->user()->id)->orderBy('created_at', 'desc')->first();
+                    $notification_last_id = Notification::where('notifiable_id', auth()->user()->id)->orderByDesc('created_at')->first();
 
                     $response = new StreamedResponse(function() use ($start_time,$notification_last_id)  {
 
@@ -56,43 +55,46 @@ class NotificationController extends Controller
 
                                     $_SERVER["HTTP_LAST_EVENT_ID"] = $notification_last_id->created_at->toDateTimeString();
 
-                                }else{
+                                } else {
 
                                     $_SERVER["HTTP_LAST_EVENT_ID"] = 0;
                                 }
 
                             }
+
                             $lastEventId = $_SERVER["HTTP_LAST_EVENT_ID"];
 
                             $data_get = null;
 
                             if ($lastEventId != 0) {
-                                $data_get = Notification::where('notifiable_id', auth()->user()->id)->where('created_at', '>', Carbon::parse($lastEventId))->orderBy('created_at', 'desc')
+                                $data_get = Notification::where('notifiable_id', auth()->user()->id)->where('created_at', '>', Carbon::parse($lastEventId))
+                                    ->orderBy('created_at', 'desc')
                                     ->select('id', 'data', 'created_at' , 'read_at')->first();
                             }
 
                             if ($data_get) {
 
-                                $_SERVER["HTTP_LAST_EVENT_ID"] = Carbon::parse($data_get->created_at)->toDateTimeString();
-
-                                echo 'data: ' . json_encode($data_get) . "\n\n";
-                                ob_flush();
-                                flush();
-
                                 $data_get->update([
                                     'is_send' => 1
                                 ]);
 
-                            }else {
-                                echo 'data: ' . "No data found" . "\n\n";
+                                $_SERVER["HTTP_LAST_EVENT_ID"] = Carbon::parse($data_get->created_at)->toDateTimeString();
+
+                                echo 'id' . Carbon::parse($data_get->created_at)->toDateTimeString() . "\n";
+                                echo 'data: ' . json_encode($data_get) . "\n\n";
                                 ob_flush();
                                 flush();
-                                $lastEventId = 0;
+                                sleep(1);
+
                             }
+//                            else {
+//                                echo 'data: ' . "No data found" . "\n\n";
+//                                ob_flush();
+//                                flush();
+//                                $lastEventId = 0;
+//                            }
 
-                            sleep(3);
-
-                        } while ($lastEventId != 0 && (time() - $start_time) < 30);
+                        } while ($lastEventId != 0 && (time() - $start_time) < 60);
                     });
 
                     $response->headers->set('Content-Type', 'text/event-stream');

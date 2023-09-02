@@ -22,7 +22,8 @@ class CategoryController extends Controller
 
     public function index(): \Illuminate\Http\JsonResponse
     {
-        $data = $this->service->getAll(!request()->input('is_paginated'), true);
+        Cache::clear();
+        $data = $this->service->getAll(request()->has('is_paginated') ? 0 : 1, true);
 
         return response()->json([
             'status' => true,
