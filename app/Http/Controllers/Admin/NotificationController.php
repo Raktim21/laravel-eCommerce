@@ -53,22 +53,28 @@ class NotificationController extends Controller
                             $notifications = DB::table('notifications')
                                 ->select('id','data','read_at','created_at')
                                 ->where('notifiable_id', auth()->user()->id)
-//                                ->where('is_send', 0)
+                                ->where('is_send', 0)
                                 ->orderByDesc('created_at')
                                 ->get();
 
-                            foreach ($notifications as $notification)
+                            if(is_null($notifications))
                             {
-                                $data = json_encode($notification);
-                                echo "id: {$notification->id}\n";
-                                echo "data: {$data}\n\n";
+                                echo "id: null\n";
+                                echo "data: no data found\n\n";
+                            } else {
+                                foreach ($notifications as $notification)
+                                {
+                                    $data = json_encode($notification);
+                                    echo "id: {$notification->id}\n";
+                                    echo "data: {$data}\n\n";
 
 //                              Mark the notification as sent
-//                                DB::table('notifications')
-//                                    ->where('id', $notification->id)
-//                                    ->update(['is_send' => 1]);
+                                DB::table('notifications')
+                                    ->where('id', $notification->id)
+                                    ->update(['is_send' => 1]);
 
 
+                                }
                             }
                             ob_flush();
                             flush();
