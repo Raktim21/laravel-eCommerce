@@ -14,7 +14,6 @@ class NotificationController extends Controller
 {
 
 
-    //constructor
     public function __construct()
     {
         \Config::set('auth.defaults.guard','admin-api');
@@ -56,7 +55,7 @@ class NotificationController extends Controller
 
                                     $_SERVER["HTTP_LAST_EVENT_ID"] = $notification_last_id->created_at->toDateTimeString();
 
-                                }else{
+                                } else {
 
                                     $_SERVER["HTTP_LAST_EVENT_ID"] = 0;
                                 }
@@ -92,7 +91,7 @@ class NotificationController extends Controller
 
                             sleep(3);
 
-                        } while ($lastEventId != 0 && (time() - $start_time) < 30);
+                        } while ($lastEventId != 0 && (time() - $start_time) < 60);
                     });
 
                     $response->headers->set('Content-Type', 'text/event-stream');
