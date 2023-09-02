@@ -29,7 +29,7 @@ class ProductService
     {
         return $this->product->clone()
             ->when($isAdmin != 1, function ($q) {
-                return $q->whereHas('inventories')->where('status', 1);
+                return $q->where('status', 1);
             })
             ->select('id', 'category_id', 'category_sub_id', 'brand_id',
                 'uuid', 'name', 'short_description', 'display_price', 'previous_display_price', 'slug', 'thumbnail_image',
@@ -57,6 +57,7 @@ class ProductService
             }])->with(['brand' => function ($q) {
                 return $q->select('id', 'name');
             }])->with('productReviewRating')
+            ->withSum('inventories', 'stock_quantity')
             ->when($request->sort_by, function ($query) use ($request) {
                 if ($request->sort_by == 'price_high_to_low') {
                     return $query->orderBy('display_price', 'desc');
