@@ -62,8 +62,8 @@ class NotificationController extends Controller
                         {
                             $notifications = DB::table('notifications')
                                 ->select('id','data','read_at','created_at')
-                                ->where('notifiable_id', 5)
-                                ->where('is_send', 0)
+                                ->where('notifiable_id', '=', auth()->user()->id)
+                                ->where('is_send', '=', 0)
                                 ->orderByDesc('created_at')
                                 ->get();
 
@@ -77,6 +77,7 @@ class NotificationController extends Controller
                                 DB::table('notifications')
                                     ->where('id', $notification->id)
                                     ->update(['is_send' => 1]);
+
                                 if( ob_get_level() > 0 ) for( $i=0; $i < ob_get_level(); $i++ ) ob_flush();
                                 flush();
 
