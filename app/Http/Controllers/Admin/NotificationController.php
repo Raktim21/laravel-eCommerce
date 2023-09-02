@@ -43,7 +43,7 @@ class NotificationController extends Controller
 
                 if ($user)
                 {
-                    $notification_last_id = Notification::where('notifiable_id', auth()->user()->id)->orderBy('created_at', 'desc')->first();
+                    $notification_last_id = Notification::where('notifiable_id', auth()->user()->id)->orderByDesc('created_at')->first();
 
                     $response = new StreamedResponse(function() use ($start_time,$notification_last_id)  {
 
@@ -82,12 +82,13 @@ class NotificationController extends Controller
                                     'is_send' => 1
                                 ]);
 
-                            }else {
-                                echo 'data: ' . "No data found" . "\n\n";
-                                ob_flush();
-                                flush();
-                                $lastEventId = 0;
                             }
+//                            else {
+//                                echo 'data: ' . "No data found" . "\n\n";
+//                                ob_flush();
+//                                flush();
+//                                $lastEventId = 0;
+//                            }
 
                             sleep(3);
 
