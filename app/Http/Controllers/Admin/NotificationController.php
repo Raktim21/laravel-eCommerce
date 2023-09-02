@@ -61,26 +61,30 @@ class NotificationController extends Controller
                                 }
 
                             }
+
                             $lastEventId = $_SERVER["HTTP_LAST_EVENT_ID"];
 
                             $data_get = null;
 
                             if ($lastEventId != 0) {
-                                $data_get = Notification::where('notifiable_id', auth()->user()->id)->where('created_at', '>', Carbon::parse($lastEventId))->orderBy('created_at', 'desc')
+                                $data_get = Notification::where('notifiable_id', auth()->user()->id)->where('created_at', '>', Carbon::parse($lastEventId))
+                                    ->orderBy('created_at', 'desc')
                                     ->select('id', 'data', 'created_at' , 'read_at')->first();
                             }
 
                             if ($data_get) {
 
-                                $_SERVER["HTTP_LAST_EVENT_ID"] = Carbon::parse($data_get->created_at)->toDateTimeString();
-
-                                echo 'data: ' . json_encode($data_get) . "\n\n";
-                                ob_flush();
-                                flush();
-
                                 $data_get->update([
                                     'is_send' => 1
                                 ]);
+
+                                $_SERVER["HTTP_LAST_EVENT_ID"] = Carbon::parse($data_get->created_at)->toDateTimeString();
+
+                                echo 'id' . Carbon::parse($data_get->created_at)->toDateTimeString() . '\n';
+                                echo 'data: ' . json_encode($data_get) . "\n\n";
+                                ob_flush();
+                                flush();
+                                sleep(1);
 
                             }
 //                            else {
@@ -89,8 +93,6 @@ class NotificationController extends Controller
 //                                flush();
 //                                $lastEventId = 0;
 //                            }
-
-                            sleep(3);
 
                         } while ($lastEventId != 0 && (time() - $start_time) < 60);
                     });
