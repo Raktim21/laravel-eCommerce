@@ -80,7 +80,7 @@ class NotificationController extends Controller
 
                                 $_SERVER["HTTP_LAST_EVENT_ID"] = Carbon::parse($data_get->created_at)->toDateTimeString();
 
-                                echo 'id' . Carbon::parse($data_get->created_at)->toDateTimeString() . '\n';
+                                echo 'id' . Carbon::parse($data_get->created_at)->toDateTimeString() . "\n";
                                 echo 'data: ' . json_encode($data_get) . "\n\n";
                                 ob_flush();
                                 flush();
