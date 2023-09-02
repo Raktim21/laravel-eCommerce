@@ -68,11 +68,11 @@ class NotificationController extends Controller
 //                                    ->where('id', $notification->id)
 //                                    ->update(['is_send' => 1]);
 
-                                ob_flush();
-                                flush();
-                                sleep(3);
-                            }
 
+                            }
+                            ob_flush();
+                            flush();
+                            sleep(3);
                         } while ((time() - $start_time) < 60);
                     }, 200, [
                         'Content-Type' => 'text/event-stream',
