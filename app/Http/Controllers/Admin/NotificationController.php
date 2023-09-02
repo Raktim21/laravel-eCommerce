@@ -58,7 +58,7 @@ class NotificationController extends Controller
                         echo "retry: 2000\n";
 
                         $c = 0;
-                        while ((time() - $start_time) < 60)
+                        while ((time() - $start_time) < 30)
                         {
                             $notifications = DB::table('notifications')
                                 ->select('id','data','read_at','created_at')
