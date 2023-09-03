@@ -133,14 +133,26 @@ class CustomerAuthController extends Controller
     {
         $id = auth()->user()->id;
 
-        if($this->service->deleteAccount(request()->cookie('customer_refresh_token')))
+        $status = $this->service->deleteAccount(request()->cookie('customer_refresh_token'));
+
+        if($status == 1)
         {
             Cache::delete('customer_auth_profile'.$id);
             return response()->json([
                 'status' => true,
             ])->cookie('customer_refresh_token',null,43200,null,null,true,true);
         }
-        return response()->json(['status' => false, 'errors' => ['Unauthorized User']]);
+        else if($status == 0)
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => ['You cannot deactivate your account until your pending orders are completed.']
+            ], 400);
+        }
+        return response()->json([
+            'status' => false,
+            'errors' => ['Unauthorized user.']
+        ], 401);
     }
 
 

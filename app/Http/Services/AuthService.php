@@ -6,6 +6,7 @@ use App\Mail\EmailVerificationMail;
 use App\Mail\PasswordResetMail;
 use App\Models\CustomerCart;
 use App\Models\EmailVerification;
+use App\Models\Order;
 use App\Models\User;
 use App\Models\UserProfile;
 use Carbon\Carbon;
@@ -273,17 +274,23 @@ class AuthService
         ]);
     }
 
-    public function deleteAccount($token): bool
+    public function deleteAccount($token): int
     {
         $user = auth()->user()->id;
+
+        if(Order::where('user_id', $user)
+            ->whereIn('order_status_id', [1,2])->exists())
+        {
+            return 0;
+        }
 
         if($this->logout($token))
         {
             User::find($user)->update(['is_active' => 0]);
 
-            return true;
+            return 1;
         }
-        return false;
+        return 2;
     }
 
     private function notifyUser($user, $code): void
