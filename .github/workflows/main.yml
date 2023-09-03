@@ -282,6 +282,70 @@ jobs:
 
 
 
+
+
+
+
+
+
+      - name: 📂 Sync files in apijannatistore.selopia.com
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        with:
+          server: selopia.com
+          username: u652464815.apijannatistore.selopia.com
+          password: dF@qa#4;k,vd
+          exclude:  |
+            **/.git*
+            **/.git*/**
+            **/public/upload*
+            **/public/upload*/**
+            **/public/json*
+            **/public/json*/**
+        continue-on-error: true     
+    
+      - name: executing remote ssh commands in apijannatistore.selopia.com
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: selopia.com
+          username: u652464815
+          password: wew2Weqsdf@ssfa3
+          port: 65002
+          script: |
+            cd domains/apijannatistore.selopia.com/public_html/
+            composer2 update
+            cp .env.example .env
+            sed -i 's/DB_DATABASE=.*/DB_DATABASE=u652464815_shukkarun/g' .env
+            sed -i 's/DB_USERNAME=.*/DB_USERNAME=u652464815_shukkarun/g' .env
+            sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=ueCV/7hoDp:3/g' .env
+            sed -i 's/API_ACCESS_TOKEN=.*/API_ACCESS_TOKEN=tA3sDx6uL9vGzPq2wE8oM4rH7jX5iC1kY3bF6pV4sT7J2nK8yQa9WzR1mS6/g' .env
+            sed -i 's/FRONTEND_URL=.*/FRONTEND_URL=https://jannatistore.selopia.com/g' .env
+            sed -i 's/APP_URL=.*/APP_URL=https://apijannatistore.selopia.com/g' .env
+            mkdir -p public/uploads/admin/avatars
+            mkdir -p public/uploads/customer/avatars
+            mkdir -p public/uploads/images/banner
+            mkdir -p public/uploads/images/brands
+            mkdir -p public/uploads/images/category
+            mkdir -p public/uploads/images/general-setting
+            mkdir -p public/uploads/products/featured_banner
+            mkdir -p public/uploads/products/thumbnail
+            mkdir -p public/uploads/images/site_banner
+            mkdir -p public/uploads/images/sponsors
+            mkdir -p public/uploads/images/sub_categories
+            php artisan key:generate
+            php artisan jwt:secret
+            php artisan config:clear
+            php artisan migrate:fresh --seed
+            php artisan optimize
+            php artisan cache:clear
+    
+      
+        continue-on-error: true  
+
+
+
+
+
+
         
 
       # - name: 📂 Sync files in HMF
