@@ -16,7 +16,8 @@ class SeoSettingSeeder extends Seeder
     public function run()
     {
         SeoSetting::create([
-            'meta_title' => 'Ecommerce Website',
+            'meta_title'       => 'Ecommerce Website',
+            'meta_description' => 'Ecommerce Website',
         ]);
     }
 }
