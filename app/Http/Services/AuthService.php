@@ -54,29 +54,14 @@ class AuthService
                 saveImage($request->file('avatar'), '/uploads/customer/avatars/', $profile, 'image');
             }
 
-            $code = rand(100000, 999999);
-
-            EmailVerification::create([
-                'user_id'               => $user->id,
-                'verification_token'    => Hash::make($code),
-                'expired_at'            => Carbon::now()->addMonth()
-            ]);
-
-            Cache::delete('admin_dashboard_data');
-
             DB::commit();
+            return true;
         }
         catch (QueryException $e)
         {
             DB::rollback();
             return false;
         }
-
-        try {
-            Mail::to($user->username)->queue(new EmailVerificationMail($user, $code));
-        } catch (\Throwable $th) {}
-
-        return true;
     }
 
     public function login(Request $request, $isAdmin)

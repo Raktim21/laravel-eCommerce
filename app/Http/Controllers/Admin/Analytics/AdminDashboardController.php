@@ -19,7 +19,7 @@ class AdminDashboardController extends Controller
 {
     public function index(): \Illuminate\Http\JsonResponse
     {
-        $data = Cache::remember('adminDashboardData', 60*30, function () {
+        $data = Cache::remember('adminDashboardData', 60*10, function () {
 
             $admin_model     = User::query()->role(['Super Admin', 'Merchant']);
 

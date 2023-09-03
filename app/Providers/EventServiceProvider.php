@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\ProductCombination;
 use App\Models\PromoCode;
 use App\Models\PromoUser;
+use App\Models\User;
 use App\Observers\BillingCartObserver;
 use App\Observers\FlashSaleObserver;
 use App\Observers\InventoryObserver;
@@ -18,6 +19,7 @@ use App\Observers\ProductCombinationObserver;
 use App\Observers\ProductObserver;
 use App\Observers\PromoCodeObserver;
 use App\Observers\PromoUserObserver;
+use App\Observers\UserObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -51,6 +53,7 @@ class EventServiceProvider extends ServiceProvider
         Inventory::observe(InventoryObserver::class);
         FlashSale::observe(FlashSaleObserver::class);
         ProductCombination::observe(ProductCombinationObserver::class);
+        User::observe(UserObserver::class);
     }
 
     /**

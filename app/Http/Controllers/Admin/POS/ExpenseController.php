@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin\POS;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ExpenceRequest;
+use App\Http\Requests\ExpenseRequest;
 use App\Http\Requests\ExpenseCategoryBulkDeleteRequest;
 use App\Http\Services\ExpenseService;
 use App\Models\Expense;
@@ -108,7 +108,7 @@ class ExpenseController extends Controller
     }
 
 
-    public function expenseStore(ExpenceRequest $request): \Illuminate\Http\JsonResponse
+    public function expenseStore(ExpenseRequest $request): \Illuminate\Http\JsonResponse
     {
         $this->service->storeExpense($request);
 
@@ -118,7 +118,7 @@ class ExpenseController extends Controller
     }
 
 
-    public function expenseUpdate(ExpenceRequest $request, $id): \Illuminate\Http\JsonResponse
+    public function expenseUpdate(ExpenseRequest $request, $id): \Illuminate\Http\JsonResponse
     {
         $this->service->updateExpense($request, $id);
 

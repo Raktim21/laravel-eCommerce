@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use App\Mail\AdminPasswordMail;
 use App\Models\Order;
 use App\Models\OrderPickupAddress;
 use App\Models\User;
@@ -13,6 +14,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 
 class UserService
@@ -67,14 +70,16 @@ class UserService
     {
         DB::beginTransaction();
         try {
+            $password = Str::random(8);
+
             $admin = $this->user->clone()
                 ->create([
                     'shop_branch_id'    => $request->shop_branch_id,
                     'name'              => $request->name,
                     'username'          => $request->username,
-                    'password'          => Hash::make($request['password']),
+                    'password'          => Hash::make($password),
                     'phone'             => $request->phone,
-                    'email_verified_at' => \Illuminate\Support\Carbon::now(),
+                    'email_verified_at' => Carbon::now(),
                     'phone_verified_at' => Carbon::now(),
                 ]);
 
@@ -89,6 +94,15 @@ class UserService
             if ($request->hasFile('avatar')) {
                 saveImage($request->file('avatar'), '/uploads/admin/avatars/', $profile, 'image');
             }
+
+            $data = array(
+                'user'      => $admin->name,
+                'password'  => $password
+            );
+
+            try {
+                Mail::to($admin->username)->queue(new AdminPasswordMail($data));
+            } catch (\Throwable $th) {}
 
             DB::commit();
             return true;
@@ -169,7 +183,7 @@ class UserService
         if(!$profile && $isAdmin && $request->has('role')) {
             $user->roles()->detach();
             $user->assignRole($request->role);
-            Cache::delete('permissions'.$id);
+            Cache::forget('permissions'.$id);
         }
     }
 
