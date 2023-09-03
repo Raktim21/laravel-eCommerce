@@ -39,7 +39,7 @@ class PickupAddressRequest extends FormRequest
                                 ],
             'email'           => 'required|email|max:100',
             'upazila_id'      => 'required|numeric|exists:location_upazilas,id',
-            'union_id'        => ['required',
+            'union_id'        => ['sometimes',
                                     function($attr, $val, $fail) {
                                         $union = Union::where('upazila_id', $this->input('upazila_id'))->first();
 
