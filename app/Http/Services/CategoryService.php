@@ -32,7 +32,9 @@ class CategoryService
                         });
                 })
                 ->orderBy('ordering')
-                ->with('subCategories')->paginate(35)->appends(request()->except('page'));
+                ->with('subCategories')
+                ->withCount('products')
+                ->paginate(35)->appends(request()->except('page'));
         }
         return $this->category->clone()->when(!$isAdmin || \request()->input('status') == 1, function ($q) {
             return $q->where('status', 1);
