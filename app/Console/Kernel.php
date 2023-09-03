@@ -21,6 +21,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('order:review')->everyMinute();
         $schedule->command('email:verify')->everyMinute();
         $schedule->command('order:placed')->everyMinute();
+        $schedule->command('check:stock')->everySixHours();
 
     }
 
