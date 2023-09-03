@@ -97,10 +97,11 @@ class SendMailController extends Controller
                 }
             });
 
-            $contact->update([
-                'reply_from_merchant'   => $request->body
-            ]);
         } catch (\Throwable $th) {}
+
+        $contact->update([
+            'reply_from_merchant'   => $request->body
+        ]);
 
         return response()->json([
             'status' => true,
