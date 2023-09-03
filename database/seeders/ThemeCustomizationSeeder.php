@@ -15,8 +15,6 @@ class ThemeCustomizationSeeder extends Seeder
      */
     public function run()
     {
-        // ThemeCustomizer::truncate();
-
         $theme = new ThemeCustomizer();
         $theme->name = 'Navbar';
         $theme->value = 1;
@@ -35,7 +33,7 @@ class ThemeCustomizationSeeder extends Seeder
         $theme->is_inactivable = false;
         $theme->is_static_position = true;
         $theme->ordering = 2;
-        $theme->items = 4;
+        $theme->items = 6;
         $theme->save();
 
 
@@ -46,7 +44,7 @@ class ThemeCustomizationSeeder extends Seeder
         $theme->is_inactivable = false;
         $theme->is_static_position = false;
         $theme->ordering = 3;
-        $theme->items = 8;
+        $theme->items = 10;
         $theme->save();
 
 
@@ -57,7 +55,7 @@ class ThemeCustomizationSeeder extends Seeder
         $theme->is_inactivable = false;
         $theme->is_static_position = false;
         $theme->ordering = 4;
-        $theme->items = 9;
+        $theme->items = 10;
         $theme->save();
 
 
@@ -68,7 +66,7 @@ class ThemeCustomizationSeeder extends Seeder
         $theme->is_inactivable = false;
         $theme->is_static_position = false;
         $theme->ordering = 5;
-        $theme->items = 9;
+        $theme->items = 10;
         $theme->save();
 
 
@@ -90,7 +88,7 @@ class ThemeCustomizationSeeder extends Seeder
         $theme->is_inactivable = false;
         $theme->is_static_position = false;
         $theme->ordering = 7;
-        $theme->items = 9;
+        $theme->items = 10;
         $theme->save();
 
 
@@ -101,7 +99,7 @@ class ThemeCustomizationSeeder extends Seeder
         $theme->is_inactivable = false;
         $theme->is_static_position = false;
         $theme->ordering = 8;
-        $theme->items = 9;
+        $theme->items = 10;
         $theme->save();
 
 
@@ -112,7 +110,7 @@ class ThemeCustomizationSeeder extends Seeder
         $theme->is_inactivable = false;
         $theme->is_static_position = false;
         $theme->ordering = 9;
-        $theme->items = 5;
+        $theme->items = 10;
         $theme->save();
 
 
@@ -124,7 +122,7 @@ class ThemeCustomizationSeeder extends Seeder
         $theme->is_inactivable = false;
         $theme->is_static_position = false;
         $theme->ordering = 10;
-        $theme->items = 9;
+        $theme->items = 10;
         $theme->save();
 
 
@@ -136,7 +134,7 @@ class ThemeCustomizationSeeder extends Seeder
         $theme->is_inactivable = false;
         $theme->is_static_position = false;
         $theme->ordering = 11;
-        $theme->items = 2;
+        $theme->items = 3;
         $theme->save();
 
 

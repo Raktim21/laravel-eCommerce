@@ -65,17 +65,17 @@ class SendMailController extends Controller
             ], 400);
         }
 
-        $validate = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(),[
             'subject' => 'required|string|min:3',
             'body' => 'required|string|min:5',
             'attachment' => 'nullable|file|mimes:pdf,png,jpg,jpeg'
         ]);
 
-        if($validate->fails())
+        if($validator->fails())
         {
             return response()->json([
-                'success' => false,
-                'error' => $validate->errors()->all()
+                'status' => false,
+                'errors' => $validator->errors()->all()
             ], 422);
         }
 
