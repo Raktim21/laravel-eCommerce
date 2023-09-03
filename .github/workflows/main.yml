@@ -314,9 +314,9 @@ jobs:
             cd domains/apijannatistore.selopia.com/public_html/
             composer2 update
             cp .env.example .env
-            sed -i 's/DB_DATABASE=.*/DB_DATABASE=u652464815_shukkarun/g' .env
-            sed -i 's/DB_USERNAME=.*/DB_USERNAME=u652464815_shukkarun/g' .env
-            sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=ueCV/7hoDp:3/g' .env
+            sed -i 's/DB_DATABASE=.*/DB_DATABASE=u652464815_jannati_store/g' .env
+            sed -i 's/DB_USERNAME=.*/DB_USERNAME=u652464815_jannati_store/g' .env
+            sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=&KoHADuO5/g' .env
             sed -i 's/API_ACCESS_TOKEN=.*/API_ACCESS_TOKEN=tA3sDx6uL9vGzPq2wE8oM4rH7jX5iC1kY3bF6pV4sT7J2nK8yQa9WzR1mS6/g' .env
             sed -i 's/FRONTEND_URL=.*/FRONTEND_URL=https://jannatistore.selopia.com/g' .env
             sed -i 's/APP_URL=.*/APP_URL=https://apijannatistore.selopia.com/g' .env
