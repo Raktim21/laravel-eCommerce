@@ -44,10 +44,10 @@ class AdminDashboardController extends Controller
 
             $recent_orders   = $order_model->clone()
                                 ->leftJoin('order_statuses' , 'orders.order_status_id', '=', 'order_statuses.id')
-                                ->select('orders.id as id','orders.user_id as user_id','orders.order_number as order_number','order_statuses.name as admin_status','orders.total_amount as total')
-                                ->with(['user' => function($q) {
-                                    $q->select('id','name');
-                                }])->latest('orders.created_at')->take(5)->get();
+                                ->leftJoin('user_addresses', 'orders.delivery_address_id', '=', 'user_addresses.id')
+                                ->select('orders.id as id','orders.user_id as user_id','orders.order_number as order_number',
+                                    'order_statuses.name as admin_status','orders.total_amount as total','user_addresses.phone_no as shipping_number')
+                                ->with([''])->latest('orders.created_at')->take(5)->get();
 
             $recent_products = $product_model->clone()
                                 ->with(['category' => function($q) {
