@@ -54,7 +54,8 @@ class UserService
                     $q1->where('name', 'like', '%'.request()->input('search').'%')
                         ->orWhere('username', 'like', '%'.request()->input('search').'%')
                         ->orWhere('phone', 'like', '%'.request()->input('search').'%');
-                })->whereHas('roles', function ($query) {
+                })
+                ->whereNot('id', auth()->user()->id)->whereHas('roles', function ($query) {
                     $query->whereIn('id', [1,2]);
                 })->with('roles','branch');
             })
