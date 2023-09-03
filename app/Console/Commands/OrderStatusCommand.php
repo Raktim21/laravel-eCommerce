@@ -62,16 +62,12 @@ class OrderStatusCommand extends Command
                         $order_status->delivery_status = 'Delivered';
                         $order_status->order_status_id = 4;
                         $order->payment_status_id = 2;
-                        $order_status->paid_amount = $order_status->total;
+                        $order_status->paid_amount = $order_status->total_amount;
                     }
 
                     $order_status->save();
-
-
-                } catch (\Exception $e) {
-
-                    
                 }
+                catch (\Exception $e) {}
             }
         }
     }

@@ -44,7 +44,9 @@ class SeoSettingController extends Controller
         }
 
 
-        $this->seo->update([
+        $this->seo->updateOrCreate([
+            'id' => 1,
+        ],[
             'meta_title'       => $request->meta_title,
             'meta_description' => $request->meta_description,
             'meta_keywords'    => $request->meta_keywords,

@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\OrderAdditionalCharge;
 use App\Models\OrderPickupAddress;
 use App\Models\UserAddress;
 use Illuminate\Support\Facades\Cache;
@@ -57,14 +56,8 @@ function getDeliveryCharge($address_id, $total_price): float|int
             $delivery_price = 90 + (($total_price + 90) * 0.01);
         }
 
-    }else {
+    } else {
         $delivery_price = 120 + (($total_price + 120) * 0.01);
-    }
-
-    $taxes = OrderAdditionalCharge::where('status', 1)->get();
-
-    foreach ($taxes as $tax) {
-        $delivery_price += ($tax->is_percentage==1 ? (($tax->amount*$total_price)/100) : $tax->amount);
     }
 
     return $delivery_price;

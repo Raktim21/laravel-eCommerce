@@ -186,60 +186,93 @@
                             </tr>
 
                             <tr>
-                                <td align="center" style="font-size:0px;padding:10px 25px;padding-bottom:40px;word-break:break-word;">
-
-                                    <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:32px;font-weight:bold;line-height:1;text-align:center;color:#555;">
-                                        New Order
-                                    </div>
-
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td align="center" style="font-size:0px;padding:10px 25px;padding-bottom:0;word-break:break-word;">
-
-                                    <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:center;color:#555;">
-                                        Hi, <b>{{ $mail_data['user'] }}</b>,
-                                    </div>
-
-                                </td>
-                            </tr>
-
-                            <tr>
                                 <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
 
-                                    <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:center;color:#555;">
-                                        {{ $mail_data['body'] }}
+                                    <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:24px;font-weight:bold;line-height:22px;text-align:center;color:#525252;">
+                                        Thank you for your order
                                     </div>
 
                                 </td>
                             </tr>
 
                             <tr>
-                                <td align="center" style="font-size:0px;padding:10px 25px;padding-bottom:40px;word-break:break-word;">
+                                <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
 
-                                    <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:center;color:#555;">
+                                    <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:22px;text-align:left;color:#525252;">
+                                        <p>Hi {{ $mail_data['user'] }},</p>
 
+                                        <p>You have recently placed an order. Your order number is <b>{{ $mail_data['order']['order_number'] }}</b></p>
                                     </div>
 
                                 </td>
                             </tr>
 
                             <tr>
-                                <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                                <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
 
-                                    <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:26px;font-weight:bold;line-height:1;text-align:center;color:#555;">
-                                        Need Help?
+                                    <table 0="[object Object]" 1="[object Object]" 2="[object Object]" border="0" style="cellspacing:0;color:#000;font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;line-height:22px;table-layout:auto;width:100%;">
+                                        <tr style="border-bottom:1px solid #ecedee;text-align:left;">
+                                            <th style="padding: 0 15px 10px 0;">Products</th>
+                                            <th style="padding: 0 15px;">Quantity</th>
+                                            <th style="padding: 0 0 0 15px;" align="right">Price</th>
+                                        </tr>
+                                        @foreach($mail_data['order']['items'] as $item)
+                                            <tr>
+                                                <td style="padding: 5px 15px 5px 0;">
+                                                    {{ $item['combination']['product']['name'] }}
+                                                    -
+                                                    @foreach($item['combination']['attributeValues'] as $key=>$val)
+                                                        @if($key!=0),@endif {{ $val['name'] }}
+                                                    @endforeach
+                                                </td>
+                                                <td style="padding: 0 15px;">{{ $item['product_quantity'] }}</td>
+                                                <td style="padding: 0 0 0 15px;" align="right">{{ $item['total_price'] }}</td>
+                                            </tr>
+                                        @endforeach
+                                        <tr style="border-bottom:2px solid #ecedee;text-align:left;padding:15px 0;">
+                                            <td style="padding: 5px 15px 5px 0; font-weight:bold">Delivery Charge</td>
+                                            <td style="padding: 0 15px;"></td>
+                                            <td style="padding: 0 0 0 15px; font-weight:bold" align="right">{{ $mail_data['order']['delivery_cost'] }}</td>
+                                        </tr>
+                                        <tr style="border-bottom:2px solid #ecedee;text-align:left;padding:15px 0;">
+                                            <td style="padding: 5px 15px 5px 0; font-weight:bold">Additional Charge</td>
+                                            <td style="padding: 0 15px;"></td>
+                                            <td style="padding: 0 0 0 15px; font-weight:bold" align="right">{{ $mail_data['order']['additional_charges'] }}</td>
+                                        </tr>
+                                        @if($mail_data['order']['promo_discount'] != 0.00)
+                                            <tr style="border-bottom:2px solid #ecedee;text-align:left;padding:15px 0;">
+                                                <td style="padding: 5px 15px 5px 0; font-weight:bold">Discount</td>
+                                                <td style="padding: 0 15px;"></td>
+                                                <td style="padding: 0 0 0 15px; font-weight:bold" align="right">{{ $mail_data['order']['promo_discount'] }}</td>
+                                            </tr>
+                                        @endif
+                                        <tr style="border-bottom:2px solid #ecedee;text-align:left;padding:15px 0;">
+                                            <td style="padding: 5px 15px 5px 0; font-weight:bold">TOTAL</td>
+                                            <td style="padding: 0 15px;"></td>
+                                            <td style="padding: 0 0 0 15px; font-weight:bold" align="right">{{ $mail_data['order']['total_amount'] }}</td>
+                                        </tr>
+                                    </table>
+
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+
+                                    <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;line-height:16px;text-align:left;color:#a2a2a2;">
+                                        <p>You will get notified shortly once the admins review your order.</p>
                                     </div>
 
                                 </td>
                             </tr>
 
                             <tr>
-                                <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                                <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
 
-                                    <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:22px;text-align:center;color:#555;">
-                                        Please send your feedback to <br> <a href="" style="color:#2F67F6">{{ $general_settings->email }}</a>
+                                    <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:20px;text-align:left;color:#525252;">
+                                        Best regards,<br><br> {{ $general_settings->name }}<br>Email: {{ $general_settings->email }}
+                                        <br>Phone: {{ $general_settings->phone }}<br>
+                                        <a href="{{ env('FRONTEND_URL') }}" style="color:#2F67F6">{{ env('FRONTEND_URL') }}</a>
                                     </div>
 
                                 </td>
@@ -306,7 +339,7 @@
                                             <td align="center" style="font-size:0px;padding:0;word-break:break-word;">
 
                                                 <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;font-weight:300;line-height:1;text-align:center;color:#575757;">
-                                                    {{ $general_settings->address ?? $general_settings->name}}
+                                                    {{ $general_settings->address }}
                                                 </div>
 
                                             </td>

@@ -38,15 +38,11 @@ class EmailVerificationCommand extends Command
         {
             if(date_format($email->created_at, 'Y-m-d') <= Carbon::now()->subMonths(2)->format('Y-m-d'))
             {
-                if($email->user->profile->image)
-                {
-                    deleteFile($email->user->profile->image);
-                }
-
-                $email->user->forceDelete();
+                $email->user->delete();
+                $email->delete();
             } else {
                 try {
-                    Mail::to($email->user->username)->queue(new VerificationWarningMail($email->user));
+                    Mail::to($email->user->username)->send(new VerificationWarningMail($email->user));
                 } catch (\Throwable $th) {}
             }
         }
