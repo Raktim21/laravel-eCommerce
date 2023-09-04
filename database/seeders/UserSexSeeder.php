@@ -26,7 +26,7 @@ class UserSexSeeder extends Seeder
         ]);
 
         UserSex::create([
-            'name' => 'Preferred Not To Say'
+            'name' => 'Prefer not to say'
         ]);
     }
 }

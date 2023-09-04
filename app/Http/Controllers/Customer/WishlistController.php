@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Customer;
 
-use App\Http\Requests\WishBulkDeleteRequest;
 use App\Http\Requests\WishStoreRequest;
-use App\Http\Requests\WishToCartRequest;
 use App\Http\Services\WishlistService;
 use App\Http\Controllers\Controller;
 use App\Mail\SendWishListMail;
@@ -99,7 +97,7 @@ class WishlistController extends Controller
         }
     }
 
-    public function bulkDelete(WishBulkDeleteRequest $request)
+    public function bulkDelete(Request $request)
     {
         $this->service->multipleDelete($request);
 

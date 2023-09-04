@@ -3,7 +3,6 @@
 namespace App\Observers;
 
 use App\Http\Services\GeneralSettingService;
-use App\Mail\OrdersMail;
 use App\Models\CustomerCart;
 use App\Models\GeneralSetting;
 use App\Models\Inventory;
@@ -13,12 +12,10 @@ use App\Models\OrderAdditionalCharge;
 use App\Models\PromoCode;
 use App\Models\PromoUser;
 use App\Models\User;
-use App\Notifications\CustomerOrderDeliveryNotification;
 use App\Notifications\OrderDeliveryNotification;
 use App\Notifications\OrderPlacedNotification;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Mail;
 
 class OrderObserver
 {

@@ -4,11 +4,8 @@ namespace App\Http\Controllers\Admin\Analytics;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DateRequest;
-use App\Http\Requests\YearRequest;
 use App\Http\Services\ReportService;
-use App\Models\Product;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 
 class SalesReportController extends Controller
 {
@@ -33,7 +30,7 @@ class SalesReportController extends Controller
     }
 
 
-    public function newUsers(YearRequest $request): \Illuminate\Http\JsonResponse
+    public function newUsers(DateRequest $request): \Illuminate\Http\JsonResponse
     {
         $year = $request->year ?? date('Y');
 
@@ -100,7 +97,7 @@ class SalesReportController extends Controller
     }
 
 
-    public function salesData(YearRequest $request): \Illuminate\Http\JsonResponse
+    public function salesData(DateRequest $request): \Illuminate\Http\JsonResponse
     {
         $year = $request->year ?? date('Y');
 

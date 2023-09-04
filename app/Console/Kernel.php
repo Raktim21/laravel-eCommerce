@@ -10,7 +10,7 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param Schedule $schedule
      * @return void
      */
     protected function schedule(Schedule $schedule)
@@ -21,6 +21,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('order:review')->everyMinute();
         $schedule->command('email:verify')->everyMinute();
         $schedule->command('order:placed')->everyMinute();
+        $schedule->command('check:stock')->everySixHours();
 
     }
 

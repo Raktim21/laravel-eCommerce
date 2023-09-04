@@ -7,20 +7,20 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class OrderDeliveryNotification extends Notification
+class InventoryRestockNotification extends Notification
 {
     use Queueable;
 
-    protected $order;
+    protected $alert;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($order)
+    public function __construct($alert)
     {
-        $this->order = $order;
+        $this->alert = $alert;
     }
 
     /**
@@ -43,9 +43,9 @@ class OrderDeliveryNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-            'module'    =>  'Order',
-            'id'        =>  $this->order->id,
-            'message'   =>  'Order ID: '. $this->order->order_number .' has been successfully delivered.',
+            'module'    =>  'Inventory',
+            'id'        =>  null,
+            'message'   =>  $this->alert,
         ];
     }
 }

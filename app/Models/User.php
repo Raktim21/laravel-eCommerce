@@ -131,25 +131,25 @@ class User extends Authenticatable implements JWTSubject
         parent::boot();
 
         static::updated(function ($user) {
-            if($user->shop_branch_id)
+            if(!is_null($user->shop_branch_id))
             {
-                Cache::delete('adminDetail'.$user->id);
-                Cache::delete('adminAuthProfile'.$user->id);
+                Cache::forget('adminDetail'.$user->id);
+                Cache::forget('adminAuthProfile'.$user->id);
             } else {
-                Cache::delete('userDetail'.$user->id);
-                Cache::delete('customer_auth_profile'.$user->id);
+                Cache::forget('userDetail'.$user->id);
+                Cache::forget('customer_auth_profile'.$user->id);
             }
         });
 
         static::deleted(function ($user) {
-            if($user->shop_branch_id)
+            if(!is_null($user->shop_branch_id))
             {
-                Cache::delete('adminDetail'.$user->id);
-                Cache::delete('adminAuthProfile'.$user->id);
+                Cache::forget('adminDetail'.$user->id);
+                Cache::forget('adminAuthProfile'.$user->id);
             } else {
-                Cache::delete('userDetail'.$user->id);
-                Cache::delete('userAddresses'.$user->id);
-                Cache::delete('customer_auth_profile'.$user->id);
+                Cache::forget('userDetail'.$user->id);
+                Cache::forget('userAddresses'.$user->id);
+                Cache::forget('customer_auth_profile'.$user->id);
             }
         });
     }

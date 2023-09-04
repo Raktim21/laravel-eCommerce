@@ -30,8 +30,6 @@ class AdminCreateRequest extends FormRequest
             'username'              => 'required|string|email|max:98|unique:users,username',
             'phone'                 => ['required','string',
                                         'regex:/^(?:\+?88|0088)?01[3-9]\d{8}$/','unique:users,phone'],
-            'password'              => 'required|min:6|confirmed',
-            'password_confirmation' => 'required',
             'avatar'                => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'gender'                => 'required|exists:user_sexes,id', // 1: male, 2: female
             'role'                  => 'required|exists:roles,id',
