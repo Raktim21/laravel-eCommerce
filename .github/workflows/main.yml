@@ -282,6 +282,49 @@ jobs:
 
 
 
+
+
+
+
+
+
+      - name: 📂 Sync files in apijannatistore.selopia.com
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        with:
+          server: selopia.com
+          username: u652464815.apijannatistore.selopia.com
+          password: dF@qa#4;k,vd
+          exclude:  |
+            **/.git*
+            **/.git*/**
+            **/public/upload*
+            **/public/upload*/**
+            **/public/json*
+            **/public/json*/**
+        continue-on-error: true     
+    
+      - name: executing remote ssh commands in apijannatistore.selopia.com
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: selopia.com
+          username: u652464815
+          password: wew2Weqsdf@ssfa3
+          port: 65002
+          script: |
+            cd domains/apijannatistore.selopia.com/public_html/
+            # composer2 update
+            php artisan migrate
+            php artisan optimize
+            php artisan config:clear
+            php artisan cache:clear
+    
+      
+        continue-on-error: true  
+
+
+
+
+
         
 
       # - name: 📂 Sync files in HMF
