@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Ecommerce\StaticAssetController;
 use App\Http\Controllers\GenerateReportController;
+use App\Http\Controllers\System\GoogleFacebookController;
 use App\Http\Controllers\System\MessengerController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +27,10 @@ Route::group(['middleware' => ['ApiAuth']], function() {
         Route::post('track_order', 'getOrderStatus');
         Route::post('chat_order', 'order');
         Route::get('available_promo_codes', 'getPromos');
+    });
+
+    Route::controller(GoogleFacebookController::class)->group(function () {
+        Route::get('redirect-auth', 'redirect');
     });
 });
 
