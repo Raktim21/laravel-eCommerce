@@ -486,6 +486,10 @@ class OrderService
         {
             return 'You cannot cancel order after being picked.';
         }
+        if($order->delivery_status == 'Cancelled' || $order->order_status_id == 3)
+        {
+            return 'Your order has already been cancelled.';
+        }
         if($order->delivery_status == 'Delivered' || $order->order_status_id == 4)
         {
             return 'You cannot cancel order after being delivered.';
