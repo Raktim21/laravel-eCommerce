@@ -313,22 +313,9 @@ jobs:
           script: |
             cd domains/apijannatistore.selopia.com/public_html/
             # composer2 update
-            mkdir -p public/uploads/admin/avatars
-            mkdir -p public/uploads/customer/avatars
-            mkdir -p public/uploads/images/banner
-            mkdir -p public/uploads/images/brands
-            mkdir -p public/uploads/images/category
-            mkdir -p public/uploads/images/general-setting
-            mkdir -p public/uploads/products/featured_banner
-            mkdir -p public/uploads/products/thumbnail
-            mkdir -p public/uploads/images/site_banner
-            mkdir -p public/uploads/images/sponsors
-            mkdir -p public/uploads/images/sub_categories
-            php artisan key:generate
-            php artisan jwt:secret
-            php artisan config:clear
-            php artisan migrate:fresh --seed
+            php artisan migrate
             php artisan optimize
+            php artisan config:clear
             php artisan cache:clear
     
       

@@ -86,7 +86,7 @@ class NotificationController extends Controller
                             }
 
                             if (connection_aborted()) {break;}
-
+                            DB::disconnect();
                             sleep(3); // 50ms
                         }
 
