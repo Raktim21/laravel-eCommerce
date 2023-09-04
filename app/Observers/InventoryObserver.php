@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Mail\InventoryRestockMail;
 use App\Models\Inventory;
 use App\Models\ProductRestockRequest;
 use Illuminate\Support\Facades\Cache;
@@ -17,7 +18,6 @@ class InventoryObserver
 
     public function updated(Inventory $inventory)
     {
-        Cache::clear();
         if($inventory->stock_quantity > $this->previous_quantity)
         {
             $requests = ProductRestockRequest::where('product_id', $inventory->combination->product_id)
@@ -26,26 +26,22 @@ class InventoryObserver
             foreach ($requests as $request)
             {
                 try {
-                    $mail_body = 'Dear Customer, ' . PHP_EOL . '
-                    You have previously requested to restock a product: ' . $inventory->combination->product->name .
-                        'The product has been restocked.' . PHP_EOL . '
-                    Regards, ' . PHP_EOL . 'Selopia Ecommerce Team';
+                    $mail_data = array(
+                        'user'      => $request->user->name,
+                        'product'   => $inventory->combination->product->name,
+                        'slug'      => $inventory->combination->product->slug,
+                        'stock'     => $inventory->stock_quantity,
+                        'pr_id'     => $inventory->combination->product->id
+                    );
 
                     $to = $request->user->username;
 
-                    Mail::raw($mail_body, function ($msg) use ($to) {
-                        $msg->to($to)
-                            ->subject('Requested product has been restocked');
-                    });
-                } catch (\Throwable $th) {}
+                    Mail::to($to)->queue(new InventoryRestockMail($mail_data));
+                }
+                catch (\Throwable $th) {}
 
-                $request->update(['is_stocked' => 1]);
+                $request->delete();
             }
-        }
-
-        if($inventory->stock_quantity == 0)
-        {
-            $inventory->delete();
         }
     }
 }

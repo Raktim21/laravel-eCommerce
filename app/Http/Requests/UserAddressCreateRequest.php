@@ -54,12 +54,12 @@ class UserAddressCreateRequest extends FormRequest
     public function messages()
     {
         return [
-            'upazila_id.required'      => 'Please select a sub district',
-            'union_id.required'        => 'Please select a union',
-            'address.required'         => 'Please enter an address',
-            'postal_code.required'     => 'Please enter a postal code',
-            'is_default.required'      => 'Please select a default address',
-            'is_default.boolean'       => 'Please select a default address',
+            'upazila_id.required'      => 'Please select a thana.',
+            'union_id.required'        => 'Please select a union.',
+            'address.required'         => 'Please enter an address.',
+            'postal_code.required'     => 'Please enter a postal code.',
+            'is_default.required'      => 'Please select a default address.',
+            'is_default.boolean'       => 'Please select a default address.',
         ];
     }
 

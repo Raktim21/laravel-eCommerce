@@ -28,6 +28,7 @@ class DateRequest extends FormRequest
         return [
             'start_date' => 'sometimes|required|date|date_format:Y-m-d|before:end_date|before:today',
             'end_date'   => 'sometimes|required|date|date_format:Y-m-d|after:start_date',
+            'year'       => 'sometimes|required|date_format:Y|before_or_equal:'.date('Y')
         ];
     }
 

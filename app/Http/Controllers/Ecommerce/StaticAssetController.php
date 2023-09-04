@@ -24,7 +24,7 @@ class StaticAssetController extends Controller
 
     public function countryList()
     {
-        $data = Cache::remember('countryList', PHP_INT_MAX, function () {
+        $data = Cache::rememberForever('countryList', function () {
             return $this->service->getCountries();
         });
         return response()->json([
@@ -37,7 +37,7 @@ class StaticAssetController extends Controller
 
     public function divisionList(Request $request)
     {
-        $data = Cache::remember('divisionList', PHP_INT_MAX, function () use ($request) {
+        $data = Cache::rememberForever('divisionList'.$request->country_id, function () use ($request) {
             return $request->country_id ? $this->service->getDivisions($request->country_id) : null;
         });
 
@@ -51,7 +51,7 @@ class StaticAssetController extends Controller
 
     public function districtList(Request $request)
     {
-        $data = Cache::remember('districtList', PHP_INT_MAX, function () use ($request) {
+        $data = Cache::rememberForever('districtList'.$request->division_id, function () use ($request) {
             return $request->division_id ? $this->service->getDistricts($request->division_id) : null;
         });
 
@@ -65,7 +65,7 @@ class StaticAssetController extends Controller
 
     public function subDistrictList(Request $request)
     {
-        $data = Cache::remember('subDistrictList', PHP_INT_MAX, function () use ($request) {
+        $data = Cache::rememberForever('subDistrictList'.$request->district_id, function () use ($request) {
             return $request->district_id ? $this->service->getSubDistricts($request->district_id) : null;
         });
 
@@ -79,7 +79,7 @@ class StaticAssetController extends Controller
 
     public function unionList(Request $request)
     {
-        $data = Cache::remember('unionList', PHP_INT_MAX, function () use ($request) {
+        $data = Cache::rememberForever('unionList'.$request->sub_district_id, function () use ($request) {
             return $request->sub_district_id ? $this->service->getUnions($request->sub_district_id) : null;
         });
 
@@ -91,37 +91,37 @@ class StaticAssetController extends Controller
 
     public function languageList()
     {
-        $data = Cache::remember('languageList', PHP_INT_MAX, function () {
+        $data = Cache::rememberForever('languageList', function () {
             return $this->service->getLanguages();
         });
 
         return response()->json([
             'status' => true,
             'data' => $data
-        ], count($data)==0 ? 204 : 200);
+        ]);
     }
 
     public function currencyList()
     {
-        $data = Cache::remember('currencyList', PHP_INT_MAX, function () {
+        $data = Cache::rememberForever('currencyList', function () {
             return $this->service->getCurrencies();
         });
 
         return response()->json([
             'status'        => true,
             'data'          => $data
-        ], count($data)==0 ? 204 : 200);
+        ]);
     }
 
     public function genderList()
     {
-        $data = Cache::remember('genderList', PHP_INT_MAX, function () {
+        $data = Cache::rememberForever('genderList', function () {
             return $this->service->getGenders();
         });
 
         return response()->json([
             'status'        => true,
             'data'          => $data
-        ], count($data)==0 ? 204 : 200);
+        ]);
     }
 }

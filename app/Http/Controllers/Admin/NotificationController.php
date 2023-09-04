@@ -86,7 +86,7 @@ class NotificationController extends Controller
                             }
 
                             if (connection_aborted()) {break;}
-
+                            DB::disconnect();
                             sleep(3); // 50ms
                         }
 
@@ -107,11 +107,16 @@ class NotificationController extends Controller
         }
     }
 
-    public function getNotifications(){
-
+    public function getNotifications()
+    {
         $notifications = Notification::where('notifiable_id', auth()->user()->id)
             ->orderBy('created_at', 'desc')
-            ->select('id', 'data', 'created_at' , 'read_at')->paginate(15);
+            ->select('id', 'data', 'created_at' , 'read_at')->paginate(10);
+
+        Notification::where('notifiable_id', auth()->user()->id)
+            ->where('is_send', 0)->update([
+                'is_send' => 1
+            ]);
 
         return response()->json([
             'status' => true,
@@ -122,31 +127,18 @@ class NotificationController extends Controller
 
     public function readNotification($id)
     {
-        $notification = Notification::where('notifiable_id', auth()->user()->id)->where('id', $id)->first();
-
-        if ($notification)
-        {
-            $notification->update([
-                'read_at' => Carbon::now()
-            ]);
-
-            return response()->json([
-                'status' => true,
-            ]);
-        }
+        auth()->user()->unreadNotifications->where('id', $id)->markAsRead();
 
         return response()->json([
-            'status' => false,
-            'errors' => ['Notification not found']
-        ], 404);
+            'status' => true,
+        ]);
+
     }
 
 
     public function BulkRead()
     {
-        Notification::where('notifiable_id', auth()->user()->id)->where('read_at', null)->update([
-            'read_at' => Carbon::now()
-        ]);
+        auth()->user()->unreadNotifications->markAsRead();
 
         return response()->json([
             'status' => true,
