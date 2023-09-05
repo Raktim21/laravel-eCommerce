@@ -56,7 +56,7 @@ class ThemeSettingController extends Controller
             return response()->json([
                 'status' => false,
                 'errors' => ['You can not customize this theme.'],
-            ], 422);
+            ], 400);
         }
 
 
@@ -138,9 +138,9 @@ class ThemeSettingController extends Controller
             ], 422);
         }
 
-        $theme = $this->themeCustomizer->find($id);
+        $theme = $this->themeCustomizer->findOrFail($id);
 
-        if($theme->is_default == 0)
+        if($theme->is_inactivable == 1)
         {
             $theme->update([
                 'is_active' => $request->active
