@@ -73,7 +73,6 @@ class NotificationController extends Controller
                                 echo "id: {$notification->id}\n";
                                 echo "data: {$data}\n\n";
 
-//                              Mark the notification as sent
                                 $notification->update(['is_send' => 1]);
 
                                 if( ob_get_level() > 0 ) for( $i=0; $i < ob_get_level(); $i++ ) ob_flush();
@@ -87,8 +86,8 @@ class NotificationController extends Controller
                             }
 
                             if (connection_aborted()) {break;}
-
-                            usleep(50000); // 50ms
+                            DB::disconnect();
+                            sleep(3); // 50ms
                         }
 
                     }, 200, [
