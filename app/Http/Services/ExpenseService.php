@@ -48,7 +48,7 @@ class ExpenseService
     {
         $category = ExpenseCategory::findOrfail($id);
 
-        if ($category->expences->count() == 0) {
+        if ($category->expenses->count() == 0) {
             $category->delete();
             Cache::delete('expenseCategories');
             return true;
