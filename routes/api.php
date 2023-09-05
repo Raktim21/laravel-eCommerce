@@ -40,15 +40,12 @@ use App\Http\Controllers\Ecommerce\StaticAssetController;
 use App\Http\Controllers\Ecommerce\FrontendController;
 use App\Http\Controllers\System\GenerateReportController;
 use App\Http\Controllers\System\SendMailController;
-use App\Http\Controllers\System\CroneController;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\System\SystemController;
 use Illuminate\Support\Facades\Route;
-use Mews\Captcha\Facades\Captcha;
 
+Route::get('cron', [SystemController::class, 'runSchedule']);
 
 Route::group(['middleware' => ['ApiAuth']],function () {
-
 
     Route::prefix('asset')->middleware('gzip')->controller(StaticAssetController::class)->group(function () {
 
@@ -99,13 +96,7 @@ Route::group(['middleware' => ['ApiAuth']],function () {
 
     Route::get('wish-list', [WishlistController::class, 'getList'])->middleware('gzip');
 
-    Route::get('/captcha', function () {
-
-        return response()->json([
-            'status'  => true,
-            'captcha' => Captcha::create('default',true)
-        ]);
-    });
+    Route::get('/captcha', [SystemController::class, 'sendCaptcha']);
 
 });
 
@@ -147,22 +138,9 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('logout',[AdminAuthController::class,'logout']);
         Route::get('me',[AdminAuthController::class,'me']);
 
-        //Clear Cache
-        Route::get('clear-cache',function(){
-            Artisan::call('cache:clear');
-            return response()->json([
-                'status' => true,
-            ]);
-        });
-
-        Route::get('change-language',function(){
-
-            App::setLocale(request()->lang);
-            session()->put('locale', request()->lang);
-            return response()->json([
-                'status' => true,
-            ]);
-
+        Route::controller(SystemController::class)->group(function () {
+            Route::get('clear-cache', 'cache');
+            Route::get('change-language', 'changeLanguage');
         });
 
         Route::controller(ProfileController::class)->group(function () {
@@ -635,6 +613,3 @@ Route::group(['prefix' => 'user'], function () {
     Route::post('subscribe', [SubscriberController::class, 'create']);
 
 });
-
-
-Route::get('demo-cron', [CroneController::class, 'crone']);

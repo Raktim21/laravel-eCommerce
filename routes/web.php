@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\System\CroneController;
+use App\Http\Controllers\System\SystemController;
 use App\Http\Controllers\System\GoogleFacebookController;
 use Illuminate\Support\Facades\Route;
 use GuzzleHttp\Client;
@@ -31,7 +31,7 @@ Route::get('/status', function () {
     dd($data);
 });
 
-Route::get('/crone-job', [CroneController::class, 'crone'])->name('crone.job');
+Route::get('/crone-job', [SystemController::class, 'crone'])->name('crone.job');
 
 Route::controller(GoogleFacebookController::class)->group(function () {
     Route::get('redirect-auth', 'redirect');
