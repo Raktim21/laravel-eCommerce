@@ -78,7 +78,7 @@ class ProfileController extends Controller
 
     public function updateAddress(UserAddressCreateRequest $request, $id): \Illuminate\Http\JsonResponse
     {
-        if ($this->service->updateAddress($request, $id))
+        if ($this->service->updateAddress($request, $id, 0))
         {
             return response()->json(['status'  => true]);
         } else {

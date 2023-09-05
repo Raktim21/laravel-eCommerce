@@ -147,11 +147,15 @@ class UserController extends Controller
 
     public function userAddressUpdate(UserAddressCreateRequest $request, $id): \Illuminate\Http\JsonResponse
     {
-        $this->service->updateAddress($request, $id);
-
+        if ($this->service->updateAddress($request, $id, 1)) {
+            return response()->json([
+                'status' => true,
+            ]);
+        }
         return response()->json([
-            'status'  => true,
-        ]);
+            'status' => false,
+            'errors' => ['Something went wrong.']
+        ], 500);
     }
 
 
