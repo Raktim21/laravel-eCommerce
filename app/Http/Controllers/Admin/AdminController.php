@@ -72,6 +72,7 @@ class AdminController extends Controller
     public function adminUpdate(UserProfileUpdateRequest $request, $id)
     {
         $this->service->update($request, $id, false, true);
+        Cache::forget('adminDetail'.$id);
 
         return response()->json([
             'status'  => true,
