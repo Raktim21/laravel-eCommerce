@@ -119,12 +119,7 @@ Route::group(['prefix' => 'admin'], function () {
 
         Route::get('general-setting', [FrontendController::class, 'general'])->middleware('gzip');
 
-        Route::get('/captcha', function () {
-            return response()->json([
-                'status'  => true,
-                'captcha' => Captcha::create('default',true)
-            ]);
-        });
+        Route::get('/captcha', [SystemController::class, 'sendCaptcha']);
 
     });
 

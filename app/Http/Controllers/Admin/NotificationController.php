@@ -4,13 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Notification;
-use App\Models\OrderStatus;
-use Carbon\Carbon;
-use DateTime;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -60,6 +55,8 @@ class NotificationController extends Controller
                         $c = 0;
                         while ((time() - $start_time) < 30)
                         {
+                            Log::info('notification - ' . $start_time);
+
                             $notifications = Notification::
                                 select('id','data','read_at','created_at')
                                 ->where('notifiable_id', '=', auth()->user()->id)
@@ -83,6 +80,7 @@ class NotificationController extends Controller
                                     gc_collect_cycles();
                                     $c=1;
                                 }
+
                             }
 
                             if (connection_aborted()) {break;}

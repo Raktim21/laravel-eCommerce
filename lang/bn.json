@@ -1,5 +1,5 @@
 {
-    "Please select atleast one admin.": "অনুগ্রহ করে কমপক্ষে একজন অ্যাডমিন নির্বাচন করুন।",
+    "Please select at least one admin.": "অনুগ্রহ করে কমপক্ষে একজন অ্যাডমিন নির্বাচন করুন।",
     "Selected admin is invalid.": "নির্বাচিত অ্যাডমিন অবৈধ।",
     "Please enter a name": "নাম লিখুন দয়া করে",
     "Please enter a valid name": "একটি বৈধ নাম লিখুন দয়া করে",
@@ -25,7 +25,7 @@
     "Please select a valid shipping method": "একটি বৈধ শিপিং পদ্ধতি নির্বাচন করুন দয়া করে",
     "Please select a promo code": "একটি প্রোমো কোড নির্বাচন করুন দয়া করে",
     "Please select a valid promo code": "একটি বৈধ প্রোমো কোড নির্বাচন করুন দয়া করে",
-    "Please select atleast one product": "অনুগ্রহ করে কমপক্ষে একটি পণ্য নির্বাচন করুন।",
+    "Please select at least one product": "অনুগ্রহ করে কমপক্ষে একটি পণ্য নির্বাচন করুন।",
     "Please select a valid product": "একটি বৈধ পণ্য নির্বাচন করুন দয়া করে",
     "Please provide the total amount": "মোট পরিমাণ উল্লেখ করুন দয়া করে",
     "Please provide the product information": "পণ্যের তথ্য উল্লেখ করুন দয়া করে",
@@ -70,13 +70,13 @@
     "Role is required": "ভূমিকা প্রয়োজন",
     "Role must be integer": "ভূমিকা অবশ্যই পূর্ণাংক হতে হবে",
     "Role must be exists": "ভূমিকা অবশ্যই বিদ্যমান",
-    "The name field is required.":"একটি নাম প্রদান করুন", 
-    "Unsupportable name.":"দুঃখিত!! নামটি অগ্রহজ যোগ্য", 
-    "The name field must be less than or equal to 50 characters.":"নাম অবশ্যই ৫০ অক্ষরের কম বা সমান হতে হবে।", 
-    "The name field must be unique.":"নামটি ইতিমধ্যেই বিদ্যমান", 
-    "The containt field is required.":"একটি বিষয়বস্তু প্রদান করুন", 
-    "Please select a active status":"একটি একটিভ স্টেটাস নির্বাচন করুন", 
-    "Please select a valide active status":"একটি বৈধ একটিভ স্টেটাস নির্বাচন করুন", 
+    "The name field is required.":"একটি নাম প্রদান করুন",
+    "Unsupportable name.":"দুঃখিত!! নামটি অগ্রহজ যোগ্য",
+    "The name field must be less than or equal to 50 characters.":"নাম অবশ্যই ৫০ অক্ষরের কম বা সমান হতে হবে।",
+    "The name field must be unique.":"নামটি ইতিমধ্যেই বিদ্যমান",
+    "The containt field is required.":"একটি বিষয়বস্তু প্রদান করুন",
+    "Please select a active status":"একটি একটিভ স্টেটাস নির্বাচন করুন",
+    "Please select a valide active status":"একটি বৈধ একটিভ স্টেটাস নির্বাচন করুন",
     "Created Successfully":"সফলভাবে তৈরি করা হয়েছে",
     "Server Error":"সার্ভার সমস্যা",
     "Updated Successfully":"সফলভাবে আপডেট করা হয়েছে৷",
@@ -213,8 +213,8 @@
     "Please enter a valid meta keywords for the product": "দয়া করে পণ্যের জন্য একটি বৈধ মেটা কীওয়ার্ড লিখুন",
     "The meta keywords are too long": "মেটা কীওয়ার্ডগুলি খুব দীর্ঘ",
     "Please enter a valid attribute list for the product": "দয়া করে পণ্যের জন্য একটি বৈধ গুণমান তালিকা লিখুন",
-    
-    
+
+
 
     "admin": "অ্যাডমিন"
 }
