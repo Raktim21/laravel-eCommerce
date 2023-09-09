@@ -49,14 +49,12 @@ class NotificationController extends Controller
                 {
                     return new StreamedResponse(function () use ($start_time) {
 
-                        echo ":" . str_repeat(" ", 2048) . "\n"; // adding 2kB padding for IE Bug
+                        echo ":" . str_repeat(" ", 2048) . "\n";
                         echo "retry: 2000\n";
 
                         $c = 0;
                         while ((time() - $start_time) < 30)
                         {
-                            Log::info('notification - ' . $start_time);
-
                             $notifications = Notification::
                                 select('id','data','read_at','created_at')
                                 ->where('notifiable_id', '=', auth()->user()->id)
@@ -85,7 +83,7 @@ class NotificationController extends Controller
 
                             if (connection_aborted()) {break;}
                             DB::disconnect();
-                            sleep(3); // 50ms
+                            sleep(3);
                         }
 
                     }, 200, [

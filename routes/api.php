@@ -96,7 +96,7 @@ Route::group(['middleware' => ['ApiAuth']],function () {
 
     Route::get('wish-list', [WishlistController::class, 'getList'])->middleware('gzip');
 
-    Route::get('/captcha', [SystemController::class, 'sendCaptcha']);
+    Route::get('captcha', [SystemController::class, 'sendCaptcha']);
 
 });
 
@@ -119,7 +119,7 @@ Route::group(['prefix' => 'admin'], function () {
 
         Route::get('general-setting', [FrontendController::class, 'general'])->middleware('gzip');
 
-        Route::get('/captcha', [SystemController::class, 'sendCaptcha']);
+        Route::get('captcha', [SystemController::class, 'sendCaptcha']);
 
     });
 
