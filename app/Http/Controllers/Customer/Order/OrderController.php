@@ -62,6 +62,14 @@ class OrderController extends Controller
             ], 422);
         }
 
+        if(CustomerCart::where('user_id', auth()->user()->id)->count() == 0)
+        {
+            return response()->json([
+                'status'    => false,
+                'errors'    => ['No product is added to cart.']
+            ], 400);
+        }
+
         $promo = PromoCode::where('code', $request->promo_code)->first();
 
         if($this->validatePromoCode($promo))
