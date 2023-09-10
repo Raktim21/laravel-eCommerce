@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Services\OrderService;
 use App\Http\Services\PromoCodeService;
 use App\Models\EmailConfig;
+use App\Models\FlashSale;
 use App\Models\Inventory;
 use App\Models\ProductCombination;
 use App\Models\ProductHasPromo;
 use App\Models\ProductReviewImage;
+use App\Models\PromoProduct;
 use App\Models\PromoUser;
 use App\Models\ReviewImages;
 use Illuminate\Database\QueryException;
@@ -66,7 +68,9 @@ class OrderController extends Controller
         {
             return response()->json([
                 'status'    => true,
-                'data'      => array('promo_id' => $promo->id)
+                'data'      => array(
+                    'promo_id' => $promo->id,
+                    'promo_discount' => $this->service->getPromoDiscount($promo))
             ]);
         } else {
             return response()->json([
@@ -246,7 +250,7 @@ class OrderController extends Controller
     }
 
 
-    private function validatePromoCode($promo): bool
+    private function validatePromoCode($promo)
     {
         if($promo->is_active == 1) {
             if(!Carbon::parse($promo->start_date)->lessThanOrEqualTo(Carbon::today())) {
@@ -269,6 +273,20 @@ class OrderController extends Controller
 
             if($promo->max_num_users!=0 && $promo->max_num_users == PromoUser::where('promo_id', $promo->id)->count()) {
                 return false;
+            }
+
+            if($promo->is_global_product == 0) {
+                $products = PromoProduct::where('promo_id',$promo->id)->select('product_id')->get();
+                $cart_products = DB::table('customer_carts')
+                    ->leftJoin('product_combinations','customer_carts.product_combination_id','=','product_combinations.id')
+                    ->where('user_id',auth()->user()->id)->select('product_combinations.product_id as product_id')->get();
+
+                $matches = collect($products)->pluck('product_id')->intersect(collect($cart_products)->pluck('product_id'));
+
+                if ($matches->isEmpty())
+                {
+                    return false;
+                }
             }
             return true;
         }

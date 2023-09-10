@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use App\Models\CustomerCart;
 use App\Models\FlashSale;
 use App\Models\GeneralSetting;
 use App\Models\Inventory;
@@ -502,6 +503,41 @@ class OrderService
         $order->order_status_id = 3;
         $order->save();
         return 'done';
+    }
+
+    public function getPromoDiscount($promo): float|int
+    {
+        $cart = CustomerCart::where('user_id', auth()->user()->id)->get();
+
+        $discount = 0;
+
+        foreach ($cart as $item) {
+            $total = $item->productCombination->selling_price * $item->product_quantity;
+
+            if($item->productCombination->product->is_on_sale == 0) {
+                if($promo->is_global_product == 0) {
+                    $promo_exist = PromoProduct::where('promo_id', $promo->id)
+                        ->where('product_id', $item->productCombination->product_id)->first();
+
+                    if($promo_exist) {
+                        $discount += $promo->is_percentage==1 ? (($total * $promo->discount)/100) : ($promo->discount * $item->product_quantity);
+                    }
+                } else {
+                    $discount += $promo->is_percentage==1 ? (($total * $promo->discount)/100) : ($promo->discount * $item->product_quantity);
+                }
+            }
+            else
+            {
+                $sale = FlashSale::first();
+
+                if($sale && $sale->status == 1 && Carbon::parse($sale->end_date)->gte(Carbon::now()))
+                {
+                    $discount += ($total * $sale->discount)/100;
+                }
+            }
+        }
+
+        return $discount;
     }
 
 }

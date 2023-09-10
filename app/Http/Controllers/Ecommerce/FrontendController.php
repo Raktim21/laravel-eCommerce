@@ -245,7 +245,7 @@ class FrontendController extends Controller
     }
 
 
-    public function productFilter(HomepageRequest $request): \Illuminate\Http\JsonResponse
+    public function productFilter(HomepageRequest $request)
     {
         $data = (new ProductService(new Product()))->getAll($request, 0);
 
@@ -253,8 +253,8 @@ class FrontendController extends Controller
             return response()->json([
                 'status'   => true,
                 'data'     => $data
-            ], $data->isEmpty() ? 204 : 200);
-        }else {
+            ]);
+        } else {
             return response()->noContent();
         }
     }
