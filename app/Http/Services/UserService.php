@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
@@ -234,11 +235,11 @@ class UserService
     }
 
 
-    public function updateAddress(Request $request, $id): bool
+    public function updateAddress(Request $request, $id, $isAdmin): bool
     {
         $address = UserAddress::findOrFail($id);
 
-        if (auth()->guard('user-api')->check() && ($address->user_id != auth()->guard('user-api')->user()->id)) {
+        if ($isAdmin == 0 && $address->user_id != auth()->user()->id) {
             return false;
         }
 

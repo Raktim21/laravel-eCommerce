@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin\POS;
 
 use App\Models\Branch;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\QueryException;
@@ -45,8 +46,6 @@ class BranchController extends Controller
             'longitude'     => $request->longitude
         ]);
 
-        Cache::delete('branches');
-
         return response()->json(['status' => true], 201);
     }
 
@@ -73,8 +72,6 @@ class BranchController extends Controller
             'longitude'     => $request->longitude
         ]);
 
-        Cache::delete('branches');
-
         return response()->json(['status' => true]);
     }
 
@@ -84,8 +81,6 @@ class BranchController extends Controller
 
         try {
             $branch->delete();
-
-            Cache::delete('branches');
 
             return response()->json(['status' => true]);
         } catch(QueryException $ex) {

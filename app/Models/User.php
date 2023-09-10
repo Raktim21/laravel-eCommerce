@@ -133,7 +133,6 @@ class User extends Authenticatable implements JWTSubject
         static::updated(function ($user) {
             if(!is_null($user->shop_branch_id))
             {
-                Cache::forget('adminDetail'.$user->id);
                 Cache::forget('adminAuthProfile'.$user->id);
             } else {
                 Cache::forget('userDetail'.$user->id);

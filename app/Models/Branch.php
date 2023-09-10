@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class Branch extends Model
 {
@@ -35,8 +36,20 @@ class Branch extends Model
         return $this->hasMany(InventoryTrace::class, 'to_branch_id');
     }
 
-    public function users()
+    public static function boot()
     {
-        return $this->hasMany(Admin::class, 'branch_id');
+        parent::boot();
+
+        static::created(function ($branch) {
+            Cache::forget('branches');
+        });
+
+        static::updated(function ($branch) {
+            Cache::forget('branches');
+        });
+
+        static::deleted(function ($branch) {
+            Cache::forget('branches');
+        });
     }
 }

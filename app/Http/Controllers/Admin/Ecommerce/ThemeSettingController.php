@@ -46,7 +46,7 @@ class ThemeSettingController extends Controller
             ], 422);
         }
 
-        $theme   =  $this->themeCustomizer->find($id);
+        $theme   =  $this->themeCustomizer->findOrFail($id);
 
         $old_order = $theme->ordering;
 
@@ -56,14 +56,12 @@ class ThemeSettingController extends Controller
             return response()->json([
                 'status' => false,
                 'errors' => ['You can not customize this theme.'],
-            ], 422);
+            ], 400);
         }
-
 
         $theme->update([
             'ordering' => $theme->ordering + ($request->position == 'up' ? -1 : 1)
         ]);
-
 
         $theme_2->update([
             'ordering' => $theme_2->ordering + ($request->position == 'up' ? 1 : -1)
@@ -97,9 +95,10 @@ class ThemeSettingController extends Controller
         }
 
         $data = $this->themeCustomizer->find($id);
-        $old_value = $data->value;
 
         if ($data) {
+            $old_value = $data->value;
+
             $data->update([
                 'value' => $request->value
             ]);
@@ -138,9 +137,9 @@ class ThemeSettingController extends Controller
             ], 422);
         }
 
-        $theme = $this->themeCustomizer->find($id);
+        $theme = $this->themeCustomizer->findOrFail($id);
 
-        if($theme->is_default == 0)
+        if($theme->is_inactivable == 1)
         {
             $theme->update([
                 'is_active' => $request->active

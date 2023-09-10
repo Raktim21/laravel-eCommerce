@@ -77,9 +77,16 @@ class PromocodeController extends Controller
 
     public function updateStatus($id): \Illuminate\Http\JsonResponse
     {
-        $this->service->updateStatus($id);
-        return response()->json([
-            'status' => true,
-        ]);
+        if ($this->service->updateStatus($id))
+        {
+            return response()->json([
+                'status' => true,
+            ]);
+        } else {
+            return response()->json([
+                'status' => true,
+                'errors' => ['This promo code has already been expired.']
+            ], 400);
+        }
     }
 }

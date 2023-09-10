@@ -58,17 +58,20 @@ class UserAddress extends Model
         parent::boot();
 
         static::created(function ($address) {
+            Cache::forget('userDetail'.$address->user_id);
             Cache::forget('customer_addresses'.$address->user_id);
             Cache::forget('userAddresses'.$address->user_id);
             Cache::forget('customer_auth_profile'.$address->user_id);
         });
 
         static::updated(function ($address) {
+            Cache::forget('userDetail'.$address->user_id);
             Cache::forget('customer_addresses'.$address->user_id);
             Cache::forget('userAddresses'.$address->user_id);
         });
 
         static::deleted(function ($address) {
+            Cache::forget('userDetail'.$address->user_id);
             Cache::forget('customer_addresses'.$address->user_id);
             Cache::forget('userAddresses'.$address->user_id);
             Cache::forget('customer_auth_profile'.$address->user_id);
