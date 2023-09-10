@@ -249,10 +249,12 @@ class FrontendController extends Controller
     {
         $data = (new ProductService(new Product()))->getAll($request, 0);
 
+
         return response()->json([
             'status'   => true,
             'data'     => $data
         ], $data->isEmpty() ? 204 : 200);
+        
     }
 
 

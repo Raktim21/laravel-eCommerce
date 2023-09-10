@@ -275,7 +275,7 @@ jobs:
             php artisan cache:clear
     
       
-        continue-on-error: true  
+        continue-on-error: true
 
 
 
@@ -285,14 +285,11 @@ jobs:
 
 
 
-
-
-
-      - name: 📂 Sync files in apijannatistore.selopia.com
+      - name: 📂 Sync files in api.jannatistore.com
         uses: SamKirkland/FTP-Deploy-Action@4.3.0
         with:
           server: selopia.com
-          username: u652464815.apijannatistore.selopia.com
+          username: u652464815.api.jannatistore.com
           password: dF@qa#4;k,vd
           exclude:  |
             **/.git*
@@ -303,7 +300,7 @@ jobs:
             **/public/json*/**
         continue-on-error: true     
     
-      - name: executing remote ssh commands in apijannatistore.selopia.com
+      - name: executing remote ssh commands in api.jannatistore.com
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: selopia.com
@@ -311,11 +308,39 @@ jobs:
           password: wew2Weqsdf@ssfa3
           port: 65002
           script: |
-            cd domains/apijannatistore.selopia.com/public_html/
-            # composer2 update
-            php artisan migrate
-            php artisan optimize
+            # cd domains/api.jannatistore.com/public_html/
+            # # composer2 update
+            # php artisan migrate
+            # php artisan optimize
+            # php artisan config:clear
+            # php artisan cache:clear
+
+
+            cd domains/api.jannatistore.com/public_html/
+            composer2 update
+            cp .env.example .env
+            sed -i 's/DB_DATABASE=.*/DB_DATABASE=u652464815_jannati_store/g' .env
+            sed -i 's/DB_USERNAME=.*/DB_USERNAME=u652464815_jannati_store/g' .env
+            sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=8wZS71K7!z/g' .env
+            sed -i 's/API_ACCESS_TOKEN=.*/API_ACCESS_TOKEN=tR9sYp2aL8zWqGm5vH1oJ3iK6xXuF7bC4eV2nN5sA1jD8kP6oZrQaM9cT7sW4/g' .env
+            sed -i 's/FRONTEND_URL=.*/FRONTEND_URL=https://jannatistore.com/g' .env
+            sed -i 's/APP_URL=.*/APP_URL=https://api.jannatistore.com/g' .env
+            mkdir -p public/uploads/admin/avatars
+            mkdir -p public/uploads/customer/avatars
+            mkdir -p public/uploads/images/banner
+            mkdir -p public/uploads/images/brands
+            mkdir -p public/uploads/images/category
+            mkdir -p public/uploads/images/general-setting
+            mkdir -p public/uploads/products/featured_banner
+            mkdir -p public/uploads/products/thumbnail
+            mkdir -p public/uploads/images/site_banner
+            mkdir -p public/uploads/images/sponsors
+            mkdir -p public/uploads/images/sub_categories
+            php artisan key:generate
+            php artisan jwt:secret
             php artisan config:clear
+            php artisan migrate:fresh --seed
+            php artisan optimize
             php artisan cache:clear
     
       

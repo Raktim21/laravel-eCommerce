@@ -47,7 +47,10 @@ Route::get('cron', [SystemController::class, 'runSchedule']);
 
 Route::group(['middleware' => ['ApiAuth']],function () {
 
-    Route::prefix('asset')->middleware('gzip')->controller(StaticAssetController::class)->group(function () {
+
+
+    Route::prefix('asset')->controller(StaticAssetController::class)->group(function () {
+
 
         Route::get('country-list','countryList');
         Route::get('division-list','divisionList');
@@ -61,7 +64,7 @@ Route::group(['middleware' => ['ApiAuth']],function () {
 
     Route::controller(CartController::class)->group(function () {
 
-        Route::get('cart-list', 'cartList')->middleware('gzip');
+        Route::get('cart-list', 'cartList');
         Route::post('cart-store', 'cartStore');
         Route::put('cart-update/{id}', 'cartUpdate');
         Route::delete('cart-delete/{id}', 'cartDelete');
@@ -71,30 +74,30 @@ Route::group(['middleware' => ['ApiAuth']],function () {
 
     Route::controller(FrontendController::class)->group(function () {
 
-        Route::get('general-setting', 'general')->middleware('gzip');
-        Route::get('theme', 'theme')->middleware('gzip');
-        Route::get('home','home')->middleware('gzip');
-        Route::get('category','category')->middleware('gzip');
-        Route::get('sub-category-list/{category_id}', 'getSubCategoryList')->middleware('gzip');
-        Route::get('brand','brand')->middleware('gzip');
+        Route::get('general-setting', 'general');
+        Route::get('theme', 'theme');
+        Route::get('home','home');
+        Route::get('category','category');
+        Route::get('sub-category-list/{category_id}', 'getSubCategoryList');
+        Route::get('brand','brand');
         Route::get('product-details/{id}','productDetails')->middleware('view_count');
-        Route::get('product-reviews/{product_id}','productReviews')->middleware('gzip');
-        Route::get('product-filter','productFilter')->middleware('gzip');
-        Route::get('payment-methods','paymentMethods')->middleware('gzip');
-        Route::get('delivery-methods','deliveryMethods')->middleware('gzip');
-        Route::get('product/search-suggestion','productSearchSuggestions')->middleware('gzip');
+        Route::get('product-reviews/{product_id}','productReviews');
+        Route::get('product-filter','productFilter');
+        Route::get('payment-methods','paymentMethods');
+        Route::get('delivery-methods','deliveryMethods');
+        Route::get('product/search-suggestion','productSearchSuggestions');
         Route::post('subscribe',  'subscribe');
         Route::post('contact',  'contact');
         Route::post('product-abuse-report', 'reportProduct');
-        Route::get('order-additional-charges', 'additionalCharges')->middleware('gzip');
-        Route::get('faq-list','faqList')->middleware('gzip');
-        Route::get('static-menu','staticMenu')->middleware('gzip');
-        Route::get('banners', 'getBanners')->middleware('gzip');
-        Route::get('static-menu-content/{id}','staticMenuContent')->middleware('gzip');
-        Route::get('flash-sale', 'flashSale')->middleware('gzip');
+        Route::get('order-additional-charges', 'additionalCharges');
+        Route::get('faq-list','faqList');
+        Route::get('static-menu','staticMenu');
+        Route::get('banners', 'getBanners');
+        Route::get('static-menu-content/{id}','staticMenuContent');
+        Route::get('flash-sale', 'flashSale');
     });
 
-    Route::get('wish-list', [WishlistController::class, 'getList'])->middleware('gzip');
+    Route::get('wish-list', [WishlistController::class, 'getList']);
 
     Route::get('captcha', [SystemController::class, 'sendCaptcha']);
 
@@ -103,7 +106,7 @@ Route::group(['middleware' => ['ApiAuth']],function () {
 
 Route::group(['prefix' => 'admin'], function () {
 
-    Route::group(['middleware' => ['ApiStaticAuth','gzip']],function () {
+    Route::group(['middleware' => ['ApiStaticAuth']],function () {
 
         Route::prefix('asset')->controller(StaticAssetController::class)->group(function () {
 
@@ -117,7 +120,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::get('gender-list', 'genderList');
         });
 
-        Route::get('general-setting', [FrontendController::class, 'general'])->middleware('gzip');
+        Route::get('general-setting', [FrontendController::class, 'general']);
 
         Route::get('captcha', [SystemController::class, 'sendCaptcha']);
 
@@ -140,7 +143,7 @@ Route::group(['prefix' => 'admin'], function () {
 
         Route::controller(ProfileController::class)->group(function () {
 
-            Route::get('auth-permissions', 'permissions')->middleware('gzip');
+            Route::get('auth-permissions', 'permissions');
             Route::put('profile-update','profileUpdate');
             Route::post('avatar-update','avatarUpdate');
             Route::put('password-update','passwordUpdate');
@@ -149,7 +152,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::controller(BranchController::class)->group(function () {
 
             Route::middleware('permission:create/update/delete branch')->group(function() {
-                Route::get('all-branch', 'getAll')->middleware('gzip');
+                Route::get('all-branch', 'getAll');
                 Route::post('create-branch', 'store');
                 Route::put('update-branch/{id}', 'update');
                 Route::delete('delete-branch/{id}', 'delete');
@@ -159,22 +162,22 @@ Route::group(['prefix' => 'admin'], function () {
         Route::controller(AdminController::class)->group(function () {
 
             Route::group(['middleware' => ['permission:create/update/delete admin']], function() {
-                Route::get('admin-list','adminList')->middleware('gzip');
+                Route::get('admin-list','adminList');
                 Route::post('admin-create','adminCreate');
-                Route::get('admin-detail/{id}','adminDetail')->middleware('gzip');
+                Route::get('admin-detail/{id}','adminDetail');
                 Route::put('admin-update/{id}','adminUpdate');
                 Route::post('admin-avatar-update/{id}','adminUpdateAvatar');
                 Route::delete('admin-delete/{id}','adminDelete');
                 Route::post('admin-bulk-delete', 'bulkDelete');
             });
             //Pick Up Address
-            Route::get('pickup-address-list','pickUpAddress')->middleware('gzip');
+            Route::get('pickup-address-list','pickUpAddress');
             Route::put('pickup-address-update','pickUpAddressUpdate')->middleware('permission:update pickup address');
         });
 
         Route::controller(UserController::class)->group(function () {
 
-            Route::group(['middleware' => ['permission:get user data','gzip']], function() {
+            Route::group(['middleware' => ['permission:get user data']], function() {
                 Route::get('user-list','userList');
                 Route::get('user-detail/{id}','userDetail');
                 Route::get('user-order/{id}','userOrder');
@@ -203,7 +206,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::controller(CategoryController::class)->group(function () {
 
             Route::group(['middleware' => ['permission:create/update/delete product categories']], function() {
-                Route::get('category-list','index')->middleware('gzip');
+                Route::get('category-list','index');
                 Route::post('category-store','store');
                 Route::post('category-update/{id}','update');
                 Route::delete('category-delete/{id}','destroy');
@@ -216,7 +219,7 @@ Route::group(['prefix' => 'admin'], function () {
 
         Route::controller(SubCategoryController::class)->group(function () {
 
-            Route::get('sub-category-list/{category_id}', 'getList')->middleware('gzip');
+            Route::get('sub-category-list/{category_id}', 'getList');
 
             Route::group(['middleware' => ['permission:create/update/delete product sub-categories']], function() {
                 Route::post('sub-category-store','store');
@@ -229,7 +232,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::controller(BrandController::class)->group(function () {
 
             Route::group(['middleware' => ['permission:create/update/delete product brands']], function() {
-                Route::get('brand-list','index')->middleware('gzip');
+                Route::get('brand-list','index');
                 Route::post('brand-store','store');
                 Route::post('brand-update/{id}','update');
                 Route::delete('brand-delete/{id}','destroy');
@@ -241,9 +244,9 @@ Route::group(['prefix' => 'admin'], function () {
         Route::controller(BannerSettingController::class)->group(function () {
 
             Route::group(['middleware' => ['permission:create/update/delete banner setting']], function() {
-                Route::get('banner-list','index')->middleware('gzip');
+                Route::get('banner-list','index');
                 Route::post('banner-store','store');
-                Route::get('banner-detail/{id}','detail')->middleware('gzip');
+                Route::get('banner-detail/{id}','detail');
                 Route::post('banner-update/{id}','update');
                 Route::delete('banner-delete/{id}','destroy');
                 Route::post('banner-bulk-delete', 'bulkDelete');
@@ -253,7 +256,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::controller(SponsorController::class)->group(function () {
 
             Route::group(['middleware' => ['permission:create/update/delete sponsors']], function() {
-                Route::get('sponsor-list','index')->middleware('gzip');
+                Route::get('sponsor-list','index');
                 Route::post('sponsor-store','store');
                 Route::post('sponsor-update/{id}','update');
                 Route::delete('sponsor-delete/{id}','delete');
@@ -262,23 +265,23 @@ Route::group(['prefix' => 'admin'], function () {
 
         });
 
-        Route::get('subscriber-list',[SubscriberController::class, 'index'])->middleware('gzip');
+        Route::get('subscriber-list',[SubscriberController::class, 'index']);
 
         Route::controller(SiteBannerController::class)->group(function () {
 
             Route::group(['middleware' => ['permission:create/update/delete banner setting']], function() {
-                Route::get('site-banner-list', 'index')->middleware('gzip');
+                Route::get('site-banner-list', 'index');
                 Route::post('site-banner-update', 'update');
             });
         });
 
         Route::controller(GeneralSettingController::class)->group(function () {
 
-            Route::get('general-setting-detail','detail')->middleware('gzip');
+            Route::get('general-setting-detail','detail');
             Route::post('general-setting-update','update')->middleware('permission:update general setting');
 
             Route::group(['middleware' => ['permission:create/update/delete faqs']], function() {
-                Route::get('faq-list','faqList')->middleware('gzip');
+                Route::get('faq-list','faqList');
                 Route::post('faq-store','faqStore');
                 Route::put('faq-update/{id}','faqUpdate');
                 Route::delete('faq-delete/{id}','faqDelete');
@@ -292,16 +295,16 @@ Route::group(['prefix' => 'admin'], function () {
         Route::controller(AdminRoleController::class)->group(function () {
 
             Route::group(['middleware' => ['permission:manage role']], function() {
-                Route::get('role-list', 'roleList')->middleware('gzip');
-                Route::get('role-detail/{id}', 'roleDetail')->middleware('gzip');
+                Route::get('role-list', 'roleList');
+                Route::get('role-detail/{id}', 'roleDetail');
                 Route::put('role-update/{id}', 'roleUpdate');
-                Route::get('permission-list', 'permissionList')->middleware('gzip');
+                Route::get('permission-list', 'permissionList');
             });
         });
 
         Route::controller(ProductController::class)->group(function () {
 
-            Route::group(['middleware' => ['permission:get product data','gzip']], function() {
+            Route::group(['middleware' => ['permission:get product data']], function() {
                 Route::get('product-list','index');
                 Route::get('product-detail/{id}','detail');
                 Route::get('product-abuse-reports', 'abuseReports');
@@ -316,8 +319,8 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::delete('product-image-delete/{id}','multipleImageDelete');
 
                 Route::get('product-review/change-status/{id}','reviewApproved');
-                Route::get('product-reviews', 'reviewGetAll')->middleware('gzip');
-                Route::get('product-reviews/{id}', 'getReview')->middleware('gzip');
+                Route::get('product-reviews', 'reviewGetAll');
+                Route::get('product-reviews/{id}', 'getReview');
                 Route::put('product-review-reply/{id}', 'reviewReply');
                 Route::put('product-abuse-reports/{id}', 'changeAbuseStatus');
             });
@@ -342,7 +345,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::controller(FlashSaleController::class)->group(function () {
 
             Route::group(['middleware' => ['permission:create/update flash sale']], function () {
-                Route::get('flash-sale', 'index')->middleware('gzip');
+                Route::get('flash-sale', 'index');
                 Route::post('flash-sale', 'store');
                 Route::get('flash-sale/update-status', 'changeStatus');
             });
@@ -351,8 +354,8 @@ Route::group(['prefix' => 'admin'], function () {
         Route::controller(InventoryController::class)->group(function () {
 
             Route::group(['middleware' => ['permission:update/transfer inventory stocks']], function() {
-                Route::get('inventory-list', 'getList')->middleware('gzip');
-                Route::get('inventory-log', 'getLog')->middleware('gzip');
+                Route::get('inventory-list', 'getList');
+                Route::get('inventory-log', 'getLog');
                 Route::put('inventory-update-stock/{id}', 'updateStock');
                 Route::put('inventory-update-damage/{id}', 'updateDamage');
                 Route::post('inventory-transfer', 'transferStock');
@@ -363,9 +366,9 @@ Route::group(['prefix' => 'admin'], function () {
         Route::controller(PromocodeController::class)->group(function () {
 
             Route::group(['middleware' => ['permission:create/update promo-codes']], function() {
-                Route::get('promocode-list','index')->middleware('gzip');
+                Route::get('promocode-list','index');
                 Route::post('promocode-store','store');
-                Route::get('promocode-detail/{id}','detail')->middleware('gzip');
+                Route::get('promocode-detail/{id}','detail');
                 Route::put('promocode-update/{id}', 'update');
                 Route::get('promocode-inactive/{id}', 'updateStatus');
             });
@@ -374,20 +377,20 @@ Route::group(['prefix' => 'admin'], function () {
         Route::controller(OrderController::class)->group(function () {
 
             Route::group(['middleware' => ['permission:create/update/delete order additional charges']], function() {
-                Route::get('order-additional-charges', 'getAdditionalChargeList')->middleware('gzip');
+                Route::get('order-additional-charges', 'getAdditionalChargeList');
                 Route::post('order-additional-charges', 'storeCharge');
                 Route::put('order-additional-charges/{id}', 'updateCharge');
                 Route::delete('order-additional-charges/{id}', 'deleteCharge');
             });
 
-            Route::get('payment-method-list','paymentMethodList')->middleware('gzip');
-            Route::get('shipping-method-list','shippingMethodList')->middleware('gzip');
-            Route::get('order-status-list','orderStatusList')->middleware('gzip');
+            Route::get('payment-method-list','paymentMethodList');
+            Route::get('shipping-method-list','shippingMethodList');
+            Route::get('order-status-list','orderStatusList');
 
             Route::group(['middleware' => ['permission:create/update orders']], function() {
-                Route::get('admin-order', 'adminOrder')->middleware('gzip');
-                Route::get('order-list','index')->middleware('gzip');
-                Route::get('order-detail/{id}','detail')->middleware('gzip');
+                Route::get('admin-order', 'adminOrder');
+                Route::get('order-list','index');
+                Route::get('order-detail/{id}','detail');
                 Route::put('order-status-change/{id}','changeStatus');
                 Route::put('admin-note-update/{id}','changeNote');
                 Route::post('admin-order', 'sales');
@@ -418,7 +421,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::controller(ContactController::class)->group(function () {
 
             Route::group(['middleware' => ['permission:manage inbox']], function() {
-                Route::get('contact-us-list', 'index')->middleware('gzip');
+                Route::get('contact-us-list', 'index');
                 Route::delete('contact-us-delete/{id}', 'destroy');
             });
 
@@ -426,13 +429,13 @@ Route::group(['prefix' => 'admin'], function () {
 
         Route::controller(AdminDashboardController::class)->group(function () {
 
-            Route::get('dashboard','index')->middleware('gzip');
+            Route::get('dashboard','index');
             Route::get('global-data','pending_order_count');
         });
 
         Route::controller(ThemeSettingController::class)->group(function () {
 
-            Route::get('theme-setting','index')->middleware('gzip');
+            Route::get('theme-setting','index');
 
             Route::group(['middleware' => ['permission:update theme-setting']], function() {
                 Route::post('theme-position-update/{id}','positionUpdate');
@@ -444,8 +447,8 @@ Route::group(['prefix' => 'admin'], function () {
 
         Route::controller(ExpenseController::class)->group(function () {
 
-            Route::get('expense-category', 'categoryIndex')->middleware('gzip');
-            Route::get('expense', 'expenseIndex')->middleware('gzip');
+            Route::get('expense-category', 'categoryIndex');
+            Route::get('expense', 'expenseIndex');
 
             Route::group(['middleware' => ['permission:create/update/delete expense categories']], function() {
                 Route::post('expense-category-store', 'categoryStore');
@@ -463,7 +466,7 @@ Route::group(['prefix' => 'admin'], function () {
 
         });
 
-        Route::controller(SalesReportController::class)->middleware('gzip')->group(function () {
+        Route::controller(SalesReportController::class)->group(function () {
 
             Route::get('kpi_report', 'generalReport');
             Route::get('users/monthly_new_user', 'newUsers');
@@ -484,7 +487,7 @@ Route::group(['prefix' => 'admin'], function () {
 
         Route::controller(BillingCartController::class)->group(function () {
 
-            Route::get('billing-cart-list', 'cartList')->middleware('gzip');
+            Route::get('billing-cart-list', 'cartList');
 
             Route::group(['middleware' => ['permission:create/update/delete billing']], function() {
                 Route::post('billing-cart-store', 'cartStore');
@@ -495,16 +498,16 @@ Route::group(['prefix' => 'admin'], function () {
         Route::controller(StaticPageController::class)->group(function () {
 
             Route::group(['middleware' => ['permission:create/update/delete static content']], function() {
-                Route::get('static-content', 'staticContent')->middleware('gzip');
+                Route::get('static-content', 'staticContent');
                 Route::post('static-content-create', 'staticContentStore');
-                Route::get('static-content-detail/{id}', 'staticContentDetail')->middleware('gzip');
+                Route::get('static-content-detail/{id}', 'staticContentDetail');
                 Route::post('static-content-update/{id}', 'staticContentUpdate');
                 Route::delete('static-content-delete/{id}', 'staticContentDelete');
 
-                Route::get('static-menu', 'staticMenu')->middleware('gzip');
-                Route::get('menu-type','staticMenuTypes')->middleware('gzip');
+                Route::get('static-menu', 'staticMenu');
+                Route::get('menu-type','staticMenuTypes');
                 Route::post('static-menu-create', 'staticMenuStore');
-                Route::get('static-menu-detail/{id}', 'staticMenuDetail')->middleware('gzip');
+                Route::get('static-menu-detail/{id}', 'staticMenuDetail');
                 Route::post('static-menu-update/{id}', 'staticMenuUpdate');
                 Route::delete('static-menu-delete/{id}', 'staticMenuDelete');
                 Route::post('static-menu-status-change/{id}', 'staticMenuStatusChange');
@@ -513,7 +516,7 @@ Route::group(['prefix' => 'admin'], function () {
 
         Route::controller(SeoSettingController::class)->group(function () {
             Route::group(['middleware' => ['permission:view/update seo setting']], function() {
-                Route::get('seo-setting', 'index')->middleware('gzip');
+                Route::get('seo-setting', 'index');
                 Route::post('seo-setting-update', 'update');
             });
         });
@@ -554,9 +557,9 @@ Route::group(['prefix' => 'user'], function () {
             Route::put('profile-update','profileUpdate');
             Route::put('password-update','passwordUpdate');
             Route::post('avatar-update','avatarUpdate');
-            Route::get('address-list','addressList')->middleware('gzip');
+            Route::get('address-list','addressList');
             Route::post('create-new-address','createNewAddress')->middleware('verify.email');
-            Route::get('address-detail/{id}','addressDetail')->middleware('gzip');
+            Route::get('address-detail/{id}','addressDetail');
             Route::put('address-update/{id}','updateAddress');
             Route::delete('address-delete/{id}','deleteAddress');
             Route::put('address-default/{id}','makeDefaultAddress');
@@ -571,18 +574,18 @@ Route::group(['prefix' => 'user'], function () {
         Route::controller(CartController::class)->group(function () {
 
             Route::put('add-cart-to-user', 'addUserCart'); // after log in
-            Route::get('cart-list','cartList')->middleware('gzip');
+            Route::get('cart-list','cartList');
             Route::post('cart-store','cartStore');
             Route::put('cart-update/{id}','cartUpdate');
             Route::delete('cart-delete/{id}','cartDelete');
             Route::get('delivery-charge/{id}','deliveryCharge');
-            Route::get('additional-charge', 'getCharge')->middleware('gzip');
+            Route::get('additional-charge', 'getCharge');
             Route::post('cart-bulk-delete', 'bulkDelete');
             Route::post('add-cart-from-wishlist', 'addCartFromWishlist');
         });
 
         Route::controller(WishlistController::class)->middleware('verify.email')->group(function () {
-            Route::get('wish-list', 'getList')->middleware('gzip');
+            Route::get('wish-list', 'getList');
             Route::post('wish-store', 'store');
             Route::get('convert-to-cart/{id}', 'addToCart');
             Route::delete('wish-delete/{id}', 'delete');
@@ -592,13 +595,13 @@ Route::group(['prefix' => 'user'], function () {
         });
 
         Route::controller(CustomerOrderController::class)->middleware('verify.email')->group(function () {
-            Route::get('order-list','orderList')->middleware('gzip');
+            Route::get('order-list','orderList');
             Route::post('add-promo', 'addPromo');
             Route::post('order','order');
-            Route::get('order-detail/{id}','orderDetail')->middleware('gzip');
+            Route::get('order-detail/{id}','orderDetail');
             Route::post('user-product-review',  'postReview');
             Route::get('cancel-order/{id}', 'cancelOrder');
-            Route::get('available-promo-codes', 'getPromos')->middleware('gzip');
+            Route::get('available-promo-codes', 'getPromos');
         });
 
         Route::get('order/invoice/{order_id}', [GenerateReportController::class, 'invoicePDF']);
