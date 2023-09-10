@@ -4,13 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Notification;
-use App\Models\OrderStatus;
-use Carbon\Carbon;
-use DateTime;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -54,7 +49,7 @@ class NotificationController extends Controller
                 {
                     return new StreamedResponse(function () use ($start_time) {
 
-                        echo ":" . str_repeat(" ", 2048) . "\n"; // adding 2kB padding for IE Bug
+                        echo ":" . str_repeat(" ", 2048) . "\n";
                         echo "retry: 2000\n";
 
                         $c = 0;
@@ -83,11 +78,12 @@ class NotificationController extends Controller
                                     gc_collect_cycles();
                                     $c=1;
                                 }
+
                             }
 
                             if (connection_aborted()) {break;}
                             DB::disconnect();
-                            sleep(3); // 50ms
+                            sleep(3);
                         }
 
                     }, 200, [

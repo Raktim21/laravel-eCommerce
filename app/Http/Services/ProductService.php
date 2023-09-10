@@ -41,7 +41,8 @@ class ProductService
             })->when($request->sub_category_id, function ($query) use ($request) {
                 return $query->where('category_sub_id', $request->sub_category_id);
             })->when($request->brands, function ($query) use ($request) {
-                return $query->whereIn('brand_id', $request->brands);
+                $brands = json_decode($request->brands, true);
+                return $query->whereIn('brand_id', $brands);
             })->when($request->flash_sale == 1, function ($query) use ($request) {
                 return $query->where('products.is_on_sale', 1);
             })->when($request->featured == 1, function ($query) use ($request) {

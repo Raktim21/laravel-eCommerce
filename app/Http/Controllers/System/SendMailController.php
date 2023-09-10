@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\System;
 
 use App\Http\Services\GeneralSettingService;
 use App\Http\Services\OrderService;
@@ -9,6 +9,7 @@ use App\Models\GeneralSetting;
 use App\Models\Order;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
+use App\Http\Controllers\Controller;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;

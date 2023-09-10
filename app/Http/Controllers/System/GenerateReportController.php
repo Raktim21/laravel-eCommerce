@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\System;
 
+use App\Http\Controllers\Controller;
 use App\Exports\ExpensesExport;
 use App\Exports\InventoryExport;
 use App\Exports\OrdersExport;

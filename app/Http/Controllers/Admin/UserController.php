@@ -124,7 +124,7 @@ class UserController extends Controller
 
     public function userAddressList($id): \Illuminate\Http\JsonResponse
     {
-        $data = Cache::remember('userAddresses'.$id, 24*60*60, function() use ($id) {
+        $data = Cache::remember('userAddresses'.$id, 24*60*60*7, function() use ($id) {
             return $this->service->getUserAddress($id);
         });
 
@@ -147,11 +147,15 @@ class UserController extends Controller
 
     public function userAddressUpdate(UserAddressCreateRequest $request, $id): \Illuminate\Http\JsonResponse
     {
-        $this->service->updateAddress($request, $id);
-
+        if ($this->service->updateAddress($request, $id, 1)) {
+            return response()->json([
+                'status' => true,
+            ]);
+        }
         return response()->json([
-            'status'  => true,
-        ]);
+            'status' => false,
+            'errors' => ['Something went wrong.']
+        ], 500);
     }
 
 

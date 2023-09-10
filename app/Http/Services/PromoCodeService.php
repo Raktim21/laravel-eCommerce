@@ -105,12 +105,18 @@ class PromoCodeService
         ]);
     }
 
-    public function updateStatus($id)
+    public function updateStatus($id): bool
     {
         $promo = $this->code->clone()->findOrFail($id);
 
+        if($promo->is_active == 0 && $promo->end_date <= now())
+        {
+            return false;
+        }
+
         $promo->is_active = $promo->is_active==0 ? 1 : 0;
         $promo->save();
+        return true;
     }
 
     public function getUserPromos($user_id): array

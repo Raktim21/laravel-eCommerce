@@ -74,7 +74,7 @@ class GoogleFacebookController extends Controller
             } else {
                 Cache::delete('auth_type');
 
-                $credentials = array(
+                $credentials = array (
                     'username'  => $user->email,
                     'password'  => $user->id
                 );
@@ -267,7 +267,6 @@ class GoogleFacebookController extends Controller
 
             return response()->json([
                 'status' => true,
-                'payload' => $payload
             ]);
         }
         catch (\Throwable $th)
