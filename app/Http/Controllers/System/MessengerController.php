@@ -156,7 +156,7 @@ class MessengerController extends Controller
             return response()->json([
                 'status'    => false,
                 'errors'    => $validator->errors()->all()
-            ]);
+            ], 422);
         }
 
         $order = Order::where('order_number', $request->order_number)->first();
