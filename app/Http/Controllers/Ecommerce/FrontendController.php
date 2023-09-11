@@ -67,7 +67,6 @@ class FrontendController extends Controller
 
     public function home(): \Illuminate\Http\JsonResponse
     {
-        Cache::clear();
         $theme = ThemeCustomizer::orderBy('id')->get();
 
         $data = array();
