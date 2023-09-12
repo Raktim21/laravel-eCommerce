@@ -31,6 +31,7 @@ class UserProfile extends Model
             if($profile->user->shop_branch_id)
             {
                 Cache::delete('adminDetail'.$profile->user_id);
+                Cache::delete('adminAuthProfile'.$profile->user_id);
             } else {
                 Cache::delete('userDetail'.$profile->user_id);
                 Cache::delete('customer_auth_profile'.$profile->user_id);
