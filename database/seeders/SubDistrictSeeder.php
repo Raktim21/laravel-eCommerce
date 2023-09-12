@@ -558,6 +558,7 @@ class SubDistrictSeeder extends Seeder
             array('id' => '545','district_id' => '47','name' => 'Gandaria','local_name' => 'গন্দারিয়া','url' => 'gandaria.dhaka.gov.bd'),
             array('id' => '546','district_id' => '47','name' => 'Adabar','local_name' => 'আদাবার','url' => 'adabar.dhaka.gov.bd'),
             array('id' => '547','district_id' => '47','name' => 'Hatirjheel','local_name' => 'হাতিরঝিল','url' => 'hatirjheel.dhaka.gov.bd'),
+            array('id' => '548','district_id' => '47','name' => 'Banasree','local_name' => 'বনশ্রী','url' => 'banasree.dhaka.gov.bd'),
 
         );
 
