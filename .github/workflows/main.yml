@@ -308,39 +308,11 @@ jobs:
           password: wew2Weqsdf@ssfa3
           port: 65002
           script: |
-            # cd domains/api.jannatistore.com/public_html/
-            # # composer2 update
-            # php artisan migrate
-            # php artisan optimize
-            # php artisan config:clear
-            # php artisan cache:clear
-
-
             cd domains/api.jannatistore.com/public_html/
-            composer2 update
-            cp .env.example .env
-            sed -i 's/DB_DATABASE=.*/DB_DATABASE=u652464815_jannati_store/g' .env
-            sed -i 's/DB_USERNAME=.*/DB_USERNAME=u652464815_jannati_store/g' .env
-            sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=8wZS71K7!z/g' .env
-            sed -i 's/API_ACCESS_TOKEN=.*/API_ACCESS_TOKEN=tR9sYp2aL8zWqGm5vH1oJ3iK6xXuF7bC4eV2nN5sA1jD8kP6oZrQaM9cT7sW4/g' .env
-            sed -i 's/FRONTEND_URL=.*/FRONTEND_URL=https://jannatistore.com/g' .env
-            sed -i 's/APP_URL=.*/APP_URL=https://api.jannatistore.com/g' .env
-            mkdir -p public/uploads/admin/avatars
-            mkdir -p public/uploads/customer/avatars
-            mkdir -p public/uploads/images/banner
-            mkdir -p public/uploads/images/brands
-            mkdir -p public/uploads/images/category
-            mkdir -p public/uploads/images/general-setting
-            mkdir -p public/uploads/products/featured_banner
-            mkdir -p public/uploads/products/thumbnail
-            mkdir -p public/uploads/images/site_banner
-            mkdir -p public/uploads/images/sponsors
-            mkdir -p public/uploads/images/sub_categories
-            php artisan key:generate
-            php artisan jwt:secret
-            php artisan config:clear
-            php artisan migrate:fresh --seed
+            # composer2 update
+            php artisan migrate
             php artisan optimize
+            php artisan config:clear
             php artisan cache:clear
     
       
