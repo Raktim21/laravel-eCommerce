@@ -57,9 +57,9 @@ class SeoSettingController extends Controller
 
         return response()->json([
             'status' => true,
-        ],200);
+        ]);
 
     }
 
-    
+
 }

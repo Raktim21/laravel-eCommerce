@@ -27,7 +27,7 @@ class OrderController extends Controller
     }
 
 
-    public function paymentMethodList(): \Illuminate\Http\JsonResponse
+    public function paymentMethodList()
     {
         $data = Cache::rememberForever('paymentMethods', function () {
             return OrderPaymentMethod::where('is_active',1)->latest()->get();
@@ -40,7 +40,7 @@ class OrderController extends Controller
     }
 
 
-    public function shippingMethodList(): \Illuminate\Http\JsonResponse
+    public function shippingMethodList()
     {
         $data = Cache::rememberForever('shippingMethods', function () {
             return OrderDeliveryMethod::where('is_active',1)->latest()->get();
@@ -53,7 +53,7 @@ class OrderController extends Controller
     }
 
 
-    public function orderStatusList(): \Illuminate\Http\JsonResponse
+    public function orderStatusList()
     {
         $active = GeneralSetting::first()->delivery_status;
 
@@ -70,7 +70,7 @@ class OrderController extends Controller
     }
 
 
-    public function index(OrderSearchRequest $request): \Illuminate\Http\JsonResponse
+    public function index(OrderSearchRequest $request)
     {
         $order = $this->service->getOrderList(false);
 
@@ -81,7 +81,7 @@ class OrderController extends Controller
     }
 
 
-    public function adminOrder(OrderSearchRequest $request): \Illuminate\Http\JsonResponse
+    public function adminOrder(OrderSearchRequest $request)
     {
         $order = $this->service->getOrderList(true);
 
@@ -92,7 +92,7 @@ class OrderController extends Controller
     }
 
 
-    public function sales(SalesRequest $request): \Illuminate\Http\JsonResponse
+    public function sales(SalesRequest $request)
     {
         $status = $this->service->placePOSOrder($request);
 
@@ -115,7 +115,7 @@ class OrderController extends Controller
     }
 
 
-    public function getDeliveryCost(): \Illuminate\Http\JsonResponse
+    public function getDeliveryCost()
     {
         $validate = Validator::make(request()->all(), [
             'user_address_id' => 'required|exists:user_addresses,id',
@@ -141,7 +141,7 @@ class OrderController extends Controller
     }
 
 
-    public function detail($id): \Illuminate\Http\JsonResponse
+    public function detail($id)
     {
         $data = Cache::remember('orderDetail'.$id, 24*60*60*7, function () use ($id) {
             return $this->service->getData($id);
@@ -154,7 +154,7 @@ class OrderController extends Controller
     }
 
 
-    public function changeStatus(AdminOrderStatusChangeRequest $request, $id): \Illuminate\Http\JsonResponse
+    public function changeStatus(AdminOrderStatusChangeRequest $request, $id)
     {
         $order = Order::findOrfail($id);
 
@@ -246,7 +246,7 @@ class OrderController extends Controller
     }
 
 
-    public function changeNote(Request $request, $id): \Illuminate\Http\JsonResponse
+    public function changeNote(Request $request, $id)
     {
         $order = Order::findOrFail($id);
 
@@ -272,7 +272,7 @@ class OrderController extends Controller
     }
 
 
-    public function getAdditionalChargeList(): \Illuminate\Http\JsonResponse
+    public function getAdditionalChargeList()
     {
         $data = Cache::remember('orderAdditionalCharges', 60*60*24*7, function () {
             return $this->service->getCharges();
@@ -285,7 +285,7 @@ class OrderController extends Controller
     }
 
 
-    public function storeCharge(Request $request): \Illuminate\Http\JsonResponse
+    public function storeCharge(Request $request)
     {
         $validate = Validator::make($request->all(), [
             'name'      => 'required|unique:order_additional_charges,name|string|max:50',
@@ -312,7 +312,7 @@ class OrderController extends Controller
     }
 
 
-    public function updateCharge(Request $request, $id): \Illuminate\Http\JsonResponse
+    public function updateCharge(Request $request, $id)
     {
         $validate = Validator::make($request->all(), [
             'name'      => 'required|string|max:50|unique:order_additional_charges,name,'.$id,
@@ -340,7 +340,7 @@ class OrderController extends Controller
     }
 
 
-    public function deleteCharge($id): \Illuminate\Http\JsonResponse
+    public function deleteCharge($id)
     {
         $this->service->deleteOrderCharge($id);
 

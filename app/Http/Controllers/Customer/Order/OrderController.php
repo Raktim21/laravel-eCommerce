@@ -301,7 +301,7 @@ class OrderController extends Controller
         return false;
     }
 
-    public function cancelOrder($id): \Illuminate\Http\JsonResponse
+    public function cancelOrder($id)
     {
         $order = Order::findOrFail($id);
 
@@ -319,7 +319,7 @@ class OrderController extends Controller
         ]);
     }
 
-    public function getPromos(): \Illuminate\Http\JsonResponse
+    public function getPromos()
     {
         $data = Cache::remember('customer_available_promos'.auth()->user()->id, 60*10, function () {
             return (new PromoCodeService(new PromoCode()))->getUserPromos(auth()->user()->id);

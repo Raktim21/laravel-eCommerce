@@ -154,7 +154,7 @@ class StaticPageController extends Controller
     }
 
 
-    public function staticMenu(): \Illuminate\Http\JsonResponse
+    public function staticMenu()
     {
         if(request()->input('is_paginated'))
         {

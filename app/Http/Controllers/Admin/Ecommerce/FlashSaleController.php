@@ -16,7 +16,7 @@ class FlashSaleController extends Controller
         $this->service = $service;
     }
 
-    public function index(): \Illuminate\Http\JsonResponse
+    public function index()
     {
         $data = Cache::remember('flashSale', 60*60*24, function () {
             return $this->service->getSale();
@@ -29,7 +29,7 @@ class FlashSaleController extends Controller
     }
 
 
-    public function store(FlashSaleCreateRequest $request): \Illuminate\Http\JsonResponse
+    public function store(FlashSaleCreateRequest $request)
     {
         if($this->service->updateSale($request))
         {

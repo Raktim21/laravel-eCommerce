@@ -15,7 +15,7 @@ class SystemController extends Controller
         Artisan::call('schedule:run');
     }
 
-    public function sendCaptcha(): \Illuminate\Http\JsonResponse
+    public function sendCaptcha()
     {
         return response()->json([
             'status'  => true,
@@ -23,7 +23,7 @@ class SystemController extends Controller
         ]);
     }
 
-    public function cache(): \Illuminate\Http\JsonResponse
+    public function cache()
     {
         Artisan::call('cache:clear');
 
@@ -32,7 +32,7 @@ class SystemController extends Controller
         ]);
     }
 
-    public function changeLanguage(): \Illuminate\Http\JsonResponse
+    public function changeLanguage()
     {
         App::setLocale(request()->lang);
 

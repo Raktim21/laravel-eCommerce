@@ -36,7 +36,7 @@ class GeneralSettingController extends Controller
     }
 
 
-    public function update(GeneralSettingRequest $request): \Illuminate\Http\JsonResponse
+    public function update(GeneralSettingRequest $request)
     {
         $this->service->updateSetting($request);
 
@@ -69,7 +69,7 @@ class GeneralSettingController extends Controller
         ]);
     }
 
-    public function faqList(): \Illuminate\Http\JsonResponse
+    public function faqList()
     {
         $data = Cache::remember('faqs', 24*60*60*7, function () {
             return (new AssetService())->getFaqs();

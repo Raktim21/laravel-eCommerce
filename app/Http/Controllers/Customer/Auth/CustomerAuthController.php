@@ -37,7 +37,7 @@ class CustomerAuthController extends Controller
     }
 
 
-    public function register(UserRegistrationRequest $request): \Illuminate\Http\JsonResponse
+    public function register(UserRegistrationRequest $request)
     {
         if($this->service->register($request, 1)) {
             return response()->json([
@@ -129,7 +129,7 @@ class CustomerAuthController extends Controller
         ]);
     }
 
-    public function deleteAccount(): \Illuminate\Http\JsonResponse
+    public function deleteAccount()
     {
         $id = auth()->user()->id;
 
@@ -156,7 +156,7 @@ class CustomerAuthController extends Controller
     }
 
 
-    public function sendVerificationCode(): \Illuminate\Http\JsonResponse
+    public function sendVerificationCode()
     {
         if (auth()->guard('user-api')->user()->email_verified_at)
         {
@@ -201,7 +201,7 @@ class CustomerAuthController extends Controller
     }
 
 
-    public function emailVerification(Request $request): \Illuminate\Http\JsonResponse
+    public function emailVerification(Request $request)
     {
         $validated = Validator::make($request->all(), [
             'code' => 'required|numeric',

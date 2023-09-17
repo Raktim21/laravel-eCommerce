@@ -20,7 +20,7 @@ class SubscriberController extends Controller
     }
 
 
-    public function index(): \Illuminate\Http\JsonResponse
+    public function index()
     {
         $data = Cache::remember('subscriberList'.request()->get('page', 1), 24*60*60*7, function () {
             return $this->service->getAll();
@@ -33,7 +33,7 @@ class SubscriberController extends Controller
     }
 
 
-    public function create(SubscriberRequest $request): \Illuminate\Http\JsonResponse
+    public function create(SubscriberRequest $request)
     {
         $this->service->store($request);
 

@@ -27,7 +27,7 @@ class BillingCartController extends Controller
     }
 
 
-    public function cartList(): \Illuminate\Http\JsonResponse
+    public function cartList()
     {
         $data = Cache::remember('billingList'.request()->get('page', 1), 24*60*60, function () {
             return $this->service->getCart();
@@ -40,7 +40,7 @@ class BillingCartController extends Controller
     }
 
 
-    public function cartStore(BillingStoreRequest $request): \Illuminate\Http\JsonResponse
+    public function cartStore(BillingStoreRequest $request)
     {
         $cart_id = $this->service->store($request);
 
@@ -61,7 +61,7 @@ class BillingCartController extends Controller
     }
 
 
-    public function convertBilling($id): \Illuminate\Http\JsonResponse
+    public function convertBilling($id)
     {
         $status = $this->service->convert($id);
 

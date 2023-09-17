@@ -48,7 +48,7 @@ class AdminController extends Controller
     }
 
 
-    public function adminDetail($id): \Illuminate\Http\JsonResponse
+    public function adminDetail($id)
     {
         $data = Cache::remember('adminDetail'.$id, 24*60*60, function () use ($id) {
             return $this->service->show($id, true);

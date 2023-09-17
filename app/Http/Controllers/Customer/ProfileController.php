@@ -30,7 +30,7 @@ class ProfileController extends Controller
 
 
 
-    public function avatarUpdate(AvatarUpdateRequest $request): \Illuminate\Http\JsonResponse
+    public function avatarUpdate(AvatarUpdateRequest $request)
     {
         $this->service->updateAvatar($request, auth()->guard('user-api')->user()->id, false);
 
@@ -39,7 +39,7 @@ class ProfileController extends Controller
 
 
 
-    public function passwordUpdate(PasswordUpdateRequest $request): \Illuminate\Http\JsonResponse
+    public function passwordUpdate(PasswordUpdateRequest $request)
     {
         if($this->service->updatePassword($request)) {
             return response()->json(['status' => true]);
@@ -52,7 +52,7 @@ class ProfileController extends Controller
 
 
 
-    public function addressList(): \Illuminate\Http\JsonResponse
+    public function addressList()
     {
         $data = Cache::remember('customer_addresses'.auth()->user()->id, 24*60*60*7, function () {
             return $this->service->getUserAddress(auth()->guard('user-api')->user()->id);
@@ -66,7 +66,7 @@ class ProfileController extends Controller
 
 
 
-    public function createNewAddress(UserAddressCreateRequest $request): \Illuminate\Http\JsonResponse
+    public function createNewAddress(UserAddressCreateRequest $request)
     {
         $this->service->storeAddress($request, auth()->guard('user-api')->user()->id);
 
@@ -76,7 +76,7 @@ class ProfileController extends Controller
     }
 
 
-    public function updateAddress(UserAddressCreateRequest $request, $id): \Illuminate\Http\JsonResponse
+    public function updateAddress(UserAddressCreateRequest $request, $id)
     {
         if ($this->service->updateAddress($request, $id, 0))
         {
@@ -91,7 +91,7 @@ class ProfileController extends Controller
 
 
 
-    public function deleteAddress($id): \Illuminate\Http\JsonResponse
+    public function deleteAddress($id)
     {
         $status = $this->service->deleteAddress($id);
 
@@ -119,7 +119,7 @@ class ProfileController extends Controller
 
 
 
-    public function makeDefaultAddress($id): \Illuminate\Http\JsonResponse
+    public function makeDefaultAddress($id)
     {
         if ($this->service->makeAddressDefault($id))
         {

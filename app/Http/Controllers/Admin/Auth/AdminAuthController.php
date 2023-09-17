@@ -26,7 +26,7 @@ class AdminAuthController extends Controller
     }
 
 
-    public function me(): \Illuminate\Http\JsonResponse
+    public function me()
     {
         $data = Cache::remember('adminAuthProfile'.auth()->user()->id, 60*60*24, function () {
             return $this->service->profile();
@@ -39,13 +39,13 @@ class AdminAuthController extends Controller
     }
 
 
-    public function refresh(): \Illuminate\Http\JsonResponse
+    public function refresh()
     {
         return $this->service->refresh(1, request()->cookie('admin_refresh_token'));
     }
 
 
-    public function resetPassword(ResetPasswordRequest $request): \Illuminate\Http\JsonResponse
+    public function resetPassword(ResetPasswordRequest $request)
     {
         $token = $this->service->resetPWD($request, 1);
 
@@ -56,7 +56,7 @@ class AdminAuthController extends Controller
     }
 
 
-    public function confirmPassword(ConfirmPasswordRequest $request): \Illuminate\Http\JsonResponse
+    public function confirmPassword(ConfirmPasswordRequest $request)
     {
         $this->service->confirmPWD($request);
 
