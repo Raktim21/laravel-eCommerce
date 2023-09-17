@@ -21,11 +21,13 @@ class SiteBanners extends Model
         static::created(function ($banner) {
             Cache::delete('siteBanners');
             Cache::delete('site_banners');
+            Cache::delete('featuredBannerImage');
         });
 
         static::updated(function ($banner) {
             Cache::delete('siteBanners');
             Cache::delete('site_banners');
+            Cache::delete('featuredBannerImage');
         });
     }
 }
