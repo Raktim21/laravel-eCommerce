@@ -38,6 +38,7 @@ class ProductReview extends Model
         });
 
         static::updated(function ($review) {
+            forgetCaches('product_reviews'.$review->orderItem->combination->product_id);
             forgetCaches('allProductReviews');
             Cache::delete('productReview'.$review->id);
             Cache::delete('product_reviews');

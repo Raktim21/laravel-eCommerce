@@ -267,7 +267,7 @@ class FrontendController extends Controller
 
     public function productReviews($product_id)
     {
-        $data = Cache::remember('product_reviews'.request()->get('page', 1), 24*60*60, function () use  ($product_id) {
+        $data = Cache::remember('product_reviews'.$product_id.request()->get('page', 1), 24*60*60, function () use  ($product_id) {
             return (new ProductService(new Product()))->getReviewsByProduct($product_id);
         });
 
