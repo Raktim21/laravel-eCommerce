@@ -386,6 +386,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::get('payment-method-list','paymentMethodList');
             Route::get('shipping-method-list','shippingMethodList');
             Route::get('order-status-list','orderStatusList');
+            Route::get('order-delivery-system-list', 'deliverySystemList');
 
             Route::group(['middleware' => ['permission:create/update orders']], function() {
                 Route::get('admin-order', 'adminOrder');
