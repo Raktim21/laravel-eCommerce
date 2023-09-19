@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use App\Models\OrderDeliveryChargeLookup;
 use App\Models\OrderPickupAddress;
 use App\Models\UserAddress;
 use GuzzleHttp\Client;
@@ -142,7 +143,7 @@ class OrderDeliverySystemService
         return 0;
     }
 
-    function getPaperflyDeliveryCharge($address_id, $total_price): float|int
+    public function getPaperflyDeliveryCharge($address_id, $total_price): float|int
     {
         $address = UserAddress::find($address_id);
 
@@ -169,7 +170,27 @@ class OrderDeliverySystemService
 
     public function getPersonalDeliveryCharge($address_id, $total_price)
     {
-        return 0;
+        $address = UserAddress::find($address_id);
+        $lookup = OrderDeliveryChargeLookup::orderBy('id')->get();
+        $pickup_address = OrderPickupAddress::first();
+
+        if(is_null($address) || is_null($pickup_address)) {
+            return 0;
+        }
+
+        if ($address->upazila->district->division_id == $pickup_address->upazila->district->division_id) {
+
+            if ($address->upazila->district_id == $pickup_address->upazila->district_id) {
+                $delivery_price = $lookup[0]->amount;
+            } else {
+                $delivery_price = $lookup[1]->amount + (($total_price + $lookup[1]->amount) * 0.01);
+            }
+
+        } else {
+            $delivery_price = $lookup[2]->amount + (($total_price + $lookup[2]->amount) * 0.01);
+        }
+
+        return $delivery_price;
     }
 
     public function getDeliveryCharge($delivery_system, $delivery_address_id, $total_price)
