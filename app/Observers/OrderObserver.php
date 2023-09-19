@@ -92,7 +92,7 @@ class OrderObserver
             $order->total_amount                = $order->sub_total_amount + $tax - $order->promo_discount + $delivery_charge;
             $order->delivery_cost               = $delivery_charge;
             $order->paid_amount                 = $order->delivery_method_id == 2 ?
-                $order->sub_total_amount + $tax - $order->promo_discount + $order->delivery_cost : 0;
+                $order->sub_total_amount + $tax - $order->promo_discount + $delivery_charge : 0;
         }
     }
 

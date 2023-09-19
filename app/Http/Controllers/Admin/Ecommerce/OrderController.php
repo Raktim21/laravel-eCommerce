@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\Ecommerce;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DeliveryChargeLookupRequest;
 use App\Http\Requests\OrderSearchRequest;
 use App\Http\Services\AssetService;
 use App\Http\Services\OrderDeliverySystemService;
@@ -27,6 +28,40 @@ class OrderController extends Controller
     public function __construct(OrderService $service)
     {
         $this->service = $service;
+    }
+
+    public function deliveryChargeLookup()
+    {
+        $data = Cache::remember('deliveryChargeLookup', 24*60*60*7, function () {
+            return $this->service->getDeliveryChargeData();
+        });
+
+        return response()->json([
+            'status' => true,
+            'data'   => $data
+        ], is_null($data) ? 204 : 200);
+    }
+
+    public function updateDeliveryChargeLookup(DeliveryChargeLookupRequest $request)
+    {
+        if ((new AssetService())->activeDeliverySystem() != 1)
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => ['You are not allowed to update delivery charge when personal delivery service is disabled.']
+            ], 403);
+        }
+
+        if($this->service->updateChargeLookup($request))
+        {
+            Cache::delete('deliveryChargeLookup');
+            return response()->json(['status' => true]);
+        }
+
+        return response()->json([
+            'status' => false,
+            'errors' => ['Something went wrong.']
+        ], 500);
     }
 
     public function deliverySystemList()
@@ -58,6 +93,7 @@ class OrderController extends Controller
         $this->service->changeDeliverySystem($request);
 
         Cache::delete('deliverySystems');
+        Cache::delete('deliveryChargeLookup');
 
         return response()->json(['status' => true]);
     }
@@ -289,7 +325,7 @@ class OrderController extends Controller
         {
             $order->shop_branch_id  = $request->shop_branch_id;
         }
-
+        $order->order_status_updated_by = auth()->user()->id;
         $order->merchant_remarks = $request->merchant_remarks ?? null;
 
         $order->save();

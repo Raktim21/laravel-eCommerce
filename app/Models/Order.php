@@ -20,7 +20,7 @@ class Order extends Model
         'delivery_status','delivery_remarks','merchant_remarks','promo_code_id','promo_discount',
         'additional_charges','total_amount','sub_total_amount','paid_amount','payment_status_id'];
 
-    protected $hidden = ['updated_at'];
+    protected $hidden = ['delivery_system_id','updated_at'];
 
 
     public function items()

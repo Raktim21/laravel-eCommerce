@@ -167,11 +167,16 @@ class OrderDeliverySystemService
         return $delivery_price;
     }
 
+    public function getPersonalDeliveryCharge($address_id, $total_price)
+    {
+        return 0;
+    }
+
     public function getDeliveryCharge($delivery_system, $delivery_address_id, $total_price)
     {
         if ($delivery_system == 1) // personal
         {
-            return 0;
+            return $this->getPersonalDeliveryCharge($delivery_address_id, $total_price);
         }
         if ($delivery_system == 2) // paperfly
         {

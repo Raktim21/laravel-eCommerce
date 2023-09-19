@@ -7,6 +7,7 @@ use App\Models\FlashSale;
 use App\Models\Inventory;
 use App\Models\Order;
 use App\Models\OrderAdditionalCharge;
+use App\Models\OrderDeliveryChargeLookup;
 use App\Models\OrderDeliverySystem;
 use App\Models\OrderItems;
 use App\Models\ProductCombination;
@@ -510,6 +511,39 @@ class OrderService
         OrderDeliverySystem::findOrFail($request->system_id)->update([
             'active_status' => 1
         ]);
+    }
+
+    public function getDeliveryChargeData()
+    {
+        if ((new AssetService())->activeDeliverySystem() == 1)
+        {
+            return OrderDeliveryChargeLookup::orderBy('id')->get();
+        }
+        return null;
+    }
+
+    public function updateChargeLookup(Request $request): bool
+    {
+        DB::beginTransaction();
+
+        try {
+            foreach ($request->lookups as $lookup)
+            {
+                OrderDeliveryChargeLookup::find($lookup['id'])->update([
+                    'amount' => $lookup['amount']
+                ]);
+            }
+
+            DB::commit();
+
+            return true;
+        }
+        catch (QueryException $ex)
+        {
+            DB::rollback();
+
+            return false;
+        }
     }
 
 }

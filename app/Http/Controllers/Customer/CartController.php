@@ -139,6 +139,7 @@ class CartController extends Controller
 
     public function deliveryCharge(Request $request)
     {
+//        dd($request);
         $validator = Validator::make($request->all(), [
             'address_id' => ['required',
                             function ($attr, $val, $fail) {

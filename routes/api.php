@@ -380,6 +380,11 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::delete('order-additional-charges/{id}', 'deleteCharge');
             });
 
+            Route::group(['middleware' => ['permission:update order delivery charge information']], function () {
+                Route::get('order-delivery-charge-lookup-list', 'deliveryChargeLookup');
+                Route::put('order-delivery-charge-lookup-update', 'updateDeliveryChargeLookup');
+            });
+
             Route::get('payment-method-list','paymentMethodList');
             Route::get('shipping-method-list','shippingMethodList');
             Route::get('order-status-list','orderStatusList');
@@ -577,7 +582,7 @@ Route::group(['prefix' => 'user'], function () {
             Route::post('cart-store','cartStore');
             Route::put('cart-update/{id}','cartUpdate');
             Route::delete('cart-delete/{id}','cartDelete');
-            Route::get('delivery-charge/{id}','deliveryCharge');
+            Route::get('delivery-charge','deliveryCharge');
             Route::get('additional-charge', 'getCharge');
             Route::post('cart-bulk-delete', 'bulkDelete');
             Route::post('add-cart-from-wishlist', 'addCartFromWishlist');

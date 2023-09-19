@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             RolePermissionSeeder::class,
             OrderStatusSeeder::class,
+            DeliveryChargeLookupSeeder::class,
             PaymentStatusSeeder::class,
             PaymentMethodSeeder::class,
             ShippingMethodSeeder::class,
