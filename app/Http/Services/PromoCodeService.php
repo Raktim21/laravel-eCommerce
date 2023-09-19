@@ -123,9 +123,14 @@ class PromoCodeService
     {
         $applicablePromos = [];
         $data = $this->code->clone()
-
             ->with(['products' => function($q) {
-                return $q->select('products.id','products.name','products.thumbnail_image')->withTrashed();
+                return $q->select('products.id','products.category_id','products.slug','products.name','products.thumbnail_image',
+                    'products.display_price','products.previous_display_price')
+                    ->with(['category' => function($q1) {
+                        return $q1->select('id','name');
+                    }])
+                    ->with('productReviewRating')
+                    ->withSum('inventories', 'stock_quantity');
             }])
             ->where('is_active', 1)
             ->latest()->get();

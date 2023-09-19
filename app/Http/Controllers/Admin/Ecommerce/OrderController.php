@@ -263,6 +263,16 @@ class OrderController extends Controller
                 $this->service->paperFlyCancelOrder($order);
             }
         }
+
+//        else if ($delivery_system == 2) {
+//            if($request->status == 2) {
+//                $weight = $this->service->getOrderWeight($order);
+//                (new OrderDeliverySystemService())->paperFlyOrder($order, $weight);
+//            } else if ($request->status == 3 && $order->delivery_tracking_number != null) {
+//                $this->service->paperFlyCancelOrder($order);
+//            }
+//        }
+
         if($request->status == 3)
         {
             $order->delivery_status = 'Cancelled';
