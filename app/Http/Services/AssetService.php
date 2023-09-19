@@ -7,6 +7,7 @@ use App\Models\Currency;
 use App\Models\DashboardLanguage;
 use App\Models\Division;
 use App\Models\FAQ;
+use App\Models\OrderDeliverySystem;
 use App\Models\Union;
 use App\Models\Upazila;
 use App\Models\UserSex;
@@ -90,7 +91,7 @@ class AssetService
             FAQ::find($id)->update(['ordering' => $key + 1]);
         }
     }
-    
+
     public function activeDeliverySystem()
     {
         return OrderDeliverySystem::where('active_status', 1)->first()->id;

@@ -287,9 +287,6 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::delete('faq-delete/{id}','faqDelete');
                 Route::post('faq-ordering', 'orderFaq');
             });
-
-            Route::get('delivery-status','deliveryStatus');
-            Route::post('delivery-status-update','deliveryStatusUpdate')->middleware('permission:update delivery status');
         });
 
         Route::controller(AdminRoleController::class)->group(function () {
@@ -387,6 +384,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::get('shipping-method-list','shippingMethodList');
             Route::get('order-status-list','orderStatusList');
             Route::get('order-delivery-system-list', 'deliverySystemList');
+            Route::put('update-delivery-system', 'updateDeliverySystem')->middleware('permission:update delivery system');;
 
             Route::group(['middleware' => ['permission:create/update orders']], function() {
                 Route::get('admin-order', 'adminOrder');

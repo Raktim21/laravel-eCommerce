@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('order_delivery_systems', function (Blueprint $table) {
             $table->id();
             $table->string('title', 50)->unique();
-            $table->text('detail');
+            $table->string('detail', 500);
             $table->tinyInteger('active_status', false, true)->default(0);
             $table->timestamps();
         });

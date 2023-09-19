@@ -8,11 +8,10 @@ use App\Models\GeneralSetting;
 use App\Models\Inventory;
 use App\Models\Order;
 use App\Models\OrderAdditionalCharge;
+use App\Models\OrderDeliverySystem;
 use App\Models\OrderItems;
 use App\Models\OrderPickupAddress;
-use App\Models\PickupAddress;
 use App\Models\ProductCombination;
-use App\Models\ProductHasPromo;
 use App\Models\PromoCode;
 use App\Models\PromoProduct;
 use App\Models\User;
@@ -82,8 +81,17 @@ class OrderService
                 'promo_discount'        => ($request->promo_discount * $total)/100,
             ]);
 
-            if($request->delivery_method_id == 1 && (new GeneralSettingService(new GeneralSetting()))->getSetting()->delivery_status == 1) {
-                $this->paperFlyOrder($new_order, $weight);
+            if($request->delivery_method_id == 1)
+            {
+                $delivery_system = (new AssetService())->activeDeliverySystem();
+
+                if ($delivery_system == 2) {
+                    (new OrderDeliverySystemService())->paperFlyOrder($new_order, $weight);
+                }
+                else if ($delivery_system == 3)
+                {
+                    (new OrderDeliverySystemService())->pandaGoOrder($new_order, $weight);
+                }
             }
 
             DB::commit();
@@ -174,50 +182,6 @@ class OrderService
             ->get();
     }
 
-    public function paperFlyOrder($order, $weight): void
-    {
-        $client = new Client();
-        $pickup = OrderPickupAddress::first();
-        if(!is_null($pickup))
-        {
-            $name = '';
-            foreach($order->items as $item){
-                $name .= $item->combination->product->category->name.'('.$item->quantity.')';
-            }
-            $response = $client->post(peperfly()['paperFlyUrl'].'/OrderPlacement', [
-                'headers' => [
-                    'paperflykey' =>  peperfly()['paperFlyKey']
-                ],
-                'auth' =>  peperfly()['credential'],
-                'json' => [
-                    "merOrderRef"          => $order->order_number,
-                    "pickMerchantName"     => $pickup->name,
-                    "pickMerchantAddress"  => $pickup->address,
-                    "pickMerchantThana"    => $pickup->upazila->name,
-                    "pickMerchantDistrict" => $pickup->upazila->district->name,
-                    "pickupMerchantPhone"  => $pickup->phone,
-                    "productSizeWeight"    => "standard",
-                    "productBrief"         => $name,
-                    "packagePrice"         => $order->total_amount + 2,
-                    "max_weight"           => $weight.'kg',
-                    "deliveryOption"       => "regular",
-                    "custname"             => $order->user->name,
-                    "custaddress"          => $order->deliveryAddress->address,
-                    "customerThana"        => $order->deliveryAddress->upazila->name,
-                    "customerDistrict"     => $order->deliveryAddress->upazila->district->name,
-                    "custPhone"            => $order->deliveryAddress->phone_no,
-                ],
-            ]);
-
-            if ($response->getStatusCode() == 200) {
-
-                $data = json_decode($response->getBody());
-                $order->delivery_tracking_number = $data->success->tracking_number;
-                $order->save();
-            }
-        }
-    }
-
     public function getOrderWeight($order): float|int
     {
         $weight = 0;
@@ -250,7 +214,7 @@ class OrderService
         $order->save();
     }
 
-    public function placeOrder(Request $request, $cart_items, $weight)
+    public function placeOrder(Request $request, $cart_items)
     {
         DB::beginTransaction();
 
@@ -381,14 +345,12 @@ class OrderService
 
             $total = 0;
             $discount = 0;
-            $weight = 0;
 
             foreach($request->order_items as $item)
             {
                 $combo = ProductCombination::find($item['product_attribute_combination_id']);
                 $total += $combo->selling_price * $item['product_quantity'];
                 $item_total = $combo->selling_price * $item['product_quantity'];
-                $weight += $combo->weight;
 
                 OrderItems::create([
                     'order_id'                  => $new_order->id,
@@ -538,6 +500,17 @@ class OrderService
         }
 
         return $discount;
+    }
+
+    public function changeDeliverySystem(Request $request)
+    {
+        OrderDeliverySystem::where('active_status', 1)->update([
+            'active_status' => 0
+        ]);
+
+        OrderDeliverySystem::findOrFail($request->system_id)->update([
+            'active_status' => 1
+        ]);
     }
 
 }

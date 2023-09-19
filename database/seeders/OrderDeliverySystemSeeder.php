@@ -23,9 +23,9 @@ class OrderDeliverySystemSeeder extends Seeder
                 'created_at' => now(), 'updated_at' => now()
             ],
             [
-                'title' => 'PaperFly Delivery System',
+                'title' => 'Paperfly Delivery System',
                 'detail' => 'Paperfly is a one-stop logistics solutions provider company offering doorstep delivery services all around Bangladesh at the union level,
-                            along with warehousing and fulfilment facilities.',
+                            along with warehousing and fulfillment facilities.',
                 'active_status' => 0,
                 'created_at' => now(), 'updated_at' => now()],
             [

@@ -132,7 +132,7 @@ class OrderController extends Controller
                 'errors' => ['You cannot place order that weighs over 5KG.'],
             ],422);
         }
-        if($this->service->placeOrder($request, $cart_items, $total_weight)) {
+        if($this->service->placeOrder($request, $cart_items)) {
             return response()->json([
                 'status'    => true,
             ], 201);

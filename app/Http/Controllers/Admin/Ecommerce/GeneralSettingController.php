@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin\Ecommerce;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StatusUpdateRequest;
 use App\Http\Requests\GeneralSettingRequest;
 use App\Http\Services\GeneralSettingService;
 use App\Http\Services\AssetService;
@@ -11,7 +10,6 @@ use App\Models\FAQ;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
-use Mews\Purifier\Facades\Purifier;
 
 class GeneralSettingController extends Controller
 {
@@ -46,28 +44,28 @@ class GeneralSettingController extends Controller
     }
 
 
-    public function deliveryStatus()
-    {
-        $data = Cache::remember('deliveryStatus', 60*60*24*7, function () {
-            return $this->service->getDeliveryStatus();
-        });
+//    public function deliveryStatus()
+//    {
+//        $data = Cache::remember('deliveryStatus', 60*60*24*7, function () {
+//            return $this->service->getDeliveryStatus();
+//        });
+//
+//        return response()->json([
+//            'status'  => true,
+//            'data'    => $data
+//        ], is_null($data) ? 204 : 200);
+//    }
 
-        return response()->json([
-            'status'  => true,
-            'data'    => $data
-        ], is_null($data) ? 204 : 200);
-    }
 
 
-
-    public function deliveryStatusUpdate(StatusUpdateRequest $request)
-    {
-        $this->service->updateDeliveryStatus($request);
-
-        return response()->json([
-            'status'  => true,
-        ]);
-    }
+//    public function deliveryStatusUpdate(StatusUpdateRequest $request)
+//    {
+//        $this->service->updateDeliveryStatus($request);
+//
+//        return response()->json([
+//            'status'  => true,
+//        ]);
+//    }
 
     public function faqList()
     {

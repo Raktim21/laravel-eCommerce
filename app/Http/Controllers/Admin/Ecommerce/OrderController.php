@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Admin\Ecommerce;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OrderSearchRequest;
+use App\Http\Services\AssetService;
+use App\Http\Services\OrderDeliverySystemService;
 use App\Http\Services\OrderService;
 use App\Models\OrderDeliveryMethod;
+use App\Models\OrderDeliverySystem;
 use App\Models\OrderPaymentMethod;
 use App\Models\OrderPickupAddress;
 use App\Models\OrderStatus;
@@ -24,6 +27,39 @@ class OrderController extends Controller
     public function __construct(OrderService $service)
     {
         $this->service = $service;
+    }
+
+    public function deliverySystemList()
+    {
+        $data = Cache::remember('deliverySystems', 24*60*60*7, function () {
+            return OrderDeliverySystem::orderBy('id')->get();
+        });
+
+        return response()->json([
+            'status' => true,
+            'data'   => $data
+        ]);
+    }
+
+    public function updateDeliverySystem(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'system_id' => 'required|in:1,2'
+        ]);
+
+        if($validator->fails())
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => [$validator->errors()->all()]
+            ], 422);
+        }
+
+        $this->service->changeDeliverySystem($request);
+
+        Cache::delete('deliverySystems');
+
+        return response()->json(['status' => true]);
     }
 
 
@@ -158,11 +194,19 @@ class OrderController extends Controller
     {
         $order = Order::findOrfail($id);
 
+        if($order->order_status_id == $request->status)
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => ['Invalid order status']
+            ], 400);
+        }
+
         if($order->order_status_id == 3)
         {
             return response()->json([
                 'status' => false,
-                'errors' => ['Order status cannot be changed after being cancelled.']
+                'errors' => ['Status of cancelled orders cannot be changed.']
             ], 400);
         }
 
@@ -170,17 +214,19 @@ class OrderController extends Controller
         {
             return response()->json([
                 'status' => false,
-                'errors' => ['Order status cannot be changed after being picked.']
+                'errors' => ['Status of picked orders cannot be changed.']
             ], 400);
         }
 
         $status = OrderStatus::findOrFail($request->status);
 
-        if(GeneralSetting::first()->delivery_status == 1 && $request->status == 4)
+        $delivery_system = (new AssetService())->activeDeliverySystem();
+
+        if($delivery_system != 1 && $request->status == 4)
         {
             return response()->json([
                 'status' => false,
-                'errors' => ['Order status cannot be changed to delivered when default delivery system is enabled.']
+                'errors' => ['Order status cannot be changed to delivered when personal delivery system is disabled.']
             ], 400);
         }
 
@@ -200,7 +246,7 @@ class OrderController extends Controller
             ], 400);
         }
 
-        if(($request->status == 2 ?? $request->status == 4) && !$this->service->checkEligibility($order, $request->shop_branch_id))
+        if(($request->status == 2 || $request->status == 4) && !$this->service->checkEligibility($order, $request->shop_branch_id))
         {
             return response()->json([
                 'status'    => false,
@@ -209,14 +255,12 @@ class OrderController extends Controller
         }
 
 
-        if (GeneralSetting::first()->delivery_status == 1) {
+        if ($delivery_system == 2) {
             if($request->status == 2) {
-               $weight = $this->service->getOrderWeight($order);
-               $this->service->paperFlyOrder($order, $weight);
-            } else {
-                if ($request->status == 3 && $order->delivery_tracking_number != null) {
-                    $this->service->paperFlyCancelOrder($order);
-                }
+                $weight = $this->service->getOrderWeight($order);
+                (new OrderDeliverySystemService())->paperFlyOrder($order, $weight);
+            } else if ($request->status == 3 && $order->delivery_tracking_number != null) {
+                $this->service->paperFlyCancelOrder($order);
             }
         }
         if($request->status == 3)
