@@ -53,7 +53,7 @@ class OrderDeliverySystemService
         }
     }
 
-    public function pandaGoOrder($order, $weight)
+    public function pandaGoOrder($order)
     {
         $client = new Client();
         $pickup = OrderPickupAddress::first();
@@ -96,15 +96,15 @@ class OrderDeliverySystemService
         }
     }
 
-    public function getPandagoDeliveryCharge(Request $request)
+    public function getPandagoDeliveryCharge($address_id, $total_price)
     {
         $client = new Client();
         $pickup = OrderPickupAddress::first();
-        $address = UserAddress::find($request->user_address_id);
+        $address = UserAddress::find($address_id);
 
         if($pickup && $pickup->lat && $pickup->lng)
         {
-            $response = $client->post('https://private-anon-68dbbb42f2-pandago.apiary-mock.com/sg/api/v1/orders/fee', [
+            $response = $client->post(pandago()['pandaGoUrl'] . '/orders/fee', [
                 'headers' => [
                     'Authorization' => 'Bearer ' . pandago()['access_token'],
                     'Content-Type'  => 'application/json'
@@ -126,9 +126,9 @@ class OrderDeliverySystemService
                             'longitude' => $address->lng
                         ]
                     ],
-                    'amount'            => $request->total_price,
+                    'amount'            => $total_price,
                     'payment_method'    => 'CASH_ON_DELIVERY',
-                    'description'       => $request->description
+                    'description'       => ''
                 ]
             ]);
 
@@ -137,11 +137,52 @@ class OrderDeliverySystemService
             if ($response->getStatusCode() == 200)
             {
                 return $data->estimated_delivery_fee;
-            } else {
-                return $data->message;
             }
         }
-        return 'No geolocation provided for order pickup address.';
+        return 0;
+    }
+
+    function getPaperflyDeliveryCharge($address_id, $total_price): float|int
+    {
+        $address = UserAddress::find($address_id);
+
+        $pickup_address = OrderPickupAddress::first();
+
+        if(is_null($address) || is_null($pickup_address)) {
+            return 0;
+        }
+
+        if ($address->upazila->district->division_id == $pickup_address->upazila->district->division_id) {
+
+            if ($address->upazila->district_id == $pickup_address->upazila->district_id) {
+                $delivery_price = 55;
+            } else {
+                $delivery_price = 90 + (($total_price + 90) * 0.01);
+            }
+
+        } else {
+            $delivery_price = 120 + (($total_price + 120) * 0.01);
+        }
+
+        return $delivery_price;
+    }
+
+    public function getDeliveryCharge($delivery_system, $delivery_address_id, $total_price)
+    {
+        if ($delivery_system == 1) // personal
+        {
+            return 0;
+        }
+        if ($delivery_system == 2) // paperfly
+        {
+            return $this->getPaperflyDeliveryCharge($delivery_address_id, $total_price);
+        }
+        if ($delivery_system == 3) // pandago
+        {
+            return $this->getPandagoDeliveryCharge($delivery_address_id, $total_price);
+        }
+
+        return 0;
     }
 }
 

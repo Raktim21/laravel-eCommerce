@@ -4,13 +4,11 @@ namespace App\Http\Services;
 
 use App\Models\CustomerCart;
 use App\Models\FlashSale;
-use App\Models\GeneralSetting;
 use App\Models\Inventory;
 use App\Models\Order;
 use App\Models\OrderAdditionalCharge;
 use App\Models\OrderDeliverySystem;
 use App\Models\OrderItems;
-use App\Models\OrderPickupAddress;
 use App\Models\ProductCombination;
 use App\Models\PromoCode;
 use App\Models\PromoProduct;
@@ -90,7 +88,7 @@ class OrderService
                 }
                 else if ($delivery_system == 3)
                 {
-                    (new OrderDeliverySystemService())->pandaGoOrder($new_order, $weight);
+                    (new OrderDeliverySystemService())->pandaGoOrder($new_order);
                 }
             }
 
@@ -223,6 +221,7 @@ class OrderService
                 'user_id'                   => auth()->user()->id,
                 'order_number'              => 'ORD-' . implode('-', str_split(hexdec(uniqid()), 4)),
                 'payment_method_id'         => $request->payment_method_id,
+                'delivery_system_id'        => (new AssetService())->activeDeliverySystem(),
                 'delivery_method_id'        => 1,
                 'delivery_address_id'       => $request->delivery_address_id,
                 'delivery_remarks'          => $request->delivery_remarks,

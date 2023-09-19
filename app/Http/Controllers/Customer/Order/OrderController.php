@@ -147,7 +147,9 @@ class OrderController extends Controller
 
     public function orderList()
     {
-        $order = $this->service->getUserOrder(auth()->user()->id);
+        $order = Cache::remember('user_orders'.auth()->user()->id, 24*60*60*7, function () {
+            return $this->service->getUserOrder(auth()->user()->id);
+        });
 
         return response()->json([
             'status' => true,
@@ -321,9 +323,7 @@ class OrderController extends Controller
 
     public function getPromos()
     {
-        $data = Cache::remember('customer_available_promos'.auth()->user()->id, 60*10, function () {
-            return (new PromoCodeService(new PromoCode()))->getUserPromos(auth()->user()->id);
-        });
+        $data = (new PromoCodeService(new PromoCode()))->getUserPromos(auth()->user()->id);
 
         return response()->json([
             'status' => true,

@@ -22,6 +22,7 @@ return new class extends Migration
             $table->foreignId('order_status_updated_by')->nullable()->constrained('users')->onDelete('restrict');
             $table->foreignId('payment_method_id')->default(1)->constrained('order_payment_methods')->onDelete('restrict');
             $table->foreignId('delivery_method_id')->constrained('order_delivery_methods')->onDelete('restrict');
+            $table->foreignId('delivery_system_id')->nullable()->constrained('order_delivery_systems')->onDelete('restrict');
             $table->foreignId('delivery_address_id')->nullable()->constrained('user_addresses')->onDelete('restrict');
             $table->string('delivery_tracking_number', 100)->nullable();
             $table->float('delivery_cost', 8, 2, true)->default(0.00);

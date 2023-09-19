@@ -13,4 +13,9 @@ class OrderDeliverySystem extends Model
     protected $guarded = ['id','title','detail'];
 
     protected $hidden = ['created_at', 'updated_at'];
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'delivery_system_id');
+    }
 }

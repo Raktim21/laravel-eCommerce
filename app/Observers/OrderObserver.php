@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Http\Services\GeneralSettingService;
+use App\Http\Services\OrderDeliverySystemService;
 use App\Models\CustomerCart;
 use App\Models\GeneralSetting;
 use App\Models\Inventory;
@@ -43,6 +44,8 @@ class OrderObserver
     {
         Cache::delete('userOrders'.$order->user_id);
         Cache::delete('customer_auth_profile'.$order->user_id);
+        Cache::delete('user_orders'.$order->user_id);
+
         if(is_null($order->shop_branch_id)) {
 
             if(request()->has('messenger_psid'))
@@ -81,8 +84,9 @@ class OrderObserver
         if($order->total_amount == 0)
         {
             $tax = $this->calculateTax($order->sub_total_amount);
+
             $delivery_charge = $order->delivery_method_id == 1 ?
-                getDeliveryCharge($order->delivery_address_id, $order->sub_total_amount + $tax - $order->promo_discount) : 0;
+                (new OrderDeliverySystemService())->getDeliveryCharge($order->delivery_system_id, $order->delivery_address_id, $order->sub_total_amount + $tax - $order->promo_discount) : 0;
 
             $order->additional_charges          = $tax;
             $order->total_amount                = $order->sub_total_amount + $tax - $order->promo_discount + $delivery_charge;
