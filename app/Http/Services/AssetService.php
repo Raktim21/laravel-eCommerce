@@ -90,4 +90,9 @@ class AssetService
             FAQ::find($id)->update(['ordering' => $key + 1]);
         }
     }
+    
+    public function activeDeliverySystem()
+    {
+        return OrderDeliverySystem::where('active_status', 1)->first()->id;
+    }
 }
