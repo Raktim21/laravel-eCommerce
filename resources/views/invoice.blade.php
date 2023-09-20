@@ -54,8 +54,7 @@
             @foreach($order['items'] as $item)
             <tr class="table_body">
                 <td style="color: #000">{{ $item['combination']['product']['name'] }}
-                    @if (count($item['combination']['attributeValues']) != 1 || (count($item['combination']['attributeValues']) == 1 &&
-                        $item['combination']['attributeValues'][0]['name']!='default'))
+                    @if (count($item['combination']['attributeValues']) != 1 || $item['combination']['attributeValues'][0]['name']!='default')
                         -
                         @foreach($item['combination']['attributeValues'] as $key=>$val)
                             @if($key!=0 &&
