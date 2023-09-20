@@ -43,30 +43,6 @@ class GeneralSettingController extends Controller
         ]);
     }
 
-
-//    public function deliveryStatus()
-//    {
-//        $data = Cache::remember('deliveryStatus', 60*60*24*7, function () {
-//            return $this->service->getDeliveryStatus();
-//        });
-//
-//        return response()->json([
-//            'status'  => true,
-//            'data'    => $data
-//        ], is_null($data) ? 204 : 200);
-//    }
-
-
-
-//    public function deliveryStatusUpdate(StatusUpdateRequest $request)
-//    {
-//        $this->service->updateDeliveryStatus($request);
-//
-//        return response()->json([
-//            'status'  => true,
-//        ]);
-//    }
-
     public function faqList()
     {
         $data = Cache::remember('faqs', 24*60*60*7, function () {

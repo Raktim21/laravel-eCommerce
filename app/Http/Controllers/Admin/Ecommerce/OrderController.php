@@ -127,10 +127,10 @@ class OrderController extends Controller
 
     public function orderStatusList()
     {
-        $active = GeneralSetting::first()->delivery_status;
+        $active = (new AssetService())->activeDeliverySystem();
 
         $data = Cache::remember('orderStatuses', 24*60*60*7, function() use($active) {
-            return OrderStatus::when($active == 1, function($q) {
+            return OrderStatus::when($active != 1, function($q) {
                 return $q->whereNot('name', 'Delivered');
             })->get();
         });

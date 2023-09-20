@@ -18,4 +18,13 @@ class OrderDeliverySystem extends Model
     {
         return $this->hasMany(Order::class, 'delivery_system_id');
     }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::updated(function ($system) {
+            Cache::delete('orderStatuses');
+        });
+    }
 }
