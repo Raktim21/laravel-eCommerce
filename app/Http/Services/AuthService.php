@@ -221,7 +221,7 @@ class AuthService
 
             $payload = JWTAuth::manager()->getJWTProvider()->decode($refresh_token);
 
-            if (array_key_exists("refresh_token",$payload) && $payload['refresh_token'] == true) {
+            if (array_key_exists("refresh_token", $payload) && $payload['refresh_token']) {
                 $user = JWTAuth::setToken($refresh_token)->toUser();
                 if ($user) {
                     return response()->json([
