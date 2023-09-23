@@ -51,10 +51,15 @@ class BillingService
             }])
             ->with(['items' => function($q) {
                 return $q->with(['combinations' => function($q1) {
-                    $q1->select('id','product_id','selling_price','weight','deleted_at')
+                    $q1->select('id','product_id','selling_price','weight')->withTrashed()
                         ->with(['product' => function($q2) {
-                            return $q2->select('id','name');
-                        }])->with('attributeValues.attribute');
+                            return $q2->select('id','name')->withTrashed();
+                        }])->with(['attributeValues' => function($q2) {
+                            return $q2->withTrashed()
+                            ->with(['attribute' => function($q3) {
+                                return $q3->withTrashed();
+                            }]);
+                        }]);
                 }]);
             }])->findOrFail($id);
     }

@@ -30,6 +30,19 @@ class BillingCartController extends Controller
         ], $data->isEmpty() ? 204 : 200);
     }
 
+    public function cartDetail($id)
+    {
+        Cache::clear();
+        $data = Cache::remember('billiDetail'.$id, 24*60*60, function () use ($id) {
+            return $this->service->getData($id);
+        });
+
+        return response()->json([
+            'status' => true,
+            'data'   => $data
+        ], is_null($data) ? 204 : 200);
+    }
+
 
     public function cartStore(BillingStoreRequest $request)
     {

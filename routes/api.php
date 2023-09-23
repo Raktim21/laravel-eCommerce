@@ -492,6 +492,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::controller(BillingCartController::class)->group(function () {
 
             Route::get('billing-cart-list', 'cartList');
+            Route::get('billing-cart/{id}', 'cartDetail');
 
             Route::group(['middleware' => ['permission:create/update/delete billing']], function() {
                 Route::post('billing-cart-store', 'cartStore');
