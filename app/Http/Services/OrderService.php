@@ -43,6 +43,7 @@ class OrderService
                 'user_id'               => $request->user_id,
                 'order_number'          => 'ORD-' . implode('-', str_split(hexdec(uniqid()), 4)),
                 'order_status_id'       => $request->delivery_method_id == 2 ? 4 : 2,
+                'delivery_system_id'    => $request->delivery_method_id == 1 ? (new AssetService())->activeDeliverySystem() : null,
                 'order_status_updated_by' => auth()->guard('admin-api')->user()->id,
                 'payment_method_id'     => 1,
                 'delivery_method_id'    => $request->delivery_method_id,
@@ -340,6 +341,7 @@ class OrderService
                 'order_number'              => 'ORD-' . implode('-', str_split(hexdec(uniqid()), 4)),
                 'payment_method_id'         => $request->payment_method_id,
                 'delivery_method_id'        => $request->delivery_method_id,
+                'delivery_system_id'        => (new AssetService())->activeDeliverySystem(),
                 'delivery_address_id'       => $address->id,
                 'delivery_remarks'          => $request->delivery_notes,
                 'delivery_status'           => 'Not Picked Yet',
@@ -443,38 +445,6 @@ class OrderService
         return true;
     }
 
-//    public function cancelOrder($order, $user): string
-//    {
-//        if($order->user_id != $user)
-//        {
-//            return 'Selected order is invalid.';
-//        }
-//        if($order->delivery_status == 'Picked')
-//        {
-//            return 'You cannot cancel order after being picked.';
-//        }
-//        if($order->delivery_status == 'Cancelled' || $order->order_status_id == 3)
-//        {
-//            return 'Your order has already been cancelled.';
-//        }
-//        if($order->delivery_status == 'Delivered' || $order->order_status_id == 4)
-//        {
-//            return 'You cannot cancel order after being delivered.';
-//        }
-//        if($order->delivery_tracking_number != null)
-//        {
-//            if($order->delivery_system_id == 2) {
-//                (new OrderDeliverySystemService())->paperFlyCancelOrder($order->order_number);
-//            } else if ($order->delivery_system_id == 3) {
-//                (new OrderDeliverySystemService())->pandaGoCancelOrder();
-//            }
-//        }
-//        $order->delivery_tracking_number = null;
-//        $order->delivery_status = 'Cancelled';
-//        $order->order_status_id = 3;
-//        $order->save();
-//        return 'done';
-//    }
 
     public function getPromoDiscount($promo): float|int
     {
