@@ -322,13 +322,17 @@ class OrderService
                 'upazila_id'                => $request->upazila_id,
                 'union_id'                  => $request->union_id,
                 'address'                   => $request->address,
-                'phone_no'                  => $request->phone_no
+                'phone_no'                  => $request->phone_no,
+                'lat'                       => $request->lat,
+                'lng'                       => $request->lng
             ],[
                 'user_id'                   => $user->id,
                 'upazila_id'                => $request->upazila_id,
                 'union_id'                  => $request->union_id,
                 'address'                   => $request->address,
-                'phone_no'                  => $request->phone_no
+                'phone_no'                  => $request->phone_no,
+                'lat'                       => $request->lat,
+                'lng'                       => $request->lng
             ]);
 
             $new_order = $this->order->clone()->create([
