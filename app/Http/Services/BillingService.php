@@ -129,6 +129,7 @@ class BillingService
                 'order_status_updated_by'    => auth()->user()->id,
                 'payment_method_id'          => 1,
                 'delivery_method_id'         => $request->delivery_method_id,
+                'delivery_system_id'         => $request->delivery_method_id == 1 ? (new AssetService())->activeDeliverySystem() : null,
                 'delivery_address_id'        => $request->delivery_method_id == 2 ? null : $request->delivery_address_id,
                 'payment_status_id'          => $request->delivery_method_id == 2 ? 2 : 1,
                 'delivery_status'            => $request->delivery_method_id == 2 ? 'Delivered' : 'Not Picked Yet'
