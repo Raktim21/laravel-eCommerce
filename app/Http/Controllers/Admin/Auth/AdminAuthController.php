@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin\Auth;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthRequest;
-use App\Http\Requests\ConfirmPasswordRequest;
-use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Services\AuthService;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
+use App\Http\Requests\ResetPasswordRequest;
+use App\Http\Requests\ConfirmPasswordRequest;
 
 class AdminAuthController extends Controller
 {

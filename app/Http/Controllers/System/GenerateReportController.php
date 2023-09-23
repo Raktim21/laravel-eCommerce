@@ -2,24 +2,22 @@
 
 namespace App\Http\Controllers\System;
 
-use App\Http\Controllers\Controller;
+use App\Models\Order;
+use App\Models\BillingCart;
+use Illuminate\Http\Request;
+use App\Exports\OrdersExport;
+use App\Imports\ExpenseImport;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Exports\ExpensesExport;
 use App\Exports\InventoryExport;
-use App\Exports\OrdersExport;
-use App\Http\Requests\FileTypeRequest;
-use App\Http\Services\BillingService;
-use App\Http\Services\GeneralSettingService;
 use App\Http\Services\OrderService;
+use App\Http\Controllers\Controller;
 use App\Http\Services\ReportService;
-use App\Imports\ExpenseImport;
-use App\Models\BillingCart;
-use App\Models\Order;
-use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade\Pdf;
-use App\Models\GeneralSetting;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Services\BillingService;
+use App\Http\Requests\FileTypeRequest;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Services\GeneralSettingService;
 
 class GenerateReportController extends Controller
 {

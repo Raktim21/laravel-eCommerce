@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\System;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Mews\Captcha\Facades\Captcha;
 use Illuminate\Support\Facades\App;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Artisan;
 
 class SystemController extends Controller

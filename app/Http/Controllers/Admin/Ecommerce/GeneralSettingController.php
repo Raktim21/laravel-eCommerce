@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Admin\Ecommerce;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\GeneralSettingRequest;
-use App\Http\Services\GeneralSettingService;
-use App\Http\Services\AssetService;
 use App\Models\FAQ;
 use Illuminate\Http\Request;
+use App\Http\Services\AssetService;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\GeneralSettingRequest;
+use App\Http\Services\GeneralSettingService;
 
 class GeneralSettingController extends Controller
 {

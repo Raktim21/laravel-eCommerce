@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin\Ecommerce;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ContactBulkDeleteRequest;
 use App\Http\Services\ContactService;
 use Illuminate\Support\Facades\Cache;
+use App\Http\Requests\ContactBulkDeleteRequest;
 
 class ContactController extends Controller
 {

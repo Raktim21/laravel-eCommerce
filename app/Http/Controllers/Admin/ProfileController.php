@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Services\UserService;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\AvatarUpdateRequest;
 use App\Http\Requests\PasswordUpdateRequest;
 use App\Http\Requests\UserProfileUpdateRequest;
-use App\Http\Services\UserService;
-use Illuminate\Support\Facades\Cache;
 
 class ProfileController extends Controller
 {

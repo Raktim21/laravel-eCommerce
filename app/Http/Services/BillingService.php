@@ -2,14 +2,14 @@
 
 namespace App\Http\Services;
 
-use App\Models\BillingCart;
-use App\Models\BillingCartItems;
-use App\Models\Inventory;
 use App\Models\Order;
+use App\Models\Inventory;
 use App\Models\OrderItems;
-use Illuminate\Database\QueryException;
+use App\Models\BillingCart;
 use Illuminate\Http\Request;
+use App\Models\BillingCartItems;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 
 class BillingService
 {

@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers\Customer;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\CartCreateRequest;
-use App\Http\Requests\CartBulkDeleteRequest;
-use App\Http\Requests\CartUpdateRequest;
-use App\Http\Services\AssetService;
-use App\Http\Services\CartService;
-use App\Http\Services\OrderDeliverySystemService;
 use App\Models\UserAddress;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
+use App\Http\Services\CartService;
+use App\Http\Services\AssetService;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\CartCreateRequest;
+use App\Http\Requests\CartUpdateRequest;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\CartBulkDeleteRequest;
+use App\Http\Services\OrderDeliverySystemService;
 
 class CartController extends Controller
 {

@@ -2,31 +2,29 @@
 
 namespace App\Http\Controllers\System;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\MessengerOrderRequest;
-use App\Http\Services\CategoryService;
-use App\Http\Services\GeneralSettingService;
-use App\Http\Services\OrderDeliverySystemService;
-use App\Http\Services\OrderService;
-use App\Http\Services\ProductService;
-use App\Http\Services\PromoCodeService;
-use App\Models\GeneralSetting;
-use App\Models\MessengerSubscriptions;
+use App\Models\User;
 use App\Models\Order;
 use App\Models\Product;
-use App\Models\ProductCategory;
 use App\Models\PromoCode;
 use App\Models\ShopReviews;
-use App\Models\Subscriber;
-use App\Models\User;
 use App\Models\UserProfile;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use App\Models\GeneralSetting;
+use App\Models\ProductCategory;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Http\Services\OrderService;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Http;
+use App\Http\Services\ProductService;
+use App\Models\MessengerSubscriptions;
+use App\Http\Services\CategoryService;
+use App\Http\Services\PromoCodeService;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Services\GeneralSettingService;
+use App\Http\Requests\MessengerOrderRequest;
+use App\Http\Services\OrderDeliverySystemService;
 
 class MessengerController extends Controller
 {

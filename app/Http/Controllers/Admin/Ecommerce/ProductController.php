@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Admin\Ecommerce;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
+use App\Http\Services\ProductService;
 use App\Http\Requests\HomepageRequest;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\ProductStoreRequest;
 use App\Http\Requests\ProductUpdateRequest;
-use App\Http\Services\ProductService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {

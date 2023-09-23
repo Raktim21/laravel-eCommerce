@@ -2,44 +2,28 @@
 
 namespace App\Http\Controllers\Customer\Order;
 
-use App\Http\Controllers\Controller;
-use App\Http\Services\OrderDeliverySystemService;
-use App\Http\Services\OrderService;
-use App\Http\Services\PromoCodeService;
-use App\Models\EmailConfig;
-use App\Models\FlashSale;
+use Carbon\Carbon;
+use App\Models\Order;
 use App\Models\Inventory;
-use App\Models\ProductCombination;
-use App\Models\ProductHasPromo;
-use App\Models\ProductReviewImage;
-use App\Models\PromoProduct;
 use App\Models\PromoUser;
-use App\Models\ReviewImages;
-use Illuminate\Database\QueryException;
+use App\Models\PromoCode;
+use App\Models\OrderItems;
+use App\Models\PromoProduct;
 use Illuminate\Http\Request;
 use App\Models\CustomerCart;
-use App\Models\EmailSetting;
-use App\Models\Order;
-use App\Models\OrderItems;
-use App\Models\OrderStatus;
 use App\Models\ProductReview;
-use App\Models\PromoCode;
-use App\Models\UserAddress;
-use App\Models\UserPromo;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Cache;
+use App\Models\ProductCombination;
+use App\Models\ProductReviewImage;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
-use App\Http\Services\DeliveryChargeService;
-use App\Http\Requests\UserOrderRequest;
-use App\Mail\OrdersMail;
-use App\Models\Admin;
-use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
+use App\Http\Services\OrderService;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
 use Intervention\Image\Facades\Image;
+use App\Http\Services\PromoCodeService;
+use Illuminate\Database\QueryException;
+use App\Http\Requests\UserOrderRequest;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Services\OrderDeliverySystemService;
 
 class OrderController extends Controller
 {

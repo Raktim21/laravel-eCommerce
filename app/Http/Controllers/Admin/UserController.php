@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\AvatarUpdateRequest;
-use App\Http\Requests\DateRequest;
-use App\Http\Requests\UserAddressBulkDeleteRequest;
-use App\Http\Requests\UserAddressCreateRequest;
-use App\Http\Requests\UserBulkDeleteRequest;
-use App\Http\Requests\UserProfileUpdateRequest;
-use App\Http\Requests\UserRegistrationRequest;
 use App\Http\Services\AuthService;
 use App\Http\Services\UserService;
+use App\Http\Requests\DateRequest;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
+use App\Http\Requests\AvatarUpdateRequest;
+use App\Http\Requests\UserBulkDeleteRequest;
+use App\Http\Requests\UserRegistrationRequest;
+use App\Http\Requests\UserAddressCreateRequest;
+use App\Http\Requests\UserProfileUpdateRequest;
+use App\Http\Requests\UserAddressBulkDeleteRequest;
 
 class UserController extends Controller
 {

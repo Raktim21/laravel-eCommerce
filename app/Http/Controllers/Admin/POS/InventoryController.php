@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers\Admin\POS;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\InventoryTransferRequest;
-use App\Http\Services\InventoryService;
-use App\Http\Services\ProductService;
 use App\Models\Inventory;
-use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Services\InventoryService;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\InventoryTransferRequest;
 
 class InventoryController extends Controller
 {

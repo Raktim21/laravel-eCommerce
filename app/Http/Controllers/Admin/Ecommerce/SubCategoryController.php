@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin\Ecommerce;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\SubCategoryBulkDeleteRequest;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\SubCategoryRequest;
 use App\Http\Services\SubCategoryService;
-use Illuminate\Support\Facades\Cache;
+use App\Http\Requests\SubCategoryBulkDeleteRequest;
 
 class SubCategoryController extends Controller
 {

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin\Ecommerce;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\FlashSaleCreateRequest;
-use App\Http\Services\FlashSaleService;
 use Illuminate\Support\Facades\Cache;
+use App\Http\Services\FlashSaleService;
+use App\Http\Requests\FlashSaleCreateRequest;
 
 class FlashSaleController extends Controller
 {

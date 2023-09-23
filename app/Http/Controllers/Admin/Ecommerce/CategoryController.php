@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Admin\Ecommerce;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CategoryBulkDeleteRequest;
+use App\Http\Requests\ReOrderRequest;
+use Illuminate\Support\Facades\Cache;
+use App\Http\Services\CategoryService;
 use App\Http\Requests\CategoryStoreRequest;
 use App\Http\Requests\CategoryUpdateRequest;
-use App\Http\Requests\ReOrderRequest;
-use App\Http\Services\CategoryService;
-use Illuminate\Support\Facades\Cache;
+use App\Http\Requests\CategoryBulkDeleteRequest;
 
 class CategoryController extends Controller
 {

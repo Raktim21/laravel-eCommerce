@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin\Analytics;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\DateRequest;
+use App\Http\Controllers\Controller;
 use App\Http\Services\ReportService;
 use Illuminate\Support\Facades\Cache;
 

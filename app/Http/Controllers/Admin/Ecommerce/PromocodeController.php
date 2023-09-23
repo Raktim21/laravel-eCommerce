@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin\Ecommerce;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
+use App\Http\Services\PromoCodeService;
 use App\Http\Requests\PromoCreateRequest;
 use App\Http\Requests\PromoUpdateRequest;
-use App\Http\Services\PromoCodeService;
-use Illuminate\Support\Facades\Cache;
 
 class PromocodeController extends Controller
 {

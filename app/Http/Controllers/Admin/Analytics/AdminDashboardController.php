@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\Admin\Analytics;
 
-use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Sponsor;
 use App\Models\ProductBrand;
 use App\Models\ProductCategory;
-use App\Models\ProductSubCategory;
-use App\Models\Sponsor;
-use App\Models\User;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use App\Models\ProductSubCategory;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
 
 class AdminDashboardController extends Controller
 {

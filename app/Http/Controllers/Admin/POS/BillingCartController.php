@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin\POS;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\BillingStoreRequest;
-use App\Http\Services\BillingService;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Services\BillingService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\BillingStoreRequest;
 
 class BillingCartController extends Controller
 {

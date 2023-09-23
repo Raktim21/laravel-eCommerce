@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers\System;
 
-use App\Http\Services\GeneralSettingService;
-use App\Http\Services\OrderService;
-use App\Models\Contact;
-use App\Models\GeneralSetting;
-use App\Models\Order;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
-use App\Http\Controllers\Controller;
-use Illuminate\Database\QueryException;
+use App\Models\Order;
+use App\Models\Contact;
 use Illuminate\Http\Request;
+use App\Models\GeneralSetting;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Http\Services\OrderService;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Services\GeneralSettingService;
 
 class SendMailController extends Controller
 {

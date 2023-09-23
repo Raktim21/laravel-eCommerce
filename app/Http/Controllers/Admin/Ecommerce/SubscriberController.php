@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin\Ecommerce;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\SubscriberRequest;
 use App\Http\Services\SubscriberService;
-use Illuminate\Support\Facades\Cache;
 
 class SubscriberController extends Controller
 {
