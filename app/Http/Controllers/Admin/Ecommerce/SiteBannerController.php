@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin\Ecommerce;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SiteBannerUpdateRequest;
 use App\Http\Services\SiteBannerService;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 
 class SiteBannerController extends Controller

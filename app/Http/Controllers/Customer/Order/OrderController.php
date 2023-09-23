@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Customer\Order;
 
 use App\Http\Controllers\Controller;
+use App\Http\Services\OrderDeliverySystemService;
 use App\Http\Services\OrderService;
 use App\Http\Services\PromoCodeService;
 use App\Models\EmailConfig;
@@ -52,7 +53,7 @@ class OrderController extends Controller
     public function addPromo(Request $request)
     {
         $validator = Validator::make(request()->all(), [
-            'promo_code' => 'required|exists:promo_codes,code',
+            'promo_code' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -71,6 +72,14 @@ class OrderController extends Controller
         }
 
         $promo = PromoCode::where('code', $request->promo_code)->first();
+
+        if(!$promo)
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => ['Promo code not found.']
+            ], 404);
+        }
 
         if($this->validatePromoCode($promo))
         {
@@ -305,9 +314,28 @@ class OrderController extends Controller
 
     public function cancelOrder($id)
     {
-        $order = Order::findOrFail($id);
+        $order = Order::where('user_id', auth()->guard('user-api')->user()->id)
+            ->where('id',$id)->first();
 
-        $msg = $this->service->cancelOrder($order, auth()->guard('user-api')->user()->id);
+        if (!$order)
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => ['Order not found.']
+            ], 404);
+        }
+
+        if (!request()->input('reason') ||
+                !in_array(\request()->input('reason'),
+                    ['DELIVERY_ETA_TOO_LONG','MISTAKE_ERROR','REASON_UNKNOWN']))
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => ['Please state a valid reason for cancellation.']
+            ], 422);
+        }
+
+        $msg = (new OrderDeliverySystemService())->cancelOrder($order);
 
         if($msg != 'done')
         {
@@ -316,6 +344,7 @@ class OrderController extends Controller
                 'errors'        => [$msg]
             ], 400);
         }
+
         return response()->json([
             'status'        => true,
         ]);

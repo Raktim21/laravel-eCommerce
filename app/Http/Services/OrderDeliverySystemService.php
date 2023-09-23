@@ -6,7 +6,6 @@ use App\Models\OrderDeliveryChargeLookup;
 use App\Models\OrderPickupAddress;
 use App\Models\UserAddress;
 use GuzzleHttp\Client;
-use Illuminate\Http\Request;
 
 class OrderDeliverySystemService
 {
@@ -97,7 +96,75 @@ class OrderDeliverySystemService
         }
     }
 
-    public function getPandagoDeliveryCharge($address_id, $total_price)
+    public function getDeliveryCharge($delivery_system, $delivery_address_id, $total_price)
+    {
+        if ($delivery_system == 1) // personal
+        {
+            return $this->getPersonalDeliveryCharge($delivery_address_id, $total_price);
+        }
+        else if ($delivery_system == 2) // paperfly
+        {
+            return $this->getPaperFlyDeliveryCharge($delivery_address_id, $total_price);
+        }
+        else if ($delivery_system == 3) // pandago
+        {
+            return $this->getPandaGoDeliveryCharge($delivery_address_id, $total_price);
+        }
+
+        return 0;
+    }
+
+    private function getPersonalDeliveryCharge($address_id, $total_price)
+    {
+        $address = UserAddress::find($address_id);
+        $lookup = OrderDeliveryChargeLookup::orderBy('id')->get();
+        $pickup_address = OrderPickupAddress::first();
+
+        if(is_null($address) || is_null($pickup_address)) {
+            return 0;
+        }
+
+        if ($address->upazila->district->division_id == $pickup_address->upazila->district->division_id) {
+
+            if ($address->upazila->district_id == $pickup_address->upazila->district_id) {
+                $delivery_price = $lookup[0]->amount;
+            } else {
+                $delivery_price = $lookup[1]->amount + (($total_price + $lookup[1]->amount) * 0.01);
+            }
+
+        } else {
+            $delivery_price = $lookup[2]->amount + (($total_price + $lookup[2]->amount) * 0.01);
+        }
+
+        return $delivery_price;
+    }
+
+    private function getPaperFlyDeliveryCharge($address_id, $total_price): float|int
+    {
+        $address = UserAddress::find($address_id);
+
+        $pickup_address = OrderPickupAddress::first();
+
+        if(is_null($address) || is_null($pickup_address)) {
+            return 0;
+        }
+
+        if ($address->upazila->district->division_id == $pickup_address->upazila->district->division_id) {
+
+            if ($address->upazila->district_id == $pickup_address->upazila->district_id) {
+                $delivery_price = 55;
+            } else {
+                $delivery_price = 90 + (($total_price + 90) * 0.01);
+            }
+
+        } else {
+            $delivery_price = 120 + (($total_price + 120) * 0.01);
+        }
+
+        return $delivery_price;
+    }
+
+    private function getPandaGoDeliveryCharge($address_id, $total_price)
     {
         $client = new Client();
         $pickup = OrderPickupAddress::first();
@@ -143,72 +210,74 @@ class OrderDeliverySystemService
         return 0;
     }
 
-    public function getPaperflyDeliveryCharge($address_id, $total_price): float|int
+    public function cancelOrder($order)
     {
-        $address = UserAddress::find($address_id);
-
-        $pickup_address = OrderPickupAddress::first();
-
-        if(is_null($address) || is_null($pickup_address)) {
-            return 0;
+        if($order->delivery_status == 'Picked')
+        {
+            return 'You cannot cancel order after being picked.';
         }
+        if($order->delivery_status == 'Cancelled' || $order->order_status_id == 3)
+        {
+            return 'Your order has already been cancelled.';
+        }
+        if($order->delivery_status == 'Delivered' || $order->order_status_id == 4)
+        {
+            return 'You cannot cancel order after being delivered.';
+        }
+        if($order->delivery_tracking_number != null)
+        {
+            if($order->delivery_system_id == 2) {
+                $this->paperFlyCancelOrder($order->order_number);
+            } else if ($order->delivery_system_id == 3) {
+                $response = $this->pandaGoCancelOrder($order->delivery_tracking_number);
 
-        if ($address->upazila->district->division_id == $pickup_address->upazila->district->division_id) {
-
-            if ($address->upazila->district_id == $pickup_address->upazila->district_id) {
-                $delivery_price = 55;
-            } else {
-                $delivery_price = 90 + (($total_price + 90) * 0.01);
+                if($response != 'done')
+                {
+                    return $response;
+                }
             }
-
-        } else {
-            $delivery_price = 120 + (($total_price + 120) * 0.01);
         }
 
-        return $delivery_price;
+        $order->delivery_tracking_number = null;
+        $order->delivery_status = 'Cancelled';
+        $order->order_status_id = 3;
+        $order->save();
+        return 'done';
     }
 
-    public function getPersonalDeliveryCharge($address_id, $total_price)
+    public function paperFlyCancelOrder($order_number)
     {
-        $address = UserAddress::find($address_id);
-        $lookup = OrderDeliveryChargeLookup::orderBy('id')->get();
-        $pickup_address = OrderPickupAddress::first();
+        $response = (new Client())->post(peperfly()['paperFlyUrl'] . '/api/v1/cancel-order/', [
+            'headers' => [
+                'paperflykey' =>  peperfly()['paperFlyKey']
+            ],
+            'auth' => peperfly()['credential'],
+            'json' => [
+                "order_id" => $order_number,
+            ],
+        ]);
 
-        if(is_null($address) || is_null($pickup_address)) {
-            return 0;
-        }
-
-        if ($address->upazila->district->division_id == $pickup_address->upazila->district->division_id) {
-
-            if ($address->upazila->district_id == $pickup_address->upazila->district_id) {
-                $delivery_price = $lookup[0]->amount;
-            } else {
-                $delivery_price = $lookup[1]->amount + (($total_price + $lookup[1]->amount) * 0.01);
-            }
-
-        } else {
-            $delivery_price = $lookup[2]->amount + (($total_price + $lookup[2]->amount) * 0.01);
-        }
-
-        return $delivery_price;
+        json_decode($response->getBody()->getContents(), true);
     }
 
-    public function getDeliveryCharge($delivery_system, $delivery_address_id, $total_price)
+    public function pandaGoCancelOrder($tracker)
     {
-        if ($delivery_system == 1) // personal
+        $response = (new Client())->post(pandago()['pandaGoUrl'] . '/orders/' . $tracker, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . pandago()['access_token'],
+                'Content-Type'  => 'application/json'
+            ],
+            'json'    => [
+                'reason'        => request()->input('reason')
+            ]
+        ]);
+
+        if ($response->getStatusCode() == 409 || $response->getStatusCode() == 500 || $response->getStatusCode() == 404)
         {
-            return $this->getPersonalDeliveryCharge($delivery_address_id, $total_price);
-        }
-        if ($delivery_system == 2) // paperfly
-        {
-            return $this->getPaperflyDeliveryCharge($delivery_address_id, $total_price);
-        }
-        if ($delivery_system == 3) // pandago
-        {
-            return $this->getPandagoDeliveryCharge($delivery_address_id, $total_price);
+            $data = json_decode($response->getBody());
+            return $data->message;
         }
 
-        return 0;
+        return 'done';
     }
 }
-

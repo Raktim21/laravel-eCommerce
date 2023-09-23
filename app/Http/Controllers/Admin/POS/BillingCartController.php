@@ -5,16 +5,7 @@ namespace App\Http\Controllers\Admin\POS;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BillingStoreRequest;
 use App\Http\Services\BillingService;
-use App\Models\BillingCart;
-use App\Models\BillingCartItems;
-use App\Models\Order;
-use App\Models\OrderItems;
-use App\Models\Product;
-use Illuminate\Database\QueryException;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 
 class BillingCartController extends Controller
 {

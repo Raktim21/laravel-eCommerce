@@ -6,13 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\BrandBulkDeleteRequest;
 use App\Http\Requests\BrandRequest;
 use App\Http\Services\BrandService;
-use App\Models\Brand;
-use App\Models\Product;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 
 class BrandController extends Controller
 {

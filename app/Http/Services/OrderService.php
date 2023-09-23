@@ -439,33 +439,38 @@ class OrderService
         return true;
     }
 
-    public function cancelOrder($order, $user): string
-    {
-        if($order->user_id != $user)
-        {
-            return 'Selected order is invalid.';
-        }
-        if($order->delivery_status == 'Picked')
-        {
-            return 'You cannot cancel order after being picked.';
-        }
-        if($order->delivery_status == 'Cancelled' || $order->order_status_id == 3)
-        {
-            return 'Your order has already been cancelled.';
-        }
-        if($order->delivery_status == 'Delivered' || $order->order_status_id == 4)
-        {
-            return 'You cannot cancel order after being delivered.';
-        }
-        if($order->delivery_tracking_number != null)
-        {
-            $this->paperFlyCancelOrder($order);
-        }
-        $order->delivery_status = 'Cancelled';
-        $order->order_status_id = 3;
-        $order->save();
-        return 'done';
-    }
+//    public function cancelOrder($order, $user): string
+//    {
+//        if($order->user_id != $user)
+//        {
+//            return 'Selected order is invalid.';
+//        }
+//        if($order->delivery_status == 'Picked')
+//        {
+//            return 'You cannot cancel order after being picked.';
+//        }
+//        if($order->delivery_status == 'Cancelled' || $order->order_status_id == 3)
+//        {
+//            return 'Your order has already been cancelled.';
+//        }
+//        if($order->delivery_status == 'Delivered' || $order->order_status_id == 4)
+//        {
+//            return 'You cannot cancel order after being delivered.';
+//        }
+//        if($order->delivery_tracking_number != null)
+//        {
+//            if($order->delivery_system_id == 2) {
+//                (new OrderDeliverySystemService())->paperFlyCancelOrder($order->order_number);
+//            } else if ($order->delivery_system_id == 3) {
+//                (new OrderDeliverySystemService())->pandaGoCancelOrder();
+//            }
+//        }
+//        $order->delivery_tracking_number = null;
+//        $order->delivery_status = 'Cancelled';
+//        $order->order_status_id = 3;
+//        $order->save();
+//        return 'done';
+//    }
 
     public function getPromoDiscount($promo): float|int
     {

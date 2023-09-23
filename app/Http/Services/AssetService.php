@@ -12,7 +12,6 @@ use App\Models\Union;
 use App\Models\Upazila;
 use App\Models\UserSex;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 
 class AssetService
 {

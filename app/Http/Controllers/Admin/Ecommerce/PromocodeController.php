@@ -3,15 +3,10 @@
 namespace App\Http\Controllers\Admin\Ecommerce;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\PromoCodeBulkDeleteRequest;
 use App\Http\Requests\PromoCreateRequest;
 use App\Http\Requests\PromoUpdateRequest;
 use App\Http\Services\PromoCodeService;
-use App\Models\PromoCode;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Validator;
 
 class PromocodeController extends Controller
 {

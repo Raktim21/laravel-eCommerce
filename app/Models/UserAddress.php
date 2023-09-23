@@ -13,9 +13,10 @@ class UserAddress extends Model
 
     protected $table = 'user_addresses';
 
-    protected $fillable = ['user_id','address','phone_no','upazila_id','union_id','postal_code','is_default','is_active'];
+    protected $fillable = ['user_id','address','phone_no','upazila_id','union_id',
+        'postal_code','lat','lng','is_default','is_active'];
 
-    protected $hidden = ['created_at', 'updated_at'];
+    protected $hidden = ['lat','lng','created_at', 'updated_at'];
 
     public function user()
     {

@@ -35,8 +35,8 @@ class AvatarUpdateRequest extends FormRequest
     {
         return [
             'avatar.required' => __('Avatar is required'),
-            'avatar.image'    => __('Unsuported file type for avatar'),
-            'avatar.mimes'    => __('Unsuported file type for avatar'),
+            'avatar.image'    => __('Unsupported file type for avatar'),
+            'avatar.mimes'    => __('Unsupported file type for avatar'),
             'avatar.max'      => __('Avatar must be less than 2MB'),
         ];
     }

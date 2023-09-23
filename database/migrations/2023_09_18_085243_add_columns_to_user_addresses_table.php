@@ -14,13 +14,13 @@ return new class extends Migration
     public function up()
     {
         Schema::table('user_addresses', function (Blueprint $table) {
-            $table->string('lat', 20)->nullable()->after('union_id');
-            $table->string('lng', 20)->nullable()->after('lat');
+            $table->string('lat', 20)->after('union_id');
+            $table->string('lng', 20)->after('lat');
         });
 
         Schema::table('order_pickup_addresses', function (Blueprint $table) {
-            $table->string('lat', 20)->nullable()->after('union_id');
-            $table->string('lng', 20)->nullable()->after('lat');
+            $table->string('lat', 20)->after('union_id');
+            $table->string('lng', 20)->after('lat');
         });
     }
 

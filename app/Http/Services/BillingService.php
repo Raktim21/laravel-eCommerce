@@ -7,7 +7,6 @@ use App\Models\BillingCartItems;
 use App\Models\Inventory;
 use App\Models\Order;
 use App\Models\OrderItems;
-use App\Models\Product;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

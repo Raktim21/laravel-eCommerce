@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin\Analytics;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
-use App\Models\OrderStatus;
 use App\Models\Product;
 use App\Models\ProductBrand;
 use App\Models\ProductCategory;

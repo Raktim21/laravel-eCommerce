@@ -16,7 +16,6 @@ use App\Models\OrderStatus;
 use Illuminate\Http\Request;
 use App\Http\Requests\AdminOrderStatusChangeRequest;
 use App\Http\Requests\SalesRequest;
-use App\Models\GeneralSetting;
 use App\Models\Order;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
@@ -201,7 +200,8 @@ class OrderController extends Controller
                 'errors' => $validate->errors()->all()
             ], 422);
         }
-        $delivery_charge = getDeliveryCharge(request()->input('user_address_id'),request()->input('total_price'));
+        $delivery_charge = (new OrderDeliverySystemService())->getDeliveryCharge((new AssetService())->activeDeliverySystem(),
+            request()->input('user_address_id'), request()->input('total_price'));
 
         return response()->json([
             'status' => true,
@@ -273,15 +273,6 @@ class OrderController extends Controller
             ], 400);
         }
 
-        $pickup = OrderPickupAddress::first();
-
-        if ($pickup == null) {
-            return response()->json([
-                'status' => false,
-                'errors' => ['Please add pickup address first.']
-            ], 400);
-        }
-
         if(($request->status == 2 || $request->status == 4) && !$this->service->checkEligibility($order, $request->shop_branch_id))
         {
             return response()->json([
@@ -290,27 +281,38 @@ class OrderController extends Controller
             ], 400);
         }
 
-
-        if ($delivery_system == 2) {
-            if($request->status == 2) {
+        if($request->status == 2)
+        {
+            if ($delivery_system == 2)
+            {
                 $weight = $this->service->getOrderWeight($order);
                 (new OrderDeliverySystemService())->paperFlyOrder($order, $weight);
-            } else if ($request->status == 3 && $order->delivery_tracking_number != null) {
-                $this->service->paperFlyCancelOrder($order);
+            } else if ($delivery_system == 3)
+            {
+                (new OrderDeliverySystemService())->pandaGoOrder($order);
             }
         }
 
-//        else if ($delivery_system == 2) {
-//            if($request->status == 2) {
-//                $weight = $this->service->getOrderWeight($order);
-//                (new OrderDeliverySystemService())->paperFlyOrder($order, $weight);
-//            } else if ($request->status == 3 && $order->delivery_tracking_number != null) {
-//                $this->service->paperFlyCancelOrder($order);
-//            }
-//        }
-
         if($request->status == 3)
         {
+            if($order->delivery_tracking_number)
+            {
+                if($order->delivery_system_id == 2)
+                {
+                    (new OrderDeliverySystemService())->paperFlyCancelOrder($order->order_number);
+                } else if ($order->delivery_system_id == 3)
+                {
+                    $response = (new OrderDeliverySystemService())->pandaGoCancelOrder($order->delivery_tracking_number);
+
+                    if ($response != 'done')
+                    {
+                        return response()->json([
+                            'status' => false,
+                            'errors' => [$response]
+                        ], 400);
+                    }
+                }
+            }
             $order->delivery_status = 'Cancelled';
         }
         if($request->status == 4)
@@ -326,7 +328,9 @@ class OrderController extends Controller
             $order->shop_branch_id  = $request->shop_branch_id;
         }
         $order->order_status_updated_by = auth()->user()->id;
-        $order->merchant_remarks = $request->merchant_remarks ?? null;
+        $order->merchant_remarks = $request->reason == 'DELIVERY_ETA_TOO_LONG' ? 'Delivery time is too long.' :
+            ($request->reason == 'MISTAKE_ERROR' ? 'Incorrect specifications (e.g. wrong delivery address etc).' :
+                ($request->reason == 'REASON_UNKNOWN' ? 'Unknown' : null));
 
         $order->save();
 

@@ -18,9 +18,10 @@ function peperfly(): array
 function pandago()
 {
     return array(
-        'pandaGoUrl' => 'https://pandago-api-sandbox.deliveryhero.io/sg/api/v1',
-        'clientID'   => 'test-client',
-        'keyID'      => 'test-key'
+        'pandaGoUrl'    => 'https://pandago-api-sandbox.deliveryhero.io/sg/api/v1',
+        'clientID'      => 'test-client',
+        'keyID'         => 'test-key',
+        'access_token'  => 'test-token'
     );
 }
 

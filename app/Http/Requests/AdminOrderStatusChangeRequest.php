@@ -29,7 +29,7 @@ class AdminOrderStatusChangeRequest extends FormRequest
         return [
             'status'            => 'required|exists:order_statuses,id',
             'shop_branch_id'    => 'required|exists:shop_branches,id',
-            'merchant_remarks'  => 'sometimes|string|max:490'
+            'reason'            => 'required_if:status,3|in:DELIVERY_ETA_TOO_LONG,MISTAKE_ERROR,REASON_UNKNOWN'
         ];
     }
 

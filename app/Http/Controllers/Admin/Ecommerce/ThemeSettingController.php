@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\ThemeCustomizer;
 use App\Models\ThemeLog;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 

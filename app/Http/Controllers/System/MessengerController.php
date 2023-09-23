@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MessengerOrderRequest;
 use App\Http\Services\CategoryService;
 use App\Http\Services\GeneralSettingService;
+use App\Http\Services\OrderDeliverySystemService;
 use App\Http\Services\OrderService;
 use App\Http\Services\ProductService;
 use App\Http\Services\PromoCodeService;
@@ -87,7 +88,7 @@ class MessengerController extends Controller
 
         if($user)
         {
-            $data = (new PromoCodeService(new PromoCode()))->getAuthPromos($user->id);
+            $data = (new PromoCodeService(new PromoCode()))->getUserPromos($user->id);
 
             return response()->json([
                 'status' => true,
@@ -148,7 +149,8 @@ class MessengerController extends Controller
         $validator = Validator::make($request->all(), [
             'messenger_psid'        => 'required|exists:user_profiles,messenger_psid',
             'order_number'          => 'required|exists:orders,order_number',
-            'email'                 => 'required|email|exists:users,username'
+            'email'                 => 'required|email|exists:users,username',
+            'reason'                => 'required|in:'
         ]);
 
         if($validator->fails())
@@ -159,10 +161,18 @@ class MessengerController extends Controller
             ], 422);
         }
 
-        $order = Order::where('order_number', $request->order_number)->first();
         $user = User::where('username', $request->email)->first();
+        $order = Order::where('order_number', $request->order_number)
+            ->where('user_id', $user->id)->first();
 
-        $msg = (new OrderService(new Order()))->cancelOrder($order, $user->id);
+        if(!$order) {
+            return response()->json([
+                'status' => false,
+                'errors' => ['Order not found.']
+            ], 404);
+        }
+
+        $msg = (new OrderDeliverySystemService())->cancelOrder($order);
 
         if($msg == 'done')
         {

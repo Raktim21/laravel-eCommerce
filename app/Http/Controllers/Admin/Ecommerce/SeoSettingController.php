@@ -40,7 +40,7 @@ class SeoSettingController extends Controller
             return response()->json([
                 'status' => false,
                 'errors' => $validate->errors()->all(),
-            ],400);
+            ],422);
         }
 
 

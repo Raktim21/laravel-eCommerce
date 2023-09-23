@@ -5,10 +5,7 @@ namespace App\Http\Controllers\Admin\Ecommerce;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ContactBulkDeleteRequest;
 use App\Http\Services\ContactService;
-use App\Models\Contact;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Validator;
 
 class ContactController extends Controller
 {

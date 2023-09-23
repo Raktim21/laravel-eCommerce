@@ -2,17 +2,14 @@
 
 namespace App\Http\Services;
 
-use App\Mail\EmailVerificationMail;
 use App\Mail\PasswordResetMail;
 use App\Models\CustomerCart;
-use App\Models\EmailVerification;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\UserProfile;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;

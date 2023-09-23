@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin\Ecommerce;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\HomepageRequest;
-use App\Http\Requests\ProductBulkDeleteRequest;
 use App\Http\Requests\ProductStoreRequest;
 use App\Http\Requests\ProductUpdateRequest;
 use App\Http\Services\ProductService;

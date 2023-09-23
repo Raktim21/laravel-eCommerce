@@ -2,17 +2,13 @@
 
 namespace App\Http\Services;
 
-use App\Models\ProductHasPromo;
 use App\Models\PromoCode;
 use App\Models\PromoProduct;
 use App\Models\PromoUser;
-use App\Models\UserPromo;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class PromoCodeService
 {

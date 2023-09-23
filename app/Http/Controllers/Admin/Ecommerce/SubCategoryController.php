@@ -6,13 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SubCategoryBulkDeleteRequest;
 use App\Http\Requests\SubCategoryRequest;
 use App\Http\Services\SubCategoryService;
-use App\Models\Product;
-use App\Models\SubCategory;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 
 class SubCategoryController extends Controller
 {
