@@ -240,6 +240,9 @@ class OrderDeliverySystemService
 
         $order->delivery_tracking_number = null;
         $order->delivery_status = 'Cancelled';
+        $order->delivery_remarks = request()->input('reason') == 'DELIVERY_ETA_TOO_LONG' ? 'Order is cancelled because delivery time is too long.' :
+            (request()->input('reason') == 'MISTAKE_ERROR' ? 'Order is cancelled because provided information is incorrect.' :
+                (request()->input('reason') == 'REASON_UNKNOWN' ? 'Order is cancelled for some unknown reason.' : null));
         $order->order_status_id = 3;
         $order->save();
         return 'done';

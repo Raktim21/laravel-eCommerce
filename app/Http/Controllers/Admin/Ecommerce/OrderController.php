@@ -328,9 +328,9 @@ class OrderController extends Controller
             $order->shop_branch_id  = $request->shop_branch_id;
         }
         $order->order_status_updated_by = auth()->user()->id;
-        $order->merchant_remarks = $request->reason == 'DELIVERY_ETA_TOO_LONG' ? 'Delivery time is too long.' :
-            ($request->reason == 'MISTAKE_ERROR' ? 'Incorrect specifications (e.g. wrong delivery address etc).' :
-                ($request->reason == 'REASON_UNKNOWN' ? 'Unknown' : null));
+        $order->merchant_remarks = $request->reason == 'DELIVERY_ETA_TOO_LONG' ? 'Order is cancelled because delivery time is too long.' :
+            ($request->reason == 'MISTAKE_ERROR' ? 'Order is cancelled because provided information is incorrect.' :
+                ($request->reason == 'REASON_UNKNOWN' ? 'Order is cancelled for some unknown reason.' : null));
 
         $order->save();
 
