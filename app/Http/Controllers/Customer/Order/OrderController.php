@@ -156,9 +156,7 @@ class OrderController extends Controller
 
     public function orderList()
     {
-        $order = Cache::remember('user_orders'.auth()->user()->id, 24*60*60*7, function () {
-            return $this->service->getUserOrder(auth()->user()->id);
-        });
+        $order = $this->service->getUserOrder(auth()->user()->id);
 
         return response()->json([
             'status' => true,
