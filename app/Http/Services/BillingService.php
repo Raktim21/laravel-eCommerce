@@ -99,7 +99,7 @@ class BillingService
     }
 
 
-    public function convert($id)
+    public function convert(Request $request, $id)
     {
         $bill = $this->bill->clone()->with('items')->findOrFail($id);
 
@@ -108,7 +108,7 @@ class BillingService
             return 1;
         }
 
-        if ($bill->user_id == null && request()->input('user_id') == null)
+        if (!$bill->user_id && !$request->user_id)
         {
             return 2;
         }
@@ -123,17 +123,19 @@ class BillingService
         try {
             $order = Order::create([
                 'shop_branch_id'             => auth()->guard('admin-api')->user()->shop_branch_id,
-                'user_id'                    => $bill->user_id ?? request()->input('user_id'),
-                'order_number'               => uniqid('ORD-'),
-                'order_status_id'            => 4,
+                'user_id'                    => $bill->user_id ?? $request->user_id,
+                'order_number'               => 'ORD-' . implode('-', str_split(hexdec(uniqid()), 4)),
+                'order_status_id'            => $request->delivery_method_id == 2 ? 4 : 2,
                 'order_status_updated_by'    => auth()->user()->id,
                 'payment_method_id'          => 1,
-                'delivery_method_id'         => 2,
-                'payment_status_id'          => 2,
-                'delivery_status'            => 'Delivered'
+                'delivery_method_id'         => $request->delivery_method_id,
+                'delivery_address_id'        => $request->delivery_method_id == 2 ? null : $request->delivery_address_id,
+                'payment_status_id'          => $request->delivery_method_id == 2 ? 2 : 1,
+                'delivery_status'            => $request->delivery_method_id == 2 ? 'Delivered' : 'Not Picked Yet'
             ]);
 
             $total = 0;
+            $weight = 0;
 
             foreach ($bill->items as $item)
             {
@@ -145,6 +147,7 @@ class BillingService
                     'total_price'               => $item->product_quantity * $item->combinations->selling_price
                 ]);
 
+                $weight += $item->product_quantity * $item->combinations->weight;
                 $total += $item->product_quantity * $item->combinations->selling_price;
             }
 
@@ -156,6 +159,26 @@ class BillingService
             $bill->update([
                 'is_ordered' => 1
             ]);
+
+            if ($request->delivery_method_id == 1)
+            {
+                $delivery_system = (new AssetService())->activeDeliverySystem();
+
+                if ($delivery_system == 2)
+                {
+                    if ($weight > 5)
+                    {
+                        DB::rollback();
+                        return 6;
+                    }
+
+                    (new OrderDeliverySystemService())->paperFlyOrder($order, $weight);
+                }
+                else if ($delivery_system == 3)
+                {
+                    (new OrderDeliverySystemService())->pandaGoOrder($order);
+                }
+            }
 
             DB::commit();
 

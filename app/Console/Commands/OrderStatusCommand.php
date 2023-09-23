@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Services\AssetService;
+use App\Http\Services\OrderDeliverySystemService;
 use App\Models\GeneralSetting;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Console\Command;
@@ -32,13 +34,13 @@ class OrderStatusCommand extends Command
      */
     public function handle()
     {
-        if(GeneralSetting::first()->delivery_status == 1)
+        if((new AssetService())->activeDeliverySystem() == 1)
         {
             $order = Order::where('order_status_id', 2)->get();
             $client = new Client();
 
-            foreach ($order as $order_status) {
-
+            foreach ($order as $order_status)
+            {
                 try {
 
                     $response = $client->post(peperfly()['paperFlyUrl'] . '/API-Order-Tracking/', [

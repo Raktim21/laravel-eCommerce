@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin\POS;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BillingStoreRequest;
 use App\Http\Services\BillingService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Validator;
 
 class BillingCartController extends Controller
 {
@@ -32,8 +34,7 @@ class BillingCartController extends Controller
 
     public function cartDetail($id)
     {
-        Cache::clear();
-        $data = Cache::remember('billiDetail'.$id, 24*60*60, function () use ($id) {
+        $data = Cache::remember('billDetail'.$id, 24*60*60, function () use ($id) {
             return $this->service->getData($id);
         });
 
@@ -65,9 +66,22 @@ class BillingCartController extends Controller
     }
 
 
-    public function convertBilling($id)
+    public function convertBilling(Request $request, $id)
     {
-        $status = $this->service->convert($id);
+        $validator = Validator::make($request->all(), [
+            'delivery_method_id'       => 'required|exists:order_delivery_methods,id',
+            'delivery_address_id'      => 'required_if:delivery_method_id,1',
+            'user_id'                  => 'sometimes|exists:users,id'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()->all()
+            ], 422);
+        }
+
+        $status = $this->service->convert($request, $id);
 
         if($status == 1)
         {
@@ -94,6 +108,13 @@ class BillingCartController extends Controller
             return response()->json([
                 'status' => false,
                 'errors' => ['Some of the selected product is out of stock.']
+            ], 400);
+        }
+        else if ($status == 6)
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => ['You cannot place an order that weighs over 5 KG.']
             ], 400);
         }
         else

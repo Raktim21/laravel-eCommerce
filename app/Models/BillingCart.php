@@ -45,6 +45,7 @@ class BillingCart extends Model
         });
 
         static::updated(function ($bill) {
+            Cache::delete('billDetail'.$bill->id);
             forgetCaches('billingList');
         });
     }

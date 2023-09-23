@@ -496,7 +496,7 @@ Route::group(['prefix' => 'admin'], function () {
 
             Route::group(['middleware' => ['permission:create/update/delete billing']], function() {
                 Route::post('billing-cart-store', 'cartStore');
-                Route::get('convert-billing-to-order/{id}', 'convertBilling');
+                Route::post('convert-billing-to-order/{id}', 'convertBilling');
             });
         });
 
