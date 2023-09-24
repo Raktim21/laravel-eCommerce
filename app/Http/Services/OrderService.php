@@ -400,7 +400,9 @@ class OrderService
 
     public function getCharges()
     {
-        return OrderAdditionalCharge::get();
+        return OrderAdditionalCharge::when(\request()->input('status'), function ($q) {
+            return $q->where('status', 1);
+        })->get();
     }
 
     public function storeOrderCharges(Request $request)

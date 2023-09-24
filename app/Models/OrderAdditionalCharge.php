@@ -21,17 +21,20 @@ class OrderAdditionalCharge extends Model
         parent::boot();
 
         static::created(function ($charge) {
-            Cache::delete('orderAdditionalCharges');
+            Cache::delete('orderAdditionalCharges0');
+            Cache::delete('orderAdditionalCharges1');
             Cache::delete('additional_charges');
         });
 
         static::updated(function ($charge) {
-            Cache::delete('orderAdditionalCharges');
+            Cache::delete('orderAdditionalCharges0');
+            Cache::delete('orderAdditionalCharges1');
             Cache::delete('additional_charges');
         });
 
         static::deleted(function ($charge) {
-            Cache::delete('orderAdditionalCharges');
+            Cache::delete('orderAdditionalCharges0');
+            Cache::delete('orderAdditionalCharges1');
             Cache::delete('additional_charges');
         });
     }

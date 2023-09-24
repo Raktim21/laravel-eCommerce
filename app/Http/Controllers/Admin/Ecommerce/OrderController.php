@@ -367,7 +367,7 @@ class OrderController extends Controller
 
     public function getAdditionalChargeList()
     {
-        $data = Cache::remember('orderAdditionalCharges', 60*60*24*7, function () {
+        $data = Cache::remember('orderAdditionalCharges'.request()->get('status',0), 60*60*24*7, function () {
             return $this->service->getCharges();
         });
 
