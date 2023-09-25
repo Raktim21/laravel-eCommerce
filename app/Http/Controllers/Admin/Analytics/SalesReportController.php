@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin\Analytics;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\DateRequest;
+use App\Http\Controllers\Controller;
 use App\Http\Services\ReportService;
 use Illuminate\Support\Facades\Cache;
 
@@ -17,7 +17,7 @@ class SalesReportController extends Controller
     }
 
 
-    public function generalReport(): \Illuminate\Http\JsonResponse
+    public function generalReport()
     {
         $data = Cache::remember('generalReport', 60*60, function () {
             return $this->service->getGeneralData();
@@ -30,7 +30,7 @@ class SalesReportController extends Controller
     }
 
 
-    public function newUsers(DateRequest $request): \Illuminate\Http\JsonResponse
+    public function newUsers(DateRequest $request)
     {
         $year = $request->year ?? date('Y');
 
@@ -45,7 +45,7 @@ class SalesReportController extends Controller
     }
 
 
-    public function mostPurchasedUsers(DateRequest $request): \Illuminate\Http\JsonResponse
+    public function mostPurchasedUsers(DateRequest $request)
     {
         $data = Cache::remember('activeUsers'.$request->start_date.$request->end_date, 60*60, function () use ($request) {
             return $this->service->getMostActiveUsers($request);
@@ -58,7 +58,7 @@ class SalesReportController extends Controller
     }
 
 
-    public function mostOrderedCategories(DateRequest $request): \Illuminate\Http\JsonResponse
+    public function mostOrderedCategories(DateRequest $request)
     {
         $data = Cache::remember('mostOrderedCategories'.$request->start_date.$request->end_date, 60*60, function () use ($request) {
             return $this->service->orderedCategories($request);
@@ -71,7 +71,7 @@ class SalesReportController extends Controller
     }
 
 
-    public function mostViewedProducts(): \Illuminate\Http\JsonResponse
+    public function mostViewedProducts()
     {
         $data = Cache::remember('mostViewedProducts', 60*60, function () {
             return $this->service->getProducts();
@@ -84,7 +84,7 @@ class SalesReportController extends Controller
     }
 
 
-    public function mostSoldProducts(DateRequest $request): \Illuminate\Http\JsonResponse
+    public function mostSoldProducts(DateRequest $request)
     {
         $data = Cache::remember('mostSoldProducts'.$request->start_date.$request->end_date, 60*60, function () use ($request) {
             return $this->service->soldProducts($request);
@@ -97,7 +97,7 @@ class SalesReportController extends Controller
     }
 
 
-    public function salesData(DateRequest $request): \Illuminate\Http\JsonResponse
+    public function salesData(DateRequest $request)
     {
         $year = $request->year ?? date('Y');
 
@@ -112,7 +112,7 @@ class SalesReportController extends Controller
     }
 
 
-    public function productReport(DateRequest $request, $product_id): \Illuminate\Http\JsonResponse
+    public function productReport(DateRequest $request, $product_id)
     {
         $data = $this->service->productData($request, $product_id);
 

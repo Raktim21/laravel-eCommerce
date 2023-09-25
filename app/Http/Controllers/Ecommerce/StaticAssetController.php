@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers\Ecommerce;
 
-use App\Http\Controllers\Controller;
-use App\Http\Services\AssetService;
-use App\Models\Country;
-use App\Models\Division;
-use App\Models\Union;
-use App\Models\Upazila;
 use Illuminate\Http\Request;
+use App\Http\Services\AssetService;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
 
 class StaticAssetController extends Controller

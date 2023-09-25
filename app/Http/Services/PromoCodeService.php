@@ -2,17 +2,13 @@
 
 namespace App\Http\Services;
 
-use App\Models\ProductHasPromo;
 use App\Models\PromoCode;
 use App\Models\PromoProduct;
 use App\Models\PromoUser;
-use App\Models\UserPromo;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class PromoCodeService
 {
@@ -123,9 +119,14 @@ class PromoCodeService
     {
         $applicablePromos = [];
         $data = $this->code->clone()
-
             ->with(['products' => function($q) {
-                return $q->select('products.id','products.name','products.thumbnail_image')->withTrashed();
+                return $q->select('products.id','products.category_id','products.slug','products.name','products.thumbnail_image',
+                    'products.display_price','products.previous_display_price')
+                    ->with(['category' => function($q1) {
+                        return $q1->select('id','name');
+                    }])
+                    ->with('productReviewRating')
+                    ->withSum('inventories', 'stock_quantity');
             }])
             ->where('is_active', 1)
             ->latest()->get();

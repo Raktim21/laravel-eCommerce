@@ -4,7 +4,6 @@ namespace App\Http\Services;
 
 use App\Models\SiteBanners;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 
 class SiteBannerService
 {

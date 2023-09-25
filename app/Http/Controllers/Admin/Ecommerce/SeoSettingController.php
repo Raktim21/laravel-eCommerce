@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin\Ecommerce;
 
-use App\Http\Controllers\Controller;
 use App\Models\SeoSetting;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
 class SeoSettingController extends Controller
@@ -40,7 +40,7 @@ class SeoSettingController extends Controller
             return response()->json([
                 'status' => false,
                 'errors' => $validate->errors()->all(),
-            ],400);
+            ],422);
         }
 
 
@@ -57,9 +57,9 @@ class SeoSettingController extends Controller
 
         return response()->json([
             'status' => true,
-        ],200);
+        ]);
 
     }
 
-    
+
 }

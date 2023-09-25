@@ -2,27 +2,21 @@
 
 namespace App\Http\Controllers\Admin\Ecommerce;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\ProductAttributeDeleteRequest;
-use App\Http\Requests\ProductAttributeStoreRequest;
-use App\Http\Services\ProductAttributeService;
-use App\Models\Attribute;
-use App\Models\AttributeValue;
-use App\Models\AttributeVariant;
 use App\Models\Inventory;
-use App\Models\Product;
-use App\Models\ProductAttribute;
-use App\Models\ProductAttributeValue;
-use App\Models\ProductCombination;
-use App\Models\ProductCombinationValue;
-use App\Models\ProductCombinationVariant;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use App\Models\ProductAttribute;
+use App\Models\ProductCombination;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Models\ProductAttributeValue;
+use Illuminate\Support\Facades\Cache;
+use App\Models\ProductCombinationValue;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Services\ProductAttributeService;
+use App\Http\Requests\ProductAttributeStoreRequest;
+use App\Http\Requests\ProductAttributeDeleteRequest;
 
 class ProductAttributeController extends Controller
 {

@@ -2,19 +2,12 @@
 
 namespace App\Http\Controllers\Admin\POS;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\BillingStoreRequest;
-use App\Http\Services\BillingService;
-use App\Models\BillingCart;
-use App\Models\BillingCartItems;
-use App\Models\Order;
-use App\Models\OrderItems;
-use App\Models\Product;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Services\BillingService;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\BillingStoreRequest;
 
 class BillingCartController extends Controller
 {
@@ -27,7 +20,7 @@ class BillingCartController extends Controller
     }
 
 
-    public function cartList(): \Illuminate\Http\JsonResponse
+    public function cartList()
     {
         $data = Cache::remember('billingList'.request()->get('page', 1), 24*60*60, function () {
             return $this->service->getCart();
@@ -39,8 +32,20 @@ class BillingCartController extends Controller
         ], $data->isEmpty() ? 204 : 200);
     }
 
+    public function cartDetail($id)
+    {
+        $data = Cache::remember('billDetail'.$id, 24*60*60, function () use ($id) {
+            return $this->service->getData($id);
+        });
 
-    public function cartStore(BillingStoreRequest $request): \Illuminate\Http\JsonResponse
+        return response()->json([
+            'status' => true,
+            'data'   => $data
+        ], is_null($data) ? 204 : 200);
+    }
+
+
+    public function cartStore(BillingStoreRequest $request)
     {
         $cart_id = $this->service->store($request);
 
@@ -61,9 +66,22 @@ class BillingCartController extends Controller
     }
 
 
-    public function convertBilling($id): \Illuminate\Http\JsonResponse
+    public function convertBilling(Request $request, $id)
     {
-        $status = $this->service->convert($id);
+        $validator = Validator::make($request->all(), [
+            'delivery_method_id'       => 'required|exists:order_delivery_methods,id',
+            'delivery_address_id'      => 'required_if:delivery_method_id,1',
+            'user_id'                  => 'sometimes|exists:users,id'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()->all()
+            ], 422);
+        }
+
+        $status = $this->service->convert($request, $id);
 
         if($status == 1)
         {
@@ -90,6 +108,13 @@ class BillingCartController extends Controller
             return response()->json([
                 'status' => false,
                 'errors' => ['Some of the selected product is out of stock.']
+            ], 400);
+        }
+        else if ($status == 6)
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => ['You cannot place an order that weighs over 5 KG.']
             ], 400);
         }
         else

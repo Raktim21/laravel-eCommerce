@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
@@ -227,6 +226,8 @@ class UserService
             'upazila_id' => $request->upazila_id,
             'union_id'   => $request->union_id,
             'postal_code'=> $request->postal_code,
+            'lat'        => $request->lat,
+            'lng'        => $request->lng,
         ]);
 
         if ($request->is_default == 1) {
@@ -249,6 +250,8 @@ class UserService
             'upazila_id' => $request->upazila_id,
             'union_id'   => $request->union_id,
             'postal_code'=> $request->postal_code,
+            'lat'        => $request->lat,
+            'lng'        => $request->lng
         ]);
 
         if ($request->is_default && $request->is_default == 1) {
@@ -354,6 +357,8 @@ class UserService
                 'union_id'      => $request->union_id,
                 'postal_code'   => $request->postal_code,
                 'address'       => $request->address,
+                'lat'           => $request->lat,
+                'lng'           => $request->lng
             ]
         );
     }

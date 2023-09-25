@@ -131,22 +131,6 @@ class CartService
         }
     }
 
-    public function getCharge($id)
-    {
-        $full_cart = $this->cart->clone()->where('user_id', auth()->guard('user-api')->user()->id)->get();
-
-        $total_weight = 0;
-        $total_price  = 0;
-
-        foreach ($full_cart as $cart)
-        {
-//            $total_weight += $cart->product_quantity * $cart->productCombination->weight;
-            $total_price  += $cart->product_quantity * $cart->productCombination->selling_price;
-        }
-
-        return getDeliveryCharge($id , $total_price);
-    }
-
     public function convertToAuthCart(Request $request): void
     {
         if($request->status == 1){

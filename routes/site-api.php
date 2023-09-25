@@ -1,12 +1,9 @@
 <?php
 
-use App\Http\Controllers\Ecommerce\StaticAssetController;
-use App\Http\Controllers\GenerateReportController;
-use App\Http\Controllers\System\GoogleFacebookController;
-use App\Http\Controllers\System\MessengerController;
 use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\Admin\Analytics\SalesReportController;
+use App\Http\Controllers\System\MessengerController;
+use App\Http\Controllers\Ecommerce\StaticAssetController;
+use App\Http\Controllers\System\GoogleFacebookController;
 
 Route::group(['middleware' => ['ApiAuth']], function() {
 

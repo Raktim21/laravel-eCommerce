@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class StatusUpdateRequest extends FormRequest
+class DeliveryChargeLookupRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,7 +26,9 @@ class StatusUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'delivery_status' => 'required|in:0,1',
+            'lookups'           => 'required|array',
+            'lookups.*.id'      => 'required|exists:order_delivery_charge_lookups,id|distinct',
+            'lookups.*.amount'  => 'required|numeric|min:0'
         ];
     }
 

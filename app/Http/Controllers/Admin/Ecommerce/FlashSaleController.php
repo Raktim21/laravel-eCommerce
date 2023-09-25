@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin\Ecommerce;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\FlashSaleCreateRequest;
-use App\Http\Services\FlashSaleService;
 use Illuminate\Support\Facades\Cache;
+use App\Http\Services\FlashSaleService;
+use App\Http\Requests\FlashSaleCreateRequest;
 
 class FlashSaleController extends Controller
 {
@@ -16,7 +16,7 @@ class FlashSaleController extends Controller
         $this->service = $service;
     }
 
-    public function index(): \Illuminate\Http\JsonResponse
+    public function index()
     {
         $data = Cache::remember('flashSale', 60*60*24, function () {
             return $this->service->getSale();
@@ -29,7 +29,7 @@ class FlashSaleController extends Controller
     }
 
 
-    public function store(FlashSaleCreateRequest $request): \Illuminate\Http\JsonResponse
+    public function store(FlashSaleCreateRequest $request)
     {
         if($this->service->updateSale($request))
         {

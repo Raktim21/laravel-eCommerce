@@ -3,12 +3,9 @@
 namespace App\Http\Controllers\Admin\Ecommerce;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\SubscriberRequest;
 use App\Http\Services\SubscriberService;
-use App\Models\Subscriber;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Validator;
 
 class SubscriberController extends Controller
 {
@@ -20,7 +17,7 @@ class SubscriberController extends Controller
     }
 
 
-    public function index(): \Illuminate\Http\JsonResponse
+    public function index()
     {
         $data = Cache::remember('subscriberList'.request()->get('page', 1), 24*60*60*7, function () {
             return $this->service->getAll();
@@ -33,7 +30,7 @@ class SubscriberController extends Controller
     }
 
 
-    public function create(SubscriberRequest $request): \Illuminate\Http\JsonResponse
+    public function create(SubscriberRequest $request)
     {
         $this->service->store($request);
 

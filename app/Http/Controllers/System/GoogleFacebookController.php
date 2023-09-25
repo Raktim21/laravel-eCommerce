@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers\System;
 
-use App\Models\CustomerCart;
-use App\Models\GeneralSetting;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\UserProfile;
-use Carbon\Carbon;
-use App\Http\Controllers\Controller;
+use App\Models\CustomerCart;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
-use Laravel\Socialite\Facades\Socialite;
+use App\Models\GeneralSetting;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Cache;
+use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Validator;
 
 class GoogleFacebookController extends Controller
 {

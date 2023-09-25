@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Services\UserService;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\AvatarUpdateRequest;
 use App\Http\Requests\PasswordUpdateRequest;
 use App\Http\Requests\UserProfileUpdateRequest;
-use App\Http\Services\UserService;
-use Illuminate\Support\Facades\Cache;
 
 class ProfileController extends Controller
 {
@@ -16,7 +16,7 @@ class ProfileController extends Controller
         $this->service  = $service;
     }
 
-    public function permissions(): \Illuminate\Http\JsonResponse
+    public function permissions()
     {
         $data = Cache::remember('permissions'.auth()->user()->id, 60*60*24*7, function () {
             return $this->service->getAuthPermissions();
@@ -28,7 +28,7 @@ class ProfileController extends Controller
         ], count($data)==0 ? 204 : 200);
     }
 
-    public function profileUpdate(UserProfileUpdateRequest $request): \Illuminate\Http\JsonResponse
+    public function profileUpdate(UserProfileUpdateRequest $request)
     {
         $this->service->update($request, auth()->guard('user-api')->user()->id, true, true);
 
@@ -37,7 +37,7 @@ class ProfileController extends Controller
         return response()->json(['status' => true]);
     }
 
-    public function avatarUpdate(AvatarUpdateRequest $request): \Illuminate\Http\JsonResponse
+    public function avatarUpdate(AvatarUpdateRequest $request)
     {
         $this->service->updateAvatar($request, auth()->guard('admin-api')->user()->id, true);
 
@@ -45,7 +45,7 @@ class ProfileController extends Controller
     }
 
 
-    public function passwordUpdate(PasswordUpdateRequest $request): \Illuminate\Http\JsonResponse
+    public function passwordUpdate(PasswordUpdateRequest $request)
     {
         if($this->service->updatePassword($request)) {
             return response()->json(['status' => true]);

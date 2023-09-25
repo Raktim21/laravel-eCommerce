@@ -2,20 +2,22 @@
 
 namespace App\Http\Controllers\Admin\Ecommerce;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\OrderSearchRequest;
-use App\Http\Services\OrderService;
-use App\Models\OrderDeliveryMethod;
-use App\Models\OrderPaymentMethod;
-use App\Models\OrderPickupAddress;
+use App\Models\Order;
 use App\Models\OrderStatus;
 use Illuminate\Http\Request;
-use App\Http\Requests\AdminOrderStatusChangeRequest;
+use App\Models\OrderPaymentMethod;
+use App\Http\Services\AssetService;
 use App\Http\Requests\SalesRequest;
-use App\Models\GeneralSetting;
-use App\Models\Order;
+use App\Http\Services\OrderService;
+use App\Models\OrderDeliveryMethod;
+use App\Models\OrderDeliverySystem;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
+use App\Http\Requests\OrderSearchRequest;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Services\OrderDeliverySystemService;
+use App\Http\Requests\DeliveryChargeLookupRequest;
+use App\Http\Requests\AdminOrderStatusChangeRequest;
 
 class OrderController extends Controller
 {
@@ -26,8 +28,76 @@ class OrderController extends Controller
         $this->service = $service;
     }
 
+    public function deliveryChargeLookup()
+    {
+        $data = Cache::remember('deliveryChargeLookup', 24*60*60*7, function () {
+            return $this->service->getDeliveryChargeData();
+        });
 
-    public function paymentMethodList(): \Illuminate\Http\JsonResponse
+        return response()->json([
+            'status' => true,
+            'data'   => $data
+        ], is_null($data) ? 204 : 200);
+    }
+
+    public function updateDeliveryChargeLookup(DeliveryChargeLookupRequest $request)
+    {
+        if ((new AssetService())->activeDeliverySystem() != 1)
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => ['You are not allowed to update delivery charge when personal delivery service is disabled.']
+            ], 403);
+        }
+
+        if($this->service->updateChargeLookup($request))
+        {
+            Cache::delete('deliveryChargeLookup');
+            return response()->json(['status' => true]);
+        }
+
+        return response()->json([
+            'status' => false,
+            'errors' => ['Something went wrong.']
+        ], 500);
+    }
+
+    public function deliverySystemList()
+    {
+        $data = Cache::remember('deliverySystems', 24*60*60*7, function () {
+            return OrderDeliverySystem::orderBy('id')->get();
+        });
+
+        return response()->json([
+            'status' => true,
+            'data'   => $data
+        ]);
+    }
+
+    public function updateDeliverySystem(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'system_id' => 'required|in:1,2'
+        ]);
+
+        if($validator->fails())
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()->all()
+            ], 422);
+        }
+
+        $this->service->changeDeliverySystem($request);
+
+        Cache::delete('deliverySystems');
+        Cache::delete('deliveryChargeLookup');
+
+        return response()->json(['status' => true]);
+    }
+
+
+    public function paymentMethodList()
     {
         $data = Cache::rememberForever('paymentMethods', function () {
             return OrderPaymentMethod::where('is_active',1)->latest()->get();
@@ -40,7 +110,7 @@ class OrderController extends Controller
     }
 
 
-    public function shippingMethodList(): \Illuminate\Http\JsonResponse
+    public function shippingMethodList()
     {
         $data = Cache::rememberForever('shippingMethods', function () {
             return OrderDeliveryMethod::where('is_active',1)->latest()->get();
@@ -53,12 +123,12 @@ class OrderController extends Controller
     }
 
 
-    public function orderStatusList(): \Illuminate\Http\JsonResponse
+    public function orderStatusList()
     {
-        $active = GeneralSetting::first()->delivery_status;
+        $active = (new AssetService())->activeDeliverySystem();
 
         $data = Cache::remember('orderStatuses', 24*60*60*7, function() use($active) {
-            return OrderStatus::when($active == 1, function($q) {
+            return OrderStatus::when($active != 1, function($q) {
                 return $q->whereNot('name', 'Delivered');
             })->get();
         });
@@ -70,7 +140,7 @@ class OrderController extends Controller
     }
 
 
-    public function index(OrderSearchRequest $request): \Illuminate\Http\JsonResponse
+    public function index(OrderSearchRequest $request)
     {
         $order = $this->service->getOrderList(false);
 
@@ -81,7 +151,7 @@ class OrderController extends Controller
     }
 
 
-    public function adminOrder(OrderSearchRequest $request): \Illuminate\Http\JsonResponse
+    public function adminOrder(OrderSearchRequest $request)
     {
         $order = $this->service->getOrderList(true);
 
@@ -92,7 +162,7 @@ class OrderController extends Controller
     }
 
 
-    public function sales(SalesRequest $request): \Illuminate\Http\JsonResponse
+    public function sales(SalesRequest $request)
     {
         $status = $this->service->placePOSOrder($request);
 
@@ -115,7 +185,7 @@ class OrderController extends Controller
     }
 
 
-    public function getDeliveryCost(): \Illuminate\Http\JsonResponse
+    public function getDeliveryCost()
     {
         $validate = Validator::make(request()->all(), [
             'user_address_id' => 'required|exists:user_addresses,id',
@@ -129,7 +199,8 @@ class OrderController extends Controller
                 'errors' => $validate->errors()->all()
             ], 422);
         }
-        $delivery_charge = getDeliveryCharge(request()->input('user_address_id'),request()->input('total_price'));
+        $delivery_charge = (new OrderDeliverySystemService())->getDeliveryCharge((new AssetService())->activeDeliverySystem(),
+            request()->input('user_address_id'), request()->input('total_price'));
 
         return response()->json([
             'status' => true,
@@ -141,7 +212,7 @@ class OrderController extends Controller
     }
 
 
-    public function detail($id): \Illuminate\Http\JsonResponse
+    public function detail($id)
     {
         $data = Cache::remember('orderDetail'.$id, 24*60*60*7, function () use ($id) {
             return $this->service->getData($id);
@@ -154,15 +225,23 @@ class OrderController extends Controller
     }
 
 
-    public function changeStatus(AdminOrderStatusChangeRequest $request, $id): \Illuminate\Http\JsonResponse
+    public function changeStatus(AdminOrderStatusChangeRequest $request, $id)
     {
         $order = Order::findOrfail($id);
+
+        if($order->order_status_id == $request->status)
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => ['Invalid order status']
+            ], 400);
+        }
 
         if($order->order_status_id == 3)
         {
             return response()->json([
                 'status' => false,
-                'errors' => ['Order status cannot be changed after being cancelled.']
+                'errors' => ['Status of cancelled orders cannot be changed.']
             ], 400);
         }
 
@@ -170,17 +249,19 @@ class OrderController extends Controller
         {
             return response()->json([
                 'status' => false,
-                'errors' => ['Order status cannot be changed after being picked.']
+                'errors' => ['Status of picked orders cannot be changed.']
             ], 400);
         }
 
         $status = OrderStatus::findOrFail($request->status);
 
-        if(GeneralSetting::first()->delivery_status == 1 && $request->status == 4)
+        $delivery_system = (new AssetService())->activeDeliverySystem();
+
+        if($delivery_system != 1 && $request->status == 4)
         {
             return response()->json([
                 'status' => false,
-                'errors' => ['Order status cannot be changed to delivered when default delivery system is enabled.']
+                'errors' => ['Order status cannot be changed to delivered when personal delivery system is disabled.']
             ], 400);
         }
 
@@ -191,16 +272,7 @@ class OrderController extends Controller
             ], 400);
         }
 
-        $pickup = OrderPickupAddress::first();
-
-        if ($pickup == null) {
-            return response()->json([
-                'status' => false,
-                'errors' => ['Please add pickup address first.']
-            ], 400);
-        }
-
-        if(($request->status == 2 ?? $request->status == 4) && !$this->service->checkEligibility($order, $request->shop_branch_id))
+        if(($request->status == 2 || $request->status == 4) && !$this->service->checkEligibility($order, $request->shop_branch_id))
         {
             return response()->json([
                 'status'    => false,
@@ -208,19 +280,38 @@ class OrderController extends Controller
             ], 400);
         }
 
-
-        if (GeneralSetting::first()->delivery_status == 1) {
-            if($request->status == 2) {
-               $weight = $this->service->getOrderWeight($order);
-               $this->service->paperFlyOrder($order, $weight);
-            } else {
-                if ($request->status == 3 && $order->delivery_tracking_number != null) {
-                    $this->service->paperFlyCancelOrder($order);
-                }
+        if($request->status == 2)
+        {
+            if ($delivery_system == 2)
+            {
+                $weight = $this->service->getOrderWeight($order);
+                (new OrderDeliverySystemService())->paperFlyOrder($order, $weight);
+            } else if ($delivery_system == 3)
+            {
+                (new OrderDeliverySystemService())->pandaGoOrder($order);
             }
         }
+
         if($request->status == 3)
         {
+            if($order->delivery_tracking_number)
+            {
+                if($order->delivery_system_id == 2)
+                {
+                    (new OrderDeliverySystemService())->paperFlyCancelOrder($order->order_number);
+                } else if ($order->delivery_system_id == 3)
+                {
+                    $response = (new OrderDeliverySystemService())->pandaGoCancelOrder($order->delivery_tracking_number);
+
+                    if ($response != 'done')
+                    {
+                        return response()->json([
+                            'status' => false,
+                            'errors' => [$response]
+                        ], 400);
+                    }
+                }
+            }
             $order->delivery_status = 'Cancelled';
         }
         if($request->status == 4)
@@ -235,8 +326,10 @@ class OrderController extends Controller
         {
             $order->shop_branch_id  = $request->shop_branch_id;
         }
-
-        $order->merchant_remarks = $request->merchant_remarks ?? null;
+        $order->order_status_updated_by = auth()->user()->id;
+        $order->merchant_remarks = $request->reason == 'DELIVERY_ETA_TOO_LONG' ? 'Order is cancelled because delivery time is too long.' :
+            ($request->reason == 'MISTAKE_ERROR' ? 'Order is cancelled because provided information is incorrect.' :
+                ($request->reason == 'REASON_UNKNOWN' ? 'Order is cancelled for some unknown reason.' : null));
 
         $order->save();
 
@@ -246,7 +339,7 @@ class OrderController extends Controller
     }
 
 
-    public function changeNote(Request $request, $id): \Illuminate\Http\JsonResponse
+    public function changeNote(Request $request, $id)
     {
         $order = Order::findOrFail($id);
 
@@ -272,9 +365,9 @@ class OrderController extends Controller
     }
 
 
-    public function getAdditionalChargeList(): \Illuminate\Http\JsonResponse
+    public function getAdditionalChargeList()
     {
-        $data = Cache::remember('orderAdditionalCharges', 60*60*24*7, function () {
+        $data = Cache::remember('orderAdditionalCharges'.request()->get('status',0), 60*60*24*7, function () {
             return $this->service->getCharges();
         });
 
@@ -285,7 +378,7 @@ class OrderController extends Controller
     }
 
 
-    public function storeCharge(Request $request): \Illuminate\Http\JsonResponse
+    public function storeCharge(Request $request)
     {
         $validate = Validator::make($request->all(), [
             'name'      => 'required|unique:order_additional_charges,name|string|max:50',
@@ -312,7 +405,7 @@ class OrderController extends Controller
     }
 
 
-    public function updateCharge(Request $request, $id): \Illuminate\Http\JsonResponse
+    public function updateCharge(Request $request, $id)
     {
         $validate = Validator::make($request->all(), [
             'name'      => 'required|string|max:50|unique:order_additional_charges,name,'.$id,
@@ -340,7 +433,7 @@ class OrderController extends Controller
     }
 
 
-    public function deleteCharge($id): \Illuminate\Http\JsonResponse
+    public function deleteCharge($id)
     {
         $this->service->deleteOrderCharge($id);
 

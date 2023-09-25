@@ -2,29 +2,22 @@
 
 namespace App\Http\Controllers\Customer\Auth;
 
-use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use App\Models\Order;
+use App\Models\UserAddress;
+use Illuminate\Http\Request;
+use App\Models\EmailVerification;
 use App\Http\Requests\AuthRequest;
-use App\Http\Requests\ConfirmPasswordRequest;
-use App\Http\Requests\ResetPasswordRequest;
-use App\Http\Requests\UserRegistrationRequest;
 use App\Http\Services\AuthService;
 use App\Mail\EmailVerificationMail;
-use App\Models\CustomerCart;
-use App\Models\EmailVerification;
-use App\Models\EmailVerificationCode;
-use App\Models\Order;
-use App\Models\ProductReview;
-use App\Models\User;
-use App\Models\UserAddress;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use Tymon\JWTAuth\Token;
+use App\Http\Requests\ResetPasswordRequest;
+use App\Http\Requests\ConfirmPasswordRequest;
+use App\Http\Requests\UserRegistrationRequest;
 
 
 class CustomerAuthController extends Controller
@@ -37,7 +30,7 @@ class CustomerAuthController extends Controller
     }
 
 
-    public function register(UserRegistrationRequest $request): \Illuminate\Http\JsonResponse
+    public function register(UserRegistrationRequest $request)
     {
         if($this->service->register($request, 1)) {
             return response()->json([
@@ -129,7 +122,7 @@ class CustomerAuthController extends Controller
         ]);
     }
 
-    public function deleteAccount(): \Illuminate\Http\JsonResponse
+    public function deleteAccount()
     {
         $id = auth()->user()->id;
 
@@ -156,7 +149,7 @@ class CustomerAuthController extends Controller
     }
 
 
-    public function sendVerificationCode(): \Illuminate\Http\JsonResponse
+    public function sendVerificationCode()
     {
         if (auth()->guard('user-api')->user()->email_verified_at)
         {
@@ -201,7 +194,7 @@ class CustomerAuthController extends Controller
     }
 
 
-    public function emailVerification(Request $request): \Illuminate\Http\JsonResponse
+    public function emailVerification(Request $request)
     {
         $validated = Validator::make($request->all(), [
             'code' => 'required|numeric',

@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\StaticContent;
 use App\Models\StaticMenu;
-use App\Models\StaticMenuType;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Validator;
+use App\Models\StaticContent;
+use App\Models\StaticMenuType;
 use Mews\Purifier\Facades\Purifier;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Validator;
 
 class StaticPageController extends Controller
 {
@@ -154,7 +154,7 @@ class StaticPageController extends Controller
     }
 
 
-    public function staticMenu(): \Illuminate\Http\JsonResponse
+    public function staticMenu()
     {
         if(request()->input('is_paginated'))
         {

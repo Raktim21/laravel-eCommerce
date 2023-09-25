@@ -3,15 +3,10 @@
 namespace App\Http\Controllers\Admin\Ecommerce;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\PromoCodeBulkDeleteRequest;
+use Illuminate\Support\Facades\Cache;
+use App\Http\Services\PromoCodeService;
 use App\Http\Requests\PromoCreateRequest;
 use App\Http\Requests\PromoUpdateRequest;
-use App\Http\Services\PromoCodeService;
-use App\Models\PromoCode;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Validator;
 
 class PromocodeController extends Controller
 {
@@ -24,7 +19,7 @@ class PromocodeController extends Controller
     }
 
 
-    public function index(): \Illuminate\Http\JsonResponse
+    public function index()
     {
         $data = Cache::remember('promoCodeList'.request()->get('page', 1), 24*60*60, function () {
             return $this->service->getList();
@@ -37,7 +32,7 @@ class PromocodeController extends Controller
     }
 
 
-    public function store(PromoCreateRequest $request): \Illuminate\Http\JsonResponse
+    public function store(PromoCreateRequest $request)
     {
         if($this->service->store($request))
         {
@@ -54,7 +49,7 @@ class PromocodeController extends Controller
     }
 
 
-    public function detail($id): \Illuminate\Http\JsonResponse
+    public function detail($id)
     {
         $data = Cache::remember('promoCodeDetail'.$id, 24*60*60, function () use ($id) {
             return $this->service->get($id);
@@ -67,7 +62,7 @@ class PromocodeController extends Controller
     }
 
 
-    public function update(PromoUpdateRequest $request, $id): \Illuminate\Http\JsonResponse
+    public function update(PromoUpdateRequest $request, $id)
     {
         $this->service->update($request, $id);
         return response()->json([
@@ -75,7 +70,7 @@ class PromocodeController extends Controller
         ]);
     }
 
-    public function updateStatus($id): \Illuminate\Http\JsonResponse
+    public function updateStatus($id)
     {
         if ($this->service->updateStatus($id))
         {

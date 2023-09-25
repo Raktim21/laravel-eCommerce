@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers\Admin\Ecommerce;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
+use App\Http\Services\ProductService;
 use App\Http\Requests\HomepageRequest;
-use App\Http\Requests\ProductBulkDeleteRequest;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\ProductStoreRequest;
 use App\Http\Requests\ProductUpdateRequest;
-use App\Http\Services\ProductService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
@@ -23,7 +22,7 @@ class ProductController extends Controller
     }
 
 
-    public function index(HomepageRequest $request): \Illuminate\Http\JsonResponse
+    public function index(HomepageRequest $request)
     {
         $data = $this->service->getAll($request, 1);
 
@@ -34,7 +33,7 @@ class ProductController extends Controller
     }
 
 
-    public function detail($id): \Illuminate\Http\JsonResponse
+    public function detail($id)
     {
         $data = Cache::remember('productDetail'.$id, 2*60*60, function () use ($id) {
             return $this->service->get($id);
@@ -47,7 +46,7 @@ class ProductController extends Controller
     }
 
 
-    public function store(ProductStoreRequest $request): \Illuminate\Http\JsonResponse
+    public function store(ProductStoreRequest $request)
     {
         if($request->has('attribute_list'))
         {
@@ -78,7 +77,7 @@ class ProductController extends Controller
     }
 
 
-    public function update(ProductUpdateRequest $request, $id): \Illuminate\Http\JsonResponse
+    public function update(ProductUpdateRequest $request, $id)
     {
         $this->service->update($request, $id);
 
@@ -88,7 +87,7 @@ class ProductController extends Controller
     }
 
 
-    public function destroy($id): \Illuminate\Http\JsonResponse
+    public function destroy($id)
     {
         $this->service->delete($id);
 
@@ -98,7 +97,7 @@ class ProductController extends Controller
     }
 
 
-    public function productBulkDelete(Request $request): \Illuminate\Http\JsonResponse
+    public function productBulkDelete(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'ids'        => 'required|array',
@@ -128,7 +127,7 @@ class ProductController extends Controller
     }
 
 
-    public function multipleImageDelete($id): \Illuminate\Http\JsonResponse
+    public function multipleImageDelete($id)
     {
         $this->service->imageDelete($id);
 
@@ -138,7 +137,7 @@ class ProductController extends Controller
     }
 
 
-    public function reviewGetAll(): \Illuminate\Http\JsonResponse
+    public function reviewGetAll()
     {
         $data = Cache::remember('allProductReviews'.request()->get('page', 1), 24*60*60, function () {
             return $this->service->getAllReviews();
@@ -151,7 +150,7 @@ class ProductController extends Controller
     }
 
 
-    public function getReview($id): \Illuminate\Http\JsonResponse
+    public function getReview($id)
     {
         $data = Cache::remember('productReview'.$id, 24*60*60*7, function () use ($id) {
             return $this->service->getReview($id);
@@ -164,7 +163,7 @@ class ProductController extends Controller
     }
 
 
-    public function reviewApproved($id): \Illuminate\Http\JsonResponse
+    public function reviewApproved($id)
     {
         $this->service->updateStatus($id);
 
@@ -174,7 +173,7 @@ class ProductController extends Controller
     }
 
 
-    public function reviewReply(Request $request, $id): \Illuminate\Http\JsonResponse
+    public function reviewReply(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
             'reply' => 'required|string|max:500',
@@ -195,7 +194,7 @@ class ProductController extends Controller
     }
 
 
-    public function abuseReports(): \Illuminate\Http\JsonResponse
+    public function abuseReports()
     {
         $data = Cache::remember('abuseReports'.request()->get('page', 1), 60*60*24*7, function () {
             return $this->service->getAbuseReports();
@@ -208,7 +207,7 @@ class ProductController extends Controller
     }
 
 
-    public function changeAbuseStatus(Request $request, $id): \Illuminate\Http\JsonResponse
+    public function changeAbuseStatus(Request $request, $id)
     {
         $this->service->changeAbuseStatus($request->status, $id);
 
@@ -218,7 +217,7 @@ class ProductController extends Controller
     }
 
 
-    public function restockRequests(): \Illuminate\Http\JsonResponse
+    public function restockRequests()
     {
         $data = Cache::remember('productRestockRequests'.request()->get('page', 1), 24*60*60, function () {
             return $this->service->getAllRestock();

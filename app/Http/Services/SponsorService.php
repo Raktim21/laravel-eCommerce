@@ -4,7 +4,6 @@ namespace App\Http\Services;
 
 use App\Models\Sponsor;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 
 class SponsorService
 {

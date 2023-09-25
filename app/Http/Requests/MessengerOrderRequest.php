@@ -136,6 +136,8 @@ class MessengerOrderRequest extends FormRequest
                                             }
                                         }],
             'address'             =>  'nullable|string',
+            'lat'                 =>  'required|max:20',
+            'lng'                 =>  'required|max:20',
             'delivery_remarks'    =>  'nullable|string',
             'phone_no'            =>  ['required','string','regex:/^(?:\+88|88)?(01[3-9]\d{8})$/'],
         ];

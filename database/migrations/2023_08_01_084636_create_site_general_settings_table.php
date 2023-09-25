@@ -41,7 +41,6 @@ return new class extends Migration
             $table->string('text_color', 20)->default('#000000');
             $table->string('badge_background_color', 20)->default('#765eff');
             $table->string('badge_text_color', 20)->default('#ffffff');
-            $table->tinyInteger('delivery_status', false, true)->default(0);
             $table->timestamps();
         });
     }

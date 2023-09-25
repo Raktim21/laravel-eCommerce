@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Services\UserService;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AdminBulkDeleteRequest;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\AdminCreateRequest;
 use App\Http\Requests\AvatarUpdateRequest;
 use App\Http\Requests\PickupAddressRequest;
+use App\Http\Requests\AdminBulkDeleteRequest;
 use App\Http\Requests\UserProfileUpdateRequest;
-use App\Http\Services\UserService;
-use Illuminate\Support\Facades\Cache;
 
 class AdminController extends Controller
 {
@@ -48,7 +48,7 @@ class AdminController extends Controller
     }
 
 
-    public function adminDetail($id): \Illuminate\Http\JsonResponse
+    public function adminDetail($id)
     {
         $data = Cache::remember('adminDetail'.$id, 24*60*60, function () use ($id) {
             return $this->service->show($id, true);

@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Customer;
 
-use App\Http\Requests\WishStoreRequest;
-use App\Http\Services\WishlistService;
-use App\Http\Controllers\Controller;
-use App\Mail\SendWishListMail;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
+use App\Mail\SendWishListMail;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\Controller;
+use App\Http\Services\WishlistService;
+use App\Http\Requests\WishStoreRequest;
 use Illuminate\Support\Facades\Validator;
 
 class WishlistController extends Controller

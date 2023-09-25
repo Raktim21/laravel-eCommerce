@@ -56,10 +56,15 @@
         @foreach($cart['items'] as $item)
             <tr class="table_body">
                 <td style="color: #000">{{ $item['combinations']['product']['name'] }}
-                    -
-                    @foreach($item['combinations']['attributeValues'] as $key=>$val)
-                        @if($key!=0),@endif {{ $val['name'] }}
-                    @endforeach
+                    @if (count($item['combinations']['attributeValues']) != 1 || $item['combinations']['attributeValues'][0]['name']!='default')
+                        -
+                        @foreach($item['combinations']['attributeValues'] as $key=>$val)
+                            @if($key!=0 &&
+                                $item['combinations']['attributeValues'][$key-1]['name']!='default' &&
+                                $val['name']!='default'),@endif
+                            {{ $val['name']=='default' ? '' : $val['name'] }}
+                        @endforeach
+                    @endif
                     </td>
                 <td>{{ $item['product_quantity'] }}</td>
                 <td>{{ $item['combinations']['selling_price'] }}</td>

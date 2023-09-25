@@ -3,12 +3,9 @@
 namespace App\Http\Controllers\Admin\Ecommerce;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ContactBulkDeleteRequest;
 use App\Http\Services\ContactService;
-use App\Models\Contact;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\ContactBulkDeleteRequest;
 
 class ContactController extends Controller
 {
@@ -21,7 +18,7 @@ class ContactController extends Controller
     }
 
 
-    public function index(): \Illuminate\Http\JsonResponse
+    public function index()
     {
         $data = Cache::remember('contactList'.request()->get('page', 1), 60*10, function () {
             return $this->service->getAll();
@@ -35,7 +32,7 @@ class ContactController extends Controller
     }
 
 
-    public function destroy($id): \Illuminate\Http\JsonResponse
+    public function destroy($id)
     {
         $this->service->delete($id);
 
@@ -45,7 +42,7 @@ class ContactController extends Controller
     }
 
 
-    public function bulkDelete(ContactBulkDeleteRequest $request): \Illuminate\Http\JsonResponse
+    public function bulkDelete(ContactBulkDeleteRequest $request)
     {
         $this->service->multipleDeletes($request);
 

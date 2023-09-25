@@ -7,11 +7,11 @@ use App\Models\Currency;
 use App\Models\DashboardLanguage;
 use App\Models\Division;
 use App\Models\FAQ;
+use App\Models\OrderDeliverySystem;
 use App\Models\Union;
 use App\Models\Upazila;
 use App\Models\UserSex;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 
 class AssetService
 {
@@ -89,5 +89,10 @@ class AssetService
         foreach ($request->ids as $key => $id) {
             FAQ::find($id)->update(['ordering' => $key + 1]);
         }
+    }
+
+    public function activeDeliverySystem()
+    {
+        return OrderDeliverySystem::where('active_status', 1)->first()->id;
     }
 }

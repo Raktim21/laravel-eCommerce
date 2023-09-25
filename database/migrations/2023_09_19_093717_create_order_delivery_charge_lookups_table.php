@@ -13,12 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('order_additional_charges', function (Blueprint $table) {
+        Schema::create('order_delivery_charge_lookups', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 50)->unique();
-            $table->tinyInteger('is_percentage');
+            $table->string('category', 100)->unique();
             $table->float('amount');
-            $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('order_additional_charges');
+        Schema::dropIfExists('order_delivery_charge_lookups');
     }
 };
