@@ -136,7 +136,7 @@ class OrderDeliverySystemService
             $delivery_price = $lookup[2]->amount + (($total_price + $lookup[2]->amount) * 0.01);
         }
 
-        return $delivery_price;
+        return round($delivery_price, 2);
     }
 
     private function getPaperFlyDeliveryCharge($address_id, $total_price): float|int
@@ -161,7 +161,7 @@ class OrderDeliverySystemService
             $delivery_price = 120 + (($total_price + 120) * 0.01);
         }
 
-        return $delivery_price;
+        return round($delivery_price, 2);
     }
 
     private function getPandaGoDeliveryCharge($address_id, $total_price)
@@ -204,7 +204,7 @@ class OrderDeliverySystemService
 
             if ($response->getStatusCode() == 200)
             {
-                return $data->estimated_delivery_fee;
+                return round($data->estimated_delivery_fee, 2);
             }
         }
         return 0;
