@@ -136,7 +136,7 @@ jobs:
       - name: 📂 Sync files in api.glamdesmit.com
         uses: SamKirkland/FTP-Deploy-Action@4.3.0
         with:
-          server: selopia.com
+          server: 194.163.35.14
           username: u652464815.api.glamdesmit.com
           password: dF@qa#4;k,vd
           exclude:  |
