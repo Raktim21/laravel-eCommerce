@@ -49,8 +49,8 @@ class ExpenseCategoryBulkDeleteRequest extends FormRequest
     public function messages()
     {
         return [
-            'ids.required' => __('Please select atleast one expense category'),
-            'ids.array'    => __('Please select atleast one expense category'),
+            'ids.required' => __('Please select at least one expense category'),
+            'ids.array'    => __('Please select at least one expense category'),
         ];
     }
 

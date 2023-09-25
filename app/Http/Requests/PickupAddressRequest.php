@@ -39,7 +39,7 @@ class PickupAddressRequest extends FormRequest
                                 ],
             'email'           => 'required|email|max:100',
             'upazila_id'      => 'required|numeric|exists:location_upazilas,id',
-            'union_id'        => ['sometimes',
+            'union_id'        => ['nullable',
                                     function($attr, $val, $fail) {
                                         $union = Union::where('upazila_id', $this->input('upazila_id'))->first();
 
@@ -49,6 +49,8 @@ class PickupAddressRequest extends FormRequest
                                     }],
             'address'         => 'required|string|max:500',
             'postal_code'     => 'required',
+            'lat'             => 'required|max:20',
+            'lng'             => 'required|max:20'
         ];
 
     }
@@ -73,21 +75,6 @@ class PickupAddressRequest extends FormRequest
             'postal_code.required'     => __('Postal code is required'),
 
         ];
-    }
-
-
-
-    protected function passedValidation()
-    {
-        $this->replace([
-            'name'            => $this->name,
-            'phone'           => $this->phone,
-            'email'           => $this->email,
-            'upazila_id'      => $this->upazila_id,
-            'union_id'        => $this->union_id,
-            'address'         => $this->address,
-            'postal_code'     => $this->postal_code,
-        ]);
     }
 
     protected function failedValidation(Validator $validator)

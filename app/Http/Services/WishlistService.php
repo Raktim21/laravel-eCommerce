@@ -8,7 +8,6 @@ use App\Models\WishListItem;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
 class WishlistService
 {

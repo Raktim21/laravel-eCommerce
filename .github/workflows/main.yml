@@ -50,120 +50,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
   
+
       - name: 🚚 Get latest code
         uses: actions/checkout@v2
-
-
-
-
-      # - name: 📂 Sync files in Woman
-      #   uses: SamKirkland/FTP-Deploy-Action@4.3.0
-      #   with:
-      #     server: selopia.com
-      #     username: u652464815.womanapi.selopia.com
-      #     password: dF@qa#4;k,vd
-      #     exclude:  |
-      #       **/.git*
-      #       **/.git*/**
-      #       **/public/upload*
-      #       **/public/upload*/**
-      #       **/public/json*
-      #       **/public/json*/**
-      #   continue-on-error: true     
-    
-      # - name: executing remote ssh commands in Woman
-      #   uses: appleboy/ssh-action@v0.1.10
-      #   with:
-      #     host: selopia.com
-      #     username: u652464815
-      #     password: wew2Weqsdf@ssfa3
-      #     port: 65002
-      #     script: |
-      #       cd domains/womanapi.selopia.com/public_html/
-      #       composer2 update
-      #       php artisan migrate
-      #       php artisan optimize
-      #       php artisan config:clear
-      #       php artisan cache:clear
-    
-      
-      #   continue-on-error: true      
-
-
-
-      # - name: 📂 Sync files in fairfusion
-      #   uses: SamKirkland/FTP-Deploy-Action@4.3.0
-      #   with:
-      #     server: selopia.com
-      #     username: u652464815.apifairfusion.selopia.com
-      #     password: dF@qa#4;k,vd
-      #     exclude:  |
-      #       **/.git*
-      #       **/.git*/**
-      #       **/public/upload*
-      #       **/public/upload*/**
-      #       **/public/json*
-      #       **/public/json*/**
-      #   continue-on-error: true     
-    
-      # - name: executing remote ssh commands in fairfusion
-      #   uses: appleboy/ssh-action@v0.1.10
-      #   with:
-      #     host: selopia.com
-      #     username: u652464815
-      #     password: wew2Weqsdf@ssfa3
-      #     port: 65002
-      #     script: |
-
-      #       cd domains/apifairfusion.selopia.com/public_html/
-      #       composer2 update
-      #       php artisan migrate
-      #       php artisan optimize
-      #       php artisan config:clear
-      #       php artisan cache:clear
-      
-    
-      
-      #   continue-on-error: true    
-
-
-
-
-
-      # - name: 📂 Sync files in Grocery
-      #   uses: SamKirkland/FTP-Deploy-Action@4.3.0
-      #   with:
-      #     server: selopia.com
-      #     username: u652464815.apigrocery.selopia.com
-      #     password: dF@qa#4;k,vd
-      #     exclude:  |
-      #       **/.git*
-      #       **/.git*/**
-      #       **/public/upload*
-      #       **/public/upload*/**
-      #       **/public/json*
-      #       **/public/json*/**
-      #   continue-on-error: true     
-    
-      # - name: executing remote ssh commands in Grocery
-      #   uses: appleboy/ssh-action@v0.1.10
-      #   with:
-      #     host: selopia.com
-      #     username: u652464815
-      #     password: wew2Weqsdf@ssfa3
-      #     port: 65002
-      #     script: |
-      #       cd domains/apigrocery.selopia.com/public_html/
-      #       composer2 update
-      #       php artisan migrate
-      #       php artisan optimize
-      #       php artisan config:clear
-      #       php artisan cache:clear
-    
-      
-      #   continue-on-error: true    
-
-
 
 
       - name: 📂 Sync files in api.shukkarun.com
@@ -308,23 +197,56 @@ jobs:
           password: wew2Weqsdf@ssfa3
           port: 65002
           script: |
-            # cd domains/api.jannatistore.com/public_html/
-            # # composer2 update
-            # php artisan migrate
-            # php artisan optimize
-            # php artisan config:clear
-            # php artisan cache:clear
-
-
             cd domains/api.jannatistore.com/public_html/
+            # composer2 update
+            php artisan migrate
+            php artisan optimize
+            php artisan config:clear
+            php artisan cache:clear
+    
+      
+        continue-on-error: true  
+
+
+
+
+
+
+
+
+      - name: 📂 Sync files in apigreenbangla
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        with:
+          server: selopia.com
+          username: u652464815.apigreenbangla.selopia.com
+          password: dF@qa#4;k,vd
+          exclude:  |
+            **/.git*
+            **/.git*/**
+            **/public/upload*
+            **/public/upload*/**
+            **/public/json*
+            **/public/json*/**
+        continue-on-error: true     
+    
+      - name: executing remote ssh commands in apigreenbangla
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: selopia.com
+          username: u652464815
+          password: wew2Weqsdf@ssfa3
+          port: 65002
+          script: |
+            
+            cd domains/apigreenbangla.selopia.com/public_html/
             composer2 update
             cp .env.example .env
-            sed -i 's/DB_DATABASE=.*/DB_DATABASE=u652464815_jannati_store/g' .env
-            sed -i 's/DB_USERNAME=.*/DB_USERNAME=u652464815_jannati_store/g' .env
-            sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=8wZS71K7!z/g' .env
-            sed -i 's/API_ACCESS_TOKEN=.*/API_ACCESS_TOKEN=tR9sYp2aL8zWqGm5vH1oJ3iK6xXuF7bC4eV2nN5sA1jD8kP6oZrQaM9cT7sW4/g' .env
-            sed -i 's/FRONTEND_URL=.*/FRONTEND_URL=https://jannatistore.com/g' .env
-            sed -i 's/APP_URL=.*/APP_URL=https://api.jannatistore.com/g' .env
+            sed -i 's/DB_DATABASE=.*/DB_DATABASE=u652464815_green_bangla/g' .env
+            sed -i 's/DB_USERNAME=.*/DB_USERNAME=u652464815_green_bangla/g' .env
+            sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=if#4^Ut@i2L/g' .env
+            sed -i 's/API_ACCESS_TOKEN=.*/API_ACCESS_TOKEN=tR9wPcV2fL7kXeS4qAzT7kPyZiJ8oQbLnRqAzT7kPyZiJ8oQeS4sY1dF6vC2bM9bNpS6rGh2wL8fPtQa4jX3zVkE7c/g' .env
+            sed -i 's/FRONTEND_URL=.*/FRONTEND_URL=https://apigreenbangla.selopia.com/g' .env
+            sed -i 's/APP_URL=.*/APP_URL=https://api.apigreenbangla.selopia.com/g' .env
             mkdir -p public/uploads/admin/avatars
             mkdir -p public/uploads/customer/avatars
             mkdir -p public/uploads/images/banner
@@ -345,383 +267,6 @@ jobs:
     
       
         continue-on-error: true  
-
-
-
-
-
-        
-
-      # - name: 📂 Sync files in HMF
-      #   uses: SamKirkland/FTP-Deploy-Action@4.3.0
-      #   with:
-      #     server: selopia.com
-      #     username: u652464815.apihmf.selopia.com
-      #     password: dF@qa#4;k,vd
-      #     exclude:  |
-      #       **/.git*
-      #       **/.git*/**
-      #       **/public/upload*
-      #       **/public/upload*/**
-      #   continue-on-error: true     
-    
-      # - name: executing remote ssh commands in HMF
-      #   uses: appleboy/ssh-action@v0.1.10
-      #   with:
-      #     host: selopia.com
-      #     username: u652464815
-      #     password: wew2Weqsdf@ssfa3
-      #     port: 65002
-      #     script: |
-      #       cd domains/apihmf.selopia.com/public_html/
-      #       # composer2 update
-      #       php artisan migrate
-      #       php artisan optimize
-      #       php artisan cache:clear
-    
-      
-      #   continue-on-error: true  
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-
-
-
-      # - name: 📂 Sync files in HNK
-      #   uses: SamKirkland/FTP-Deploy-Action@4.3.0
-      #   with:
-      #     server: selopia.com
-      #     username: u652464815.hnkapi.selopia.com
-      #     password: dF@qa#4;k,vd
-      #     exclude:  |
-      #       **/.git*
-      #       **/.git*/**
-      #       **/public/upload*
-      #       **/public/upload*/**
-      #   continue-on-error: true     
-    
-      # - name: executing remote ssh commands in HNK
-      #   uses: appleboy/ssh-action@v0.1.10
-      #   with:
-      #     host: selopia.com
-      #     username: u652464815
-      #     password: wew2Weqsdf@ssfa3
-      #     port: 65002
-      #     script: |
-      #       cd domains/hnkapi.selopia.com/public_html/
-      #       # composer2 update
-      #       php artisan migrate
-      #       php artisan optimize
-      #       php artisan cache:clear
-      
-
-      #   continue-on-error: true     
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
-      # - name: 📂 Sync files in Electronics
-      #   uses: SamKirkland/FTP-Deploy-Action@4.3.0
-      #   with:
-      #     server: selopia.com
-      #     username: u652464815.electronicsapi.selopia.com
-      #     password: dF@qa#4;k,vd
-      #     exclude:  |
-      #       **/.git*
-      #       **/.git*/**
-      #       **/public/upload*
-      #       **/public/upload*/**
-
-      #   continue-on-error: true  
-
-      # - name: executing remote ssh commands in electronics
-      #   uses: appleboy/ssh-action@v0.1.10
-      #   with:
-      #     host: selopia.com
-      #     username: u652464815
-      #     password: wew2Weqsdf@ssfa3
-      #     port: 65002
-      #     script: |
-      #       cd domains/electronicsapi.selopia.com/public_html/
-      #       # composer2 update
-      #       php artisan migrate
-      #       php artisan optimize
-      #       php artisan cache:clear
-      #   continue-on-error: true     
-
-
-
-
-
-
-
-
-
-      # - name: 📂 Sync files in hnb
-      #   uses: SamKirkland/FTP-Deploy-Action@4.3.0
-      #   with:
-      #     server: selopia.com
-      #     username: u652464815.hnbapi.selopia.com
-      #     password: dF@qa#4;k,vd
-      #     exclude:  |
-      #       **/.git*
-      #       **/.git*/**
-      #       **/public/upload*
-      #       **/public/upload*/**
-      #   continue-on-error: true     
- 
-      # - name: executing remote ssh commands in hnb
-      #   uses: appleboy/ssh-action@v0.1.10
-      #   with:
-      #     host: selopia.com
-      #     username: u652464815
-      #     password: wew2Weqsdf@ssfa3
-      #     port: 65002
-      #     script: |
-      #       cd domains/hnbapi.selopia.com/public_html/
-      #       # composer2 update
-      #       php artisan migrate
-      #       php artisan optimize
-      #       php artisan cache:clear
-      #   continue-on-error: true     
-              
-
-
-
-
-
-
-
-                
-      # - name: 📂 Sync files in footwear
-      #   uses: SamKirkland/FTP-Deploy-Action@4.3.0
-      #   with:
-      #     server: selopia.com
-      #     username: u652464815.apifootwear.selopia.com
-      #     password: dF@qa#4;k,vd
-      #     exclude:  |
-      #       **/.git*
-      #       **/.git*/**
-      #       **/public/upload*
-      #       **/public/upload*/**
-      #   continue-on-error: true     
-    
-      # - name: executing remote ssh commands in footwear
-      #   uses: appleboy/ssh-action@v0.1.10
-      #   with:
-      #     host: selopia.com
-      #     username: u652464815
-      #     password: wew2Weqsdf@ssfa3
-      #     port: 65002
-      #     script: |
-      #       cd domains/apifootwear.selopia.com/public_html/
-      #       # composer2 update  
-      #       php artisan migrate
-      #       php artisan optimize
-      #       php artisan cache:clear
-      #   continue-on-error: true     
-              
-                
-
-
-
-
-
-
-      # - name: 📂 Sync files in client905
-      #   uses: SamKirkland/FTP-Deploy-Action@4.3.0
-      #   with:
-      #     server: selopia.com
-      #     username: u652464815.client905api.selopia.com
-      #     password: dF@qa#4;k,vd
-      #     exclude:  |
-      #       **/.git*
-      #       **/.git*/**
-      #       **/public/upload*
-      #       **/public/upload*/**
-      #   continue-on-error: true
-    
-      # - name: executing remote ssh commands in client905
-      #   uses: appleboy/ssh-action@v0.1.10
-      #   with:
-      #     host: selopia.com
-      #     username: u652464815
-      #     password: wew2Weqsdf@ssfa3
-      #     port: 65002
-      #     script: |
-      #       cd domains/client905api.selopia.com/public_html/
-      #       # composer2 update
-      #       php artisan migrate
-      #       php artisan optimize
-      #       php artisan cache:clear
-      #   continue-on-error: true     
-                
-                
-
-
-
-
-
-
-      # - name: 📂 Sync files in client901
-      #   uses: SamKirkland/FTP-Deploy-Action@4.3.0
-      #   with:
-      #     server: selopia.com
-      #     username: u652464815.client901api.selopia.com
-      #     password: dF@qa#4;k,vd
-      #     exclude:  |
-      #       **/.git*
-      #       **/.git*/**
-      #       **/public/upload*
-      #       **/public/upload*/**
-      #   continue-on-error: true     
-    
-      # - name: executing remote ssh commands in client901
-      #   uses: appleboy/ssh-action@v0.1.10
-      #   with:
-      #     host: selopia.com
-      #     username: u652464815
-      #     password: wew2Weqsdf@ssfa3
-      #     port: 65002
-      #     script: |
-      #       cd domains/client901api.selopia.com/public_html/
-      #       # composer2 update   
-      #       php artisan migrate
-      #       php artisan optimize
-      #       php artisan cache:clear
-      #   continue-on-error: true     
-              
-                
-
-
-
-
-
-
-      # - name: 📂 Sync files in Sports
-      #   uses: SamKirkland/FTP-Deploy-Action@4.3.0
-      #   with:
-      #     server: selopia.com
-      #     username: u652464815.sportsapi.selopia.com
-      #     password: dF@qa#4;k,vd
-      #     exclude:  |
-      #       **/.git*
-      #       **/.git*/**
-      #       **/public/upload*
-      #       **/public/upload*/**
-
-      #   continue-on-error: true     
-    
-      # - name: executing remote ssh commands in sports
-      #   uses: appleboy/ssh-action@v0.1.10
-      #   with:
-      #     host: selopia.com
-      #     username: u652464815
-      #     password: wew2Weqsdf@ssfa3
-      #     port: 65002
-      #     script: |
-
-      #       cd domains/sportsapi.selopia.com/public_html/
-      #       # composer2 update
-      #       php artisan migrate
-      #       php artisan optimize
-      #       php artisan cache:clear
-
-      #   continue-on-error: true     
-            
-            
-
-
-
-
-
-      # - name: 📂 Sync files in NJS
-      #   uses: SamKirkland/FTP-Deploy-Action@4.3.0
-      #   with:
-      #     server: selopia.com
-      #     username: u652464815.njscreationapi
-      #     password: dF@qa#4;k,vd
-      #     exclude:  |
-      #       **/.git*
-      #       **/.git*/**
-      #       **/public/upload*
-      #       **/public/upload*/**
-      #   continue-on-error: true     
-    
-      # - name: executing remote ssh commands in NJS
-      #   uses: appleboy/ssh-action@v0.1.10
-      #   with:
-      #     host: selopia.com
-      #     username: u652464815
-      #     password: wew2Weqsdf@ssfa3
-      #     port: 65002
-      #     script: |
-
-      #       cd domains/njscreation.com/public_html/backend/
-      #       # composer2 update  
-      #       php artisan migrate
-      #       php artisan optimize
-      #       php artisan cache:clear
-
-      #   continue-on-error: true     
-            
-            
-
-
-
-
-
-      # - name: 📂 Sync files in FRB
-      #   uses: SamKirkland/FTP-Deploy-Action@4.3.0
-      #   with:
-      #     server: selopia.com
-      #     username: u652464815.engineeringapi
-      #     password: dF@qa#4;k,vd
-      #     exclude:  |
-      #       **/.git*
-      #       **/.git*/**
-      #       **/public/upload*
-      #       **/public/upload*/**
-      #   continue-on-error: true     
-    
-      # - name: executing remote ssh commands in FRB
-      #   uses: appleboy/ssh-action@v0.1.10
-      #   with:
-      #     host: selopia.com
-      #     username: u652464815
-      #     password: wew2Weqsdf@ssfa3
-      #     port: 65002
-      #     script: |
-
-      #       cd domains/frb-engineering.com/public_html/core/
-      #       # composer2 update
-      #       php artisan migrate
-      #       php artisan optimize
-      #       php artisan cache:clear
-
-      #   continue-on-error: true     
-
 
 
 

@@ -2,17 +2,11 @@
 
 namespace App\Http\Controllers\Admin\Ecommerce;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\BrandBulkDeleteRequest;
 use App\Http\Requests\BrandRequest;
 use App\Http\Services\BrandService;
-use App\Models\Brand;
-use App\Models\Product;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
+use App\Http\Requests\BrandBulkDeleteRequest;
 
 class BrandController extends Controller
 {

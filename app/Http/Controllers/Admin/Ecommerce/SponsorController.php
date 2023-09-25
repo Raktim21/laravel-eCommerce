@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Admin\Ecommerce;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SponsorRequest;
 use App\Http\Services\SponsorService;
-use App\Models\Sponsor;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 

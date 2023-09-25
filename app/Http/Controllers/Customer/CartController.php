@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\Customer;
 
+use App\Models\UserAddress;
+use Illuminate\Http\Request;
+use App\Http\Services\CartService;
+use App\Http\Services\AssetService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CartCreateRequest;
-use App\Http\Requests\CartBulkDeleteRequest;
 use App\Http\Requests\CartUpdateRequest;
-use App\Http\Services\CartService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\CartBulkDeleteRequest;
+use App\Http\Services\OrderDeliverySystemService;
 
 class CartController extends Controller
 {
@@ -134,15 +136,37 @@ class CartController extends Controller
     }
 
 
-
-    public function deliveryCharge($id)
+    public function deliveryCharge(Request $request)
     {
-        $data = $this->service->getCharge($id);
+        $validator = Validator::make($request->all(), [
+            'address_id' => ['required',
+                            function ($attr, $val, $fail) {
+                                $valid = UserAddress::where('user_id', auth()->user()->id)
+                                    ->where('id', $val)->first();
+
+                                if(!$valid)
+                                {
+                                    $fail('Invalid address.');
+                                }
+                            }],
+            'total_price'=> 'required|numeric'
+        ]);
+
+        if($validator->fails())
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()->all()
+            ], 422);
+        }
+
+        $data = (new OrderDeliverySystemService())
+            ->getDeliveryCharge((new AssetService())->activeDeliverySystem(), $request->address_id, $request->total_price);
 
         return response()->json([
             'status' => true,
             'data'   => $data
-        ], is_null($data) ? 204 : 200);
+        ]);
     }
 
     public function getCharge()

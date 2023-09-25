@@ -2,22 +2,21 @@
 
 namespace App\Http\Controllers\Admin\Analytics;
 
-use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Order;
-use App\Models\OrderStatus;
 use App\Models\Product;
+use App\Models\Sponsor;
 use App\Models\ProductBrand;
 use App\Models\ProductCategory;
-use App\Models\ProductSubCategory;
-use App\Models\Sponsor;
-use App\Models\User;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use App\Models\ProductSubCategory;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
 
 class AdminDashboardController extends Controller
 {
-    public function index(): \Illuminate\Http\JsonResponse
+    public function index()
     {
         $data = Cache::remember('adminDashboardData', 60*10, function () {
 
@@ -127,7 +126,7 @@ class AdminDashboardController extends Controller
         ], is_null($data) ? 204 : 200);
     }
 
-    public function pending_order_count(): \Illuminate\Http\JsonResponse
+    public function pending_order_count()
     {
         $data = Cache::remember('pendingOrders', 60*5, function () {
             return Order::where('order_status_id', 1)->count();

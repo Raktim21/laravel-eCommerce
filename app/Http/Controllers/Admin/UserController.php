@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\AvatarUpdateRequest;
-use App\Http\Requests\DateRequest;
-use App\Http\Requests\UserAddressBulkDeleteRequest;
-use App\Http\Requests\UserAddressCreateRequest;
-use App\Http\Requests\UserBulkDeleteRequest;
-use App\Http\Requests\UserProfileUpdateRequest;
-use App\Http\Requests\UserRegistrationRequest;
 use App\Http\Services\AuthService;
 use App\Http\Services\UserService;
+use App\Http\Requests\DateRequest;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
+use App\Http\Requests\AvatarUpdateRequest;
+use App\Http\Requests\UserBulkDeleteRequest;
+use App\Http\Requests\UserRegistrationRequest;
+use App\Http\Requests\UserAddressCreateRequest;
+use App\Http\Requests\UserProfileUpdateRequest;
+use App\Http\Requests\UserAddressBulkDeleteRequest;
 
 class UserController extends Controller
 {
@@ -23,7 +23,7 @@ class UserController extends Controller
     }
 
 
-    public function userList(): \Illuminate\Http\JsonResponse
+    public function userList()
     {
         $data = $this->service->getAllUser(false);
 
@@ -35,7 +35,7 @@ class UserController extends Controller
 
 
 
-   public function userCreate(UserRegistrationRequest $request): \Illuminate\Http\JsonResponse
+   public function userCreate(UserRegistrationRequest $request)
    {
        if((new AuthService())->register($request, 0))
        {
@@ -52,7 +52,7 @@ class UserController extends Controller
    }
 
 
-    function userDetail($id): \Illuminate\Http\JsonResponse
+    function userDetail($id)
     {
         $result = Cache::remember('userDetail'.$id, 24*60*60*7, function () use ($id) {
             return $this->service->show($id, false);
@@ -73,7 +73,7 @@ class UserController extends Controller
     }
 
 
-    public function userOrder($id): \Illuminate\Http\JsonResponse
+    public function userOrder($id)
     {
         $data = Cache::remember('userOrders'.$id, 24*60*60*60, function () use ($id) {
             return $this->service->getOrders($id);
@@ -87,7 +87,7 @@ class UserController extends Controller
     }
 
 
-    public function userUpdate(UserProfileUpdateRequest $request, $id): \Illuminate\Http\JsonResponse
+    public function userUpdate(UserProfileUpdateRequest $request, $id)
     {
         $this->service->update($request, $id, false, false);
 
@@ -97,7 +97,7 @@ class UserController extends Controller
     }
 
 
-    public function userAvatarUpdate(AvatarUpdateRequest $request, $id): \Illuminate\Http\JsonResponse
+    public function userAvatarUpdate(AvatarUpdateRequest $request, $id)
     {
         $this->service->updateAvatar($request, $id, false);
 
@@ -107,7 +107,7 @@ class UserController extends Controller
     }
 
 
-    public function userDelete($id): \Illuminate\Http\JsonResponse
+    public function userDelete($id)
     {
         if($this->service->deleteCustomer($id))
         {
@@ -122,7 +122,7 @@ class UserController extends Controller
     }
 
 
-    public function userAddressList($id): \Illuminate\Http\JsonResponse
+    public function userAddressList($id)
     {
         $data = Cache::remember('userAddresses'.$id, 24*60*60*7, function() use ($id) {
             return $this->service->getUserAddress($id);
@@ -135,7 +135,7 @@ class UserController extends Controller
     }
 
 
-    public function userAddressCreate(UserAddressCreateRequest $request,$id): \Illuminate\Http\JsonResponse
+    public function userAddressCreate(UserAddressCreateRequest $request,$id)
     {
         $this->service->storeAddress($request, $id);
 
@@ -145,7 +145,7 @@ class UserController extends Controller
     }
 
 
-    public function userAddressUpdate(UserAddressCreateRequest $request, $id): \Illuminate\Http\JsonResponse
+    public function userAddressUpdate(UserAddressCreateRequest $request, $id)
     {
         if ($this->service->updateAddress($request, $id, 1)) {
             return response()->json([
@@ -159,7 +159,7 @@ class UserController extends Controller
     }
 
 
-    public function userAddressDelete($id): \Illuminate\Http\JsonResponse
+    public function userAddressDelete($id)
     {
         $status = $this->service->deleteAddress($id);
 
@@ -175,7 +175,7 @@ class UserController extends Controller
     }
 
 
-    public function makeDefaultAddress($id): \Illuminate\Http\JsonResponse
+    public function makeDefaultAddress($id)
     {
         $this->service->makeAddressDefault($id);
 
@@ -185,7 +185,7 @@ class UserController extends Controller
     }
 
 
-    public function userOrderReport(DateRequest $request, $id): \Illuminate\Http\JsonResponse
+    public function userOrderReport(DateRequest $request, $id)
     {
         $data = $this->service->orderReport($request, $id);
 
@@ -195,7 +195,7 @@ class UserController extends Controller
         ], count($data)==0 ? 204 : 200);
     }
 
-    public function bulkDelete(UserBulkDeleteRequest $request): \Illuminate\Http\JsonResponse
+    public function bulkDelete(UserBulkDeleteRequest $request)
     {
         $this->service->deleteCustomers($request);
 
@@ -205,7 +205,7 @@ class UserController extends Controller
     }
 
 
-    public function addressBulkDelete(UserAddressBulkDeleteRequest $request): \Illuminate\Http\JsonResponse
+    public function addressBulkDelete(UserAddressBulkDeleteRequest $request)
     {
         $this->service->deleteAddresses($request);
 

@@ -66,18 +66,4 @@ class GeneralSettingService
         Cache::delete('generalSetting');
         Cache::delete('general');
     }
-
-
-    public function getDeliveryStatus()
-    {
-        return $this->setting->delivery_status;
-    }
-
-    public function updateDeliveryStatus(Request $request): void
-    {
-        $this->setting->delivery_status = $request->delivery_status;
-        $this->setting->save();
-        Cache::delete('orderStatuses');
-        Cache::delete('deliveryStatus');
-    }
 }

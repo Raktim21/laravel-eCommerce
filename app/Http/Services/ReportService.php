@@ -5,7 +5,6 @@ namespace App\Http\Services;
 use App\Models\Order;
 use App\Models\OrderStatus;
 use App\Models\Product;
-use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 

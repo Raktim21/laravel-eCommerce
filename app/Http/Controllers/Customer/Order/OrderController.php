@@ -2,41 +2,28 @@
 
 namespace App\Http\Controllers\Customer\Order;
 
-use App\Http\Controllers\Controller;
-use App\Http\Services\OrderService;
-use App\Http\Services\PromoCodeService;
-use App\Models\EmailConfig;
+use Carbon\Carbon;
+use App\Models\Order;
 use App\Models\Inventory;
-use App\Models\ProductCombination;
-use App\Models\ProductHasPromo;
-use App\Models\ProductReviewImage;
 use App\Models\PromoUser;
-use App\Models\ReviewImages;
-use Illuminate\Database\QueryException;
+use App\Models\PromoCode;
+use App\Models\OrderItems;
+use App\Models\PromoProduct;
 use Illuminate\Http\Request;
 use App\Models\CustomerCart;
-use App\Models\EmailSetting;
-use App\Models\Order;
-use App\Models\OrderItems;
-use App\Models\OrderStatus;
 use App\Models\ProductReview;
-use App\Models\PromoCode;
-use App\Models\UserAddress;
-use App\Models\UserPromo;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Cache;
+use App\Models\ProductCombination;
+use App\Models\ProductReviewImage;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
-use App\Http\Services\DeliveryChargeService;
-use App\Http\Requests\UserOrderRequest;
-use App\Mail\OrdersMail;
-use App\Models\Admin;
-use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
+use App\Http\Services\OrderService;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
 use Intervention\Image\Facades\Image;
+use App\Http\Services\PromoCodeService;
+use Illuminate\Database\QueryException;
+use App\Http\Requests\UserOrderRequest;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Services\OrderDeliverySystemService;
 
 class OrderController extends Controller
 {
@@ -50,7 +37,7 @@ class OrderController extends Controller
     public function addPromo(Request $request)
     {
         $validator = Validator::make(request()->all(), [
-            'promo_code' => 'required|exists:promo_codes,code',
+            'promo_code' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -60,13 +47,31 @@ class OrderController extends Controller
             ], 422);
         }
 
+        if(CustomerCart::where('user_id', auth()->user()->id)->count() == 0)
+        {
+            return response()->json([
+                'status'    => false,
+                'errors'    => ['No product is added to cart.']
+            ], 400);
+        }
+
         $promo = PromoCode::where('code', $request->promo_code)->first();
+
+        if(!$promo)
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => ['Promo code not found.']
+            ], 404);
+        }
 
         if($this->validatePromoCode($promo))
         {
             return response()->json([
                 'status'    => true,
-                'data'      => array('promo_id' => $promo->id)
+                'data'      => array(
+                    'promo_id' => $promo->id,
+                    'promo_discount' => $this->service->getPromoDiscount($promo))
             ]);
         } else {
             return response()->json([
@@ -120,7 +125,7 @@ class OrderController extends Controller
                 'errors' => ['You cannot place order that weighs over 5KG.'],
             ],422);
         }
-        if($this->service->placeOrder($request, $cart_items, $total_weight)) {
+        if($this->service->placeOrder($request, $cart_items)) {
             return response()->json([
                 'status'    => true,
             ], 201);
@@ -246,7 +251,7 @@ class OrderController extends Controller
     }
 
 
-    private function validatePromoCode($promo): bool
+    private function validatePromoCode($promo)
     {
         if($promo->is_active == 1) {
             if(!Carbon::parse($promo->start_date)->lessThanOrEqualTo(Carbon::today())) {
@@ -270,16 +275,49 @@ class OrderController extends Controller
             if($promo->max_num_users!=0 && $promo->max_num_users == PromoUser::where('promo_id', $promo->id)->count()) {
                 return false;
             }
+
+            if($promo->is_global_product == 0) {
+                $products = PromoProduct::where('promo_id',$promo->id)->select('product_id')->get();
+                $cart_products = DB::table('customer_carts')
+                    ->leftJoin('product_combinations','customer_carts.product_combination_id','=','product_combinations.id')
+                    ->where('user_id',auth()->user()->id)->select('product_combinations.product_id as product_id')->get();
+
+                $matches = collect($products)->pluck('product_id')->intersect(collect($cart_products)->pluck('product_id'));
+
+                if ($matches->isEmpty())
+                {
+                    return false;
+                }
+            }
             return true;
         }
         return false;
     }
 
-    public function cancelOrder($id): \Illuminate\Http\JsonResponse
+    public function cancelOrder($id)
     {
-        $order = Order::findOrFail($id);
+        $order = Order::where('user_id', auth()->guard('user-api')->user()->id)
+            ->where('id',$id)->first();
 
-        $msg = $this->service->cancelOrder($order, auth()->guard('user-api')->user()->id);
+        if (!$order)
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => ['Order not found.']
+            ], 404);
+        }
+
+        if (!request()->input('reason') ||
+                !in_array(\request()->input('reason'),
+                    ['DELIVERY_ETA_TOO_LONG','MISTAKE_ERROR','REASON_UNKNOWN']))
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => ['Please state a valid reason for cancellation.']
+            ], 422);
+        }
+
+        $msg = (new OrderDeliverySystemService())->cancelOrder($order);
 
         if($msg != 'done')
         {
@@ -288,16 +326,15 @@ class OrderController extends Controller
                 'errors'        => [$msg]
             ], 400);
         }
+
         return response()->json([
             'status'        => true,
         ]);
     }
 
-    public function getPromos(): \Illuminate\Http\JsonResponse
+    public function getPromos()
     {
-        $data = Cache::remember('customer_available_promos'.auth()->user()->id, 60*10, function () {
-            return (new PromoCodeService(new PromoCode()))->getUserPromos(auth()->user()->id);
-        });
+        $data = (new PromoCodeService(new PromoCode()))->getUserPromos(auth()->user()->id);
 
         return response()->json([
             'status' => true,

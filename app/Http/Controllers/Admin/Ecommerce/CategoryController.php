@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Admin\Ecommerce;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CategoryBulkDeleteRequest;
+use App\Http\Requests\ReOrderRequest;
+use Illuminate\Support\Facades\Cache;
+use App\Http\Services\CategoryService;
 use App\Http\Requests\CategoryStoreRequest;
 use App\Http\Requests\CategoryUpdateRequest;
-use App\Http\Requests\ReOrderRequest;
-use App\Http\Services\CategoryService;
-use Illuminate\Support\Facades\Cache;
+use App\Http\Requests\CategoryBulkDeleteRequest;
 
 class CategoryController extends Controller
 {
@@ -20,7 +20,7 @@ class CategoryController extends Controller
     }
 
 
-    public function index(): \Illuminate\Http\JsonResponse
+    public function index()
     {
         Cache::clear();
         $data = $this->service->getAll(request()->has('is_paginated') ? 0 : 1, true);
@@ -32,7 +32,7 @@ class CategoryController extends Controller
     }
 
 
-    public function store(CategoryStoreRequest $request): \Illuminate\Http\JsonResponse
+    public function store(CategoryStoreRequest $request)
     {
         $this->service->store($request);
 
@@ -42,7 +42,7 @@ class CategoryController extends Controller
     }
 
 
-    public function update(CategoryUpdateRequest $request, $id): \Illuminate\Http\JsonResponse
+    public function update(CategoryUpdateRequest $request, $id)
     {
         $this->service->update($request, $id);
 
@@ -52,7 +52,7 @@ class CategoryController extends Controller
     }
 
 
-    public function reorder(ReOrderRequest $request): \Illuminate\Http\JsonResponse
+    public function reorder(ReOrderRequest $request)
     {
         $this->service->shuffleCategories($request);
 
@@ -62,7 +62,7 @@ class CategoryController extends Controller
     }
 
 
-    public function statusUpdate($id): \Illuminate\Http\JsonResponse
+    public function statusUpdate($id)
     {
         $this->service->changeStatus($id);
 
@@ -72,7 +72,7 @@ class CategoryController extends Controller
     }
 
 
-    public function destroy($id): \Illuminate\Http\JsonResponse
+    public function destroy($id)
     {
         if($this->service->delete($id)) {
             return response()->json([
@@ -86,7 +86,7 @@ class CategoryController extends Controller
     }
 
 
-    public function bulkDelete(CategoryBulkDeleteRequest $request): \Illuminate\Http\JsonResponse
+    public function bulkDelete(CategoryBulkDeleteRequest $request)
     {
         $this->service->deleteCategories($request);
 

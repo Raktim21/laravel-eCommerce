@@ -13,13 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('order_additional_charges', function (Blueprint $table) {
-            $table->id();
-            $table->string('name', 50)->unique();
-            $table->tinyInteger('is_percentage');
-            $table->float('amount');
-            $table->tinyInteger('status')->default(1);
-            $table->timestamps();
+        Schema::table('site_general_settings', function (Blueprint $table) {
+            $table->dropColumn('delivery_status');
         });
     }
 
@@ -30,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('order_additional_charges');
+        Schema::table('site_general_settings', function (Blueprint $table) {
+            //
+        });
     }
 };

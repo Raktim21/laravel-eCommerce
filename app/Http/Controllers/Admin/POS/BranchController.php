@@ -6,8 +6,8 @@ use App\Models\Branch;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Validator;
 
 class BranchController extends Controller
 {

@@ -52,14 +52,14 @@ class Handler extends ExceptionHandler
         // });
 
 
-        $this->renderable(function (NotFoundHttpException $e,Request $request) {
-            if (request()->ajax() || request()->wantsJson() || $request->is('api/*') ) {
-                return response()->json([
-                    'status' => false,
-                    'errors'  => ['Records not found'],
-                ], 404);
-            }
-        });
+//        $this->renderable(function (NotFoundHttpException $e,Request $request) {
+//            if (request()->ajax() || request()->wantsJson() || $request->is('api/*') ) {
+//                return response()->json([
+//                    'status' => false,
+//                    'errors'  => ['Records not found'],
+//                ], 404);
+//            }
+//        });
 
     }
 

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin\Ecommerce;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\BannerSettingRequest;
-use App\Http\Services\BannerService;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Services\BannerService;
 use Illuminate\Support\Facades\Cache;
+use App\Http\Requests\BannerSettingRequest;
 
 class BannerSettingController extends Controller
 {

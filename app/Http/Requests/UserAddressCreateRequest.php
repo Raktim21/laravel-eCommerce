@@ -41,10 +41,12 @@ class UserAddressCreateRequest extends FormRequest
                                             $fail('The selected union is invalid.');
                                         }
                                     }
-                                 ],
+                                  ],
             'address'         => 'required|string|max:255',
             'postal_code'     => 'required|string|max:50',
             'phone_no'        => ['required', 'regex:/^(?:\+88|88)?(01[3-9]\d{8})$/'],
+            'lat'             => 'required|max:20',
+            'lng'             => 'required|max:20',
             'is_default'      => 'required|in:0,1',
         ];
 
@@ -54,7 +56,7 @@ class UserAddressCreateRequest extends FormRequest
     public function messages()
     {
         return [
-            'upazila_id.required'      => 'Please select a thana.',
+            'upazila_id.required'      => 'Please select a upazila.',
             'union_id.required'        => 'Please select a union.',
             'address.required'         => 'Please enter an address.',
             'postal_code.required'     => 'Please enter a postal code.',

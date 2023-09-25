@@ -2,14 +2,11 @@
 
 namespace App\Http\Services;
 
-use App\Models\AttributeVariant;
 use App\Models\Inventory;
-use App\Models\Product;
 use App\Models\ProductAttribute;
 use App\Models\ProductAttributeValue;
 use App\Models\ProductCombination;
 use App\Models\ProductCombinationValue;
-use App\Models\ProductCombinationVariant;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

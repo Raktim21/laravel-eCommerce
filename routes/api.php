@@ -2,46 +2,46 @@
 
 require __DIR__. '/site-api.php';
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Customer\CartController;
+use App\Http\Controllers\System\SystemController;
 use App\Http\Controllers\Admin\AdminRoleController;
-use App\Http\Controllers\Admin\Analytics\AdminDashboardController;
-use App\Http\Controllers\Admin\Analytics\SalesReportController;
+use App\Http\Controllers\System\SendMailController;
+use App\Http\Controllers\Admin\POS\BranchController;
+use App\Http\Controllers\Admin\StaticPageController;
+use App\Http\Controllers\Customer\WishlistController;
+use App\Http\Controllers\Admin\POS\ExpenseController;
+use App\Http\Controllers\Admin\NotificationController;
+use App\Http\Controllers\Ecommerce\FrontendController;
+use App\Http\Controllers\Admin\POS\InventoryController;
 use App\Http\Controllers\Admin\Auth\AdminAuthController;
-use App\Http\Controllers\Admin\Ecommerce\FlashSaleController;
-use App\Http\Controllers\Admin\Ecommerce\ProductAttributeController;
-use App\Http\Controllers\Admin\Ecommerce\BannerSettingController;
 use App\Http\Controllers\Admin\Ecommerce\BrandController;
-use App\Http\Controllers\Admin\Ecommerce\CategoryController;
-use App\Http\Controllers\Admin\Ecommerce\ContactController;
-use App\Http\Controllers\Admin\Ecommerce\GeneralSettingController;
 use App\Http\Controllers\Admin\Ecommerce\OrderController;
+use App\Http\Controllers\Admin\POS\BillingCartController;
+use App\Http\Controllers\Ecommerce\StaticAssetController;
+use App\Http\Controllers\System\GenerateReportController;
 use App\Http\Controllers\Admin\Ecommerce\ProductController;
+use App\Http\Controllers\Admin\Ecommerce\SponsorController;
+use App\Http\Controllers\Admin\Ecommerce\ContactController;
+use App\Http\Controllers\Admin\Ecommerce\CategoryController;
+use App\Http\Controllers\Admin\Ecommerce\FlashSaleController;
 use App\Http\Controllers\Admin\Ecommerce\PromocodeController;
+use App\Http\Controllers\Admin\Ecommerce\SubscriberController;
 use App\Http\Controllers\Admin\Ecommerce\SeoSettingController;
 use App\Http\Controllers\Admin\Ecommerce\SiteBannerController;
-use App\Http\Controllers\Admin\Ecommerce\SponsorController;
-use App\Http\Controllers\Admin\Ecommerce\SubCategoryController;
-use App\Http\Controllers\Admin\Ecommerce\SubscriberController;
-use App\Http\Controllers\Admin\Ecommerce\ThemeSettingController;
-use App\Http\Controllers\Admin\NotificationController;
-use App\Http\Controllers\Admin\POS\ExpenseController;
-use App\Http\Controllers\Admin\POS\InventoryController;
-use App\Http\Controllers\Admin\ProfileController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\POS\BranchController;
 use App\Http\Controllers\Customer\Auth\CustomerAuthController;
-use App\Http\Controllers\Customer\CartController;
-use App\Http\Controllers\Customer\WishlistController;
-use App\Http\Controllers\Customer\Order\OrderController as CustomerOrderController;
+use App\Http\Controllers\Admin\Ecommerce\SubCategoryController;
+use App\Http\Controllers\Admin\Analytics\SalesReportController;
+use App\Http\Controllers\Admin\Ecommerce\ThemeSettingController;
+use App\Http\Controllers\Admin\Ecommerce\BannerSettingController;
+use App\Http\Controllers\Admin\Analytics\AdminDashboardController;
+use App\Http\Controllers\Admin\Ecommerce\GeneralSettingController;
+use App\Http\Controllers\Admin\Ecommerce\ProductAttributeController;
 use App\Http\Controllers\Customer\ProfileController as CustomerProfileController;
-use App\Http\Controllers\Admin\POS\BillingCartController;
-use App\Http\Controllers\Admin\StaticPageController;
-use App\Http\Controllers\Ecommerce\StaticAssetController;
-use App\Http\Controllers\Ecommerce\FrontendController;
-use App\Http\Controllers\System\GenerateReportController;
-use App\Http\Controllers\System\SendMailController;
-use App\Http\Controllers\System\SystemController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Customer\Order\OrderController as CustomerOrderController;
 
 Route::get('cron', [SystemController::class, 'runSchedule']);
 
@@ -287,9 +287,6 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::delete('faq-delete/{id}','faqDelete');
                 Route::post('faq-ordering', 'orderFaq');
             });
-
-            Route::get('delivery-status','deliveryStatus');
-            Route::post('delivery-status-update','deliveryStatusUpdate')->middleware('permission:update delivery status');
         });
 
         Route::controller(AdminRoleController::class)->group(function () {
@@ -383,9 +380,16 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::delete('order-additional-charges/{id}', 'deleteCharge');
             });
 
+            Route::group(['middleware' => ['permission:update order delivery charge information']], function () {
+                Route::get('order-delivery-charge-lookup-list', 'deliveryChargeLookup');
+                Route::put('order-delivery-charge-lookup-update', 'updateDeliveryChargeLookup');
+            });
+
             Route::get('payment-method-list','paymentMethodList');
             Route::get('shipping-method-list','shippingMethodList');
             Route::get('order-status-list','orderStatusList');
+            Route::get('order-delivery-system-list', 'deliverySystemList');
+            Route::put('update-delivery-system', 'updateDeliverySystem')->middleware('permission:update delivery system');;
 
             Route::group(['middleware' => ['permission:create/update orders']], function() {
                 Route::get('admin-order', 'adminOrder');
@@ -488,10 +492,11 @@ Route::group(['prefix' => 'admin'], function () {
         Route::controller(BillingCartController::class)->group(function () {
 
             Route::get('billing-cart-list', 'cartList');
+            Route::get('billing-cart/{id}', 'cartDetail');
 
             Route::group(['middleware' => ['permission:create/update/delete billing']], function() {
                 Route::post('billing-cart-store', 'cartStore');
-                Route::get('convert-billing-to-order/{id}', 'convertBilling');
+                Route::post('convert-billing-to-order/{id}', 'convertBilling');
             });
         });
 
@@ -578,7 +583,7 @@ Route::group(['prefix' => 'user'], function () {
             Route::post('cart-store','cartStore');
             Route::put('cart-update/{id}','cartUpdate');
             Route::delete('cart-delete/{id}','cartDelete');
-            Route::get('delivery-charge/{id}','deliveryCharge');
+            Route::get('delivery-charge','deliveryCharge');
             Route::get('additional-charge', 'getCharge');
             Route::post('cart-bulk-delete', 'bulkDelete');
             Route::post('add-cart-from-wishlist', 'addCartFromWishlist');
