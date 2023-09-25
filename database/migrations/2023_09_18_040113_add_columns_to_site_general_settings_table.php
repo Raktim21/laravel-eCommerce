@@ -13,9 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('site_general_settings', function (Blueprint $table) {
-            $table->dropColumn('delivery_status');
-        });
+        if (Schema::hasColumn('site_general_settings', 'delivery_status')) {
+            Schema::table('site_general_settings', function (Blueprint $table) {
+                $table->dropColumn('delivery_status');
+            });
+        }
     }
 
     /**
