@@ -79,7 +79,7 @@ jobs:
           port: 65002
           script: |
             cd domains/api.shukkarun.com/public_html/
-            composer2 update
+            # composer2 update
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -117,7 +117,7 @@ jobs:
           port: 65002
           script: |
             cd domains/api.vintbd.com/public_html/
-            composer2 update
+            # composer2 update
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -157,7 +157,7 @@ jobs:
           port: 65002
           script: |
             cd domains/api.glamdesmit.com/public_html/
-            composer2 update
+            # composer2 update
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -198,7 +198,7 @@ jobs:
           port: 65002
           script: |
             cd domains/api.jannatistore.com/public_html/
-            composer2 update
+            # composer2 update
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -239,14 +239,234 @@ jobs:
           script: |
             
             cd domains/apigreenbangla.selopia.com/public_html/
+            # composer2 update
+            php artisan migrate:fresh --seed
+            php artisan optimize
+            php artisan config:clear
+            php artisan cache:clear
+    
+      
+        continue-on-error: true  
+
+
+
+
+
+
+
+
+      - name: 📂 Sync files in apibasictechnology.selopia.com
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        with:
+          server: selopia.com
+          username: u652464815.apibasictechnology.selopia.com
+          password: dF@qa#4;k,vd
+          exclude:  |
+            **/.git*
+            **/.git*/**
+            **/public/upload*
+            **/public/upload*/**
+            **/public/json*
+            **/public/json*/**
+        continue-on-error: true     
+    
+      - name: executing remote ssh commands apibasictechnology.selopia.coma
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: selopia.com
+          username: u652464815
+          password: wew2Weqsdf@ssfa3
+          port: 65002
+          script: |
+            
+            cd domains/apibasictechnology.selopia.com/public_html/
             composer2 update
             cp .env.example .env
-            sed -i 's/DB_DATABASE=.*/DB_DATABASE=u652464815_green_bangla/g' .env
-            sed -i 's/DB_USERNAME=.*/DB_USERNAME=u652464815_green_bangla/g' .env
-            sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=if#4^Ut@i2L/g' .env
-            sed -i 's/API_ACCESS_TOKEN=.*/API_ACCESS_TOKEN=tR9wPcV2fL7kXeS4qAzT7kPyZiJ8oQbLnRqAzT7kPyZiJ8oQeS4sY1dF6vC2bM9bNpS6rGh2wL8fPtQa4jX3zVkE7c/g' .env
-            sed -i 's/FRONTEND_URL=.*/FRONTEND_URL=https://apigreenbangla.selopia.com/g' .env
-            sed -i 's/APP_URL=.*/APP_URL=https://api.apigreenbangla.selopia.com/g' .env
+            sed -i 's/DB_DATABASE=.*/DB_DATABASE=u652464815_basic_technolo/g' .env
+            sed -i 's/DB_USERNAME=.*/DB_USERNAME=u652464815_basic_technolo/g' .env
+            sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=9Rrx~uFl?yP/g' .env
+            sed -i 's/API_ACCESS_TOKEN=.*/API_ACCESS_TOKEN=mY8xH3jP7bK6sT5wF4vQa2iZoX1eL9rGpS6nC8zV7kE7dRqA3zT7kP2wL8fM9bN/g' .env
+            sed -i 's/FRONTEND_URL=.*/FRONTEND_URL=https://basictechnology.selopia.com/g' .env
+            sed -i 's/APP_URL=.*/APP_URL=https://apibasictechnology.selopia.com/g' .env
+            mkdir -p public/uploads/admin/avatars
+            mkdir -p public/uploads/customer/avatars
+            mkdir -p public/uploads/images/banner
+            mkdir -p public/uploads/images/brands
+            mkdir -p public/uploads/images/category
+            mkdir -p public/uploads/images/general-setting
+            mkdir -p public/uploads/products/featured_banner
+            mkdir -p public/uploads/products/thumbnail
+            mkdir -p public/uploads/images/site_banner
+            mkdir -p public/uploads/images/sponsors
+            mkdir -p public/uploads/images/sub_categories
+            php artisan key:generate
+            php artisan jwt:secret
+            php artisan config:clear
+            php artisan migrate:fresh --seed
+            php artisan optimize
+            php artisan cache:clear
+    
+      
+        continue-on-error: true
+
+
+
+
+
+
+      - name: 📂 Sync files in apitechview.selopia.com
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        with:
+          server: selopia.com
+          username: u652464815.apitechview.selopia.com
+          password: dF@qa#4;k,vd
+          exclude:  |
+            **/.git*
+            **/.git*/**
+            **/public/upload*
+            **/public/upload*/**
+            **/public/json*
+            **/public/json*/**
+        continue-on-error: true     
+    
+      - name: executing remote ssh commands apitechview.selopia.com
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: selopia.com
+          username: u652464815
+          password: wew2Weqsdf@ssfa3
+          port: 65002
+          script: |
+            
+            cd domains/apitechview.selopia.com/public_html/
+            composer2 update
+            cp .env.example .env
+            sed -i 's/DB_DATABASE=.*/DB_DATABASE=u652464815_tech_view/g' .env
+            sed -i 's/DB_USERNAME=.*/DB_USERNAME=u652464815_tech_view/g' .env
+            sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=&nR#&eWZXSl4/g' .env
+            sed -i 's/API_ACCESS_TOKEN=.*/API_ACCESS_TOKEN=aA2bM9bNpS6rGh2wL8fPtQcV7kPyZiJ8oQeS4sY1dF6vC2bLnRqAzT7kP3zVkE7/g' .env
+            sed -i 's/FRONTEND_URL=.*/FRONTEND_URL=https://techview.selopia.com/g' .env
+            sed -i 's/APP_URL=.*/APP_URL=https://apitechview.selopia.com/g' .env
+            mkdir -p public/uploads/admin/avatars
+            mkdir -p public/uploads/customer/avatars
+            mkdir -p public/uploads/images/banner
+            mkdir -p public/uploads/images/brands
+            mkdir -p public/uploads/images/category
+            mkdir -p public/uploads/images/general-setting
+            mkdir -p public/uploads/products/featured_banner
+            mkdir -p public/uploads/products/thumbnail
+            mkdir -p public/uploads/images/site_banner
+            mkdir -p public/uploads/images/sponsors
+            mkdir -p public/uploads/images/sub_categories
+            php artisan key:generate
+            php artisan jwt:secret
+            php artisan config:clear
+            php artisan migrate:fresh --seed
+            php artisan optimize
+            php artisan cache:clear
+    
+      
+        continue-on-error: true
+
+
+
+
+
+
+      - name: 📂 Sync files in api.yellowlix.com
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        with:
+          server: selopia.com
+          username: u652464815.api.yellowlix.com
+          password: dF@qa#4;k,vd
+          exclude:  |
+            **/.git*
+            **/.git*/**
+            **/public/upload*
+            **/public/upload*/**
+            **/public/json*
+            **/public/json*/**
+        continue-on-error: true     
+    
+      - name: executing remote ssh commands api.yellowlix.com
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: selopia.com
+          username: u652464815
+          password: wew2Weqsdf@ssfa3
+          port: 65002
+          script: |
+            
+            cd domains/api.yellowlix.com/public_html/
+            composer2 update
+            cp .env.example .env
+            sed -i 's/DB_DATABASE=.*/DB_DATABASE=u652464815_yellowix/g' .env
+            sed -i 's/DB_USERNAME=.*/DB_USERNAME=u652464815_yellowix/g' .env
+            sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=Xis8pFwE^+0/g' .env
+            sed -i 's/API_ACCESS_TOKEN=.*/API_ACCESS_TOKEN=tS4sY1dF6vC2bLnRqAzT7kP3zVkE7mY8xH3jP7bK6sT5wF4vQa2iZoX1eL9rGp/g' .env
+            sed -i 's/FRONTEND_URL=.*/FRONTEND_URL=https://yellowlix.com/g' .env
+            sed -i 's/APP_URL=.*/APP_URL=https://api.yellowlix.com/g' .env
+            mkdir -p public/uploads/admin/avatars
+            mkdir -p public/uploads/customer/avatars
+            mkdir -p public/uploads/images/banner
+            mkdir -p public/uploads/images/brands
+            mkdir -p public/uploads/images/category
+            mkdir -p public/uploads/images/general-setting
+            mkdir -p public/uploads/products/featured_banner
+            mkdir -p public/uploads/products/thumbnail
+            mkdir -p public/uploads/images/site_banner
+            mkdir -p public/uploads/images/sponsors
+            mkdir -p public/uploads/images/sub_categories
+            php artisan key:generate
+            php artisan jwt:secret
+            php artisan config:clear
+            php artisan migrate:fresh --seed
+            php artisan optimize
+            php artisan cache:clear
+    
+      
+        continue-on-error: true
+        
+
+
+
+
+
+
+
+      - name: 📂 Sync files in api.essencebd.store
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        with:
+          server: selopia.com
+          username: u652464815.api.essencebd.store
+          password: dF@qa#4;k,vd
+          exclude:  |
+            **/.git*
+            **/.git*/**
+            **/public/upload*
+            **/public/upload*/**
+            **/public/json*
+            **/public/json*/**
+        continue-on-error: true     
+    
+      - name: executing remote ssh commands api.essencebd.store
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: selopia.com
+          username: u652464815
+          password: wew2Weqsdf@ssfa3
+          port: 65002
+          script: |
+            
+            cd domains/api.essencebd.store/public_html/
+            composer2 update
+            cp .env.example .env
+            sed -i 's/DB_DATABASE=.*/DB_DATABASE=u652464815_essencebd/g' .env
+            sed -i 's/DB_USERNAME=.*/DB_USERNAME=u652464815_essencebd/g' .env
+            sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=Y$6wWZ1fuUd/g' .env
+            sed -i 's/API_ACCESS_TOKEN=.*/API_ACCESS_TOKEN=wL8fPtQcV7kPyZiJ8oQeS4sY1dF6vC2bLnRqAzT7kP3zVkE7mY8xH3jP7bK6sT5/g' .env
+            sed -i 's/FRONTEND_URL=.*/FRONTEND_URL=https://essencebd.store/g' .env
+            sed -i 's/APP_URL=.*/APP_URL=https://api.essencebd.store/g' .env
             mkdir -p public/uploads/admin/avatars
             mkdir -p public/uploads/customer/avatars
             mkdir -p public/uploads/images/banner
@@ -267,8 +487,3 @@ jobs:
     
       
         continue-on-error: true  
-
-
-
-
-      

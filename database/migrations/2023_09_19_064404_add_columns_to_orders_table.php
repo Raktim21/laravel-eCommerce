@@ -13,10 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->unsignedBigInteger('delivery_system_id')->nullable()->after('delivery_method_id');
-            $table->foreign('delivery_system_id')->references('id')->on('order_delivery_systems')->onDelete('restrict');
-        });
+        if (!Schema::hasColumn('orders', 'delivery_system_id')) {
+            Schema::table('orders', function (Blueprint $table) {
+                $table->unsignedBigInteger('delivery_system_id')->nullable()->after('delivery_method_id');
+                $table->foreign('delivery_system_id')->references('id')->on('order_delivery_systems')->onDelete('restrict');
+            });
+        }
     }
 
     /**

@@ -13,15 +13,18 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('user_addresses', function (Blueprint $table) {
-            $table->string('lat', 20)->after('union_id');
-            $table->string('lng', 20)->after('lat');
-        });
-
-        Schema::table('order_pickup_addresses', function (Blueprint $table) {
-            $table->string('lat', 20)->after('union_id');
-            $table->string('lng', 20)->after('lat');
-        });
+        if (!Schema::hasColumns('user_addresses', ['lat','lng'])) {
+            Schema::table('user_addresses', function (Blueprint $table) {
+                $table->string('lat', 20)->after('union_id');
+                $table->string('lng', 20)->after('lat');
+            });
+        }
+        if (!Schema::hasColumns('order_pickup_addresses', ['lat','lng'])) {
+            Schema::table('order_pickup_addresses', function (Blueprint $table) {
+                $table->string('lat', 20)->after('union_id');
+                $table->string('lng', 20)->after('lat');
+            });
+        }
     }
 
     /**
