@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('all_product_side_image', 100)->nullable();
             $table->string('featured_product_image', 100)->nullable();
             $table->timestamps();
+            
         });
     }
 
