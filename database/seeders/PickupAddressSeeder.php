@@ -4,8 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Country;
 use App\Models\OrderPickupAddress;
-use App\Models\PickupAddress;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class PickupAddressSeeder extends Seeder
@@ -17,14 +15,16 @@ class PickupAddressSeeder extends Seeder
      */
     public function run()
     {
-        $adderess = new OrderPickupAddress();
-        $adderess->name = 'Selopia';
-        $adderess->phone = '01700000000';
-        $adderess->email = 'selopia@selopia.us';
-        $adderess->upazila_id = Country::find(1)->divisions()->first()->districts()->first()->subDistricts()->first()->id;
-        $adderess->union_id = Country::find(1)->divisions()->first()->districts()->first()->subDistricts()->first()->unions()->first()->id ?? null;
-        $adderess->address = 'House 1, Road 1, Block A, Section 1, Mirpur, Dhaka';
-        $adderess->postal_code = '1216';
-        $adderess->save();
+        $address = new OrderPickupAddress();
+        $address->name = 'Selopia';
+        $address->phone = '01700000000';
+        $address->email = 'selopia@selopia.us';
+        $address->upazila_id = Country::find(1)->divisions()->first()->districts()->first()->subDistricts()->first()->id;
+        $address->union_id = Country::find(1)->divisions()->first()->districts()->first()->subDistricts()->first()->unions()->first()->id ?? null;
+        $address->address = 'House 1, Road 1, Block A, Section 1, Mirpur, Dhaka';
+        $address->postal_code = '1216';
+        $address->lat = '23.6974228';
+        $address->lng = '90.5088217';
+        $address->save();
     }
 }

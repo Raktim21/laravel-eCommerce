@@ -21,8 +21,8 @@ return new class extends Migration
             $table->foreignId('upazila_id')->constrained('location_upazilas')->onDelete('restrict');
             $table->foreignId('union_id')->nullable()->constrained('location_unions')->onDelete('restrict');
             $table->string('postal_code', 50)->nullable();
-            $table->string('lat', 20);
-            $table->string('lng', 20);
+            $table->string('lat', 50);
+            $table->string('lng', 50);
             $table->tinyInteger('is_default')->default(0);
             $table->tinyInteger('is_active')->default(1);
             $table->timestamps();
