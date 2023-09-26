@@ -45,7 +45,7 @@ class MessengerOrderRequest extends FormRequest
             'messenger_psid'      =>   'required|string|max:50',
             'password'            =>  ['required','string',
                                         function($attr, $val, $fail) {
-                                            $user = User::where('username', $this->input('email'))->first();
+                                            $user = User::where('username', $this->input('email'))->withTrashed()->first();
                                             if(!is_null($user) && !Hash::check($val, $user->password)) {
                                                 $fail('The password field does not match.');
                                             }
