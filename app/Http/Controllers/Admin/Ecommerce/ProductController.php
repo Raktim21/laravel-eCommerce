@@ -139,6 +139,7 @@ class ProductController extends Controller
 
     public function reviewGetAll()
     {
+        Cache::clear();
         $data = Cache::remember('allProductReviews'.request()->get('page', 1), 24*60*60, function () {
             return $this->service->getAllReviews();
         });

@@ -265,7 +265,11 @@ class ProductService
     public function getAllReviews()
     {
         return ProductReview::with('images')
-//            ->whereHas('')
+            ->whereHas('orderItem', function ($q) {
+                return $q->whereHas('combination', function ($q1) {
+                    return $q1->withTrashed()->whereHas('product');
+                });
+            })
             ->with(['orderItem' => function($q) {
                 return $q->select('id','order_id','product_combination_id')
                     ->with(['order' => function($q) {

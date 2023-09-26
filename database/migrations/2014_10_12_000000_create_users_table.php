@@ -29,6 +29,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->string('google_id', 50)->nullable();
             $table->string('facebook_id', 50)->nullable();
+            $table->tinyInteger('is_active', false, true)->default(1);
             $table->timestamps();
             $table->softDeletes();
         });
