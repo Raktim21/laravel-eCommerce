@@ -115,7 +115,7 @@ class FrontendController extends Controller
             });
         }
 
-        if($theme[5]['is_active'] == 1 && $image = SiteBanners::first()->featured_banner_image)
+        if($theme[5]['is_active'] == 1 &&  SiteBanners::first() &&   $image = SiteBanners::first()->featured_banner_image)
         {
             $data['featured_banner'] = Cache::remember('featuredBannerImage', 60*60*24, function () use ($image) {
                 return $image;
