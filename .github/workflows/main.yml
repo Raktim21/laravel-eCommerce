@@ -281,7 +281,7 @@ jobs:
             
             cd domains/apibasictechnology.selopia.com/public_html/
             # composer2 update
-            php artisan migrate:fresh --seede
+            php artisan migrate:fresh --seed
             php artisan optimize
             php artisan config:clear
             php artisan cache:clear
