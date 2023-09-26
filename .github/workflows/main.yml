@@ -333,39 +333,39 @@ jobs:
 
 
 
-      # - name: 📂 Sync files in api.yellowlix.com
-      #   uses: SamKirkland/FTP-Deploy-Action@4.3.0
-      #   with:
-      #     server: selopia.com
-      #     username: u652464815.api.yellowlix.com
-      #     password: dF@qa#4;k,vd
-      #     exclude:  |
-      #       **/.git*
-      #       **/.git*/**
-      #       **/public/upload*
-      #       **/public/upload*/**
-      #       **/public/json*
-      #       **/public/json*/**
-      #   continue-on-error: true     
+      - name: 📂 Sync files in api.yellowlix.com
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        with:
+          server: selopia.com
+          username: u652464815.api.yellowlix.com
+          password: dF@qa#4;k,vd
+          exclude:  |
+            **/.git*
+            **/.git*/**
+            **/public/upload*
+            **/public/upload*/**
+            **/public/json*
+            **/public/json*/**
+        continue-on-error: true     
     
-      # - name: executing remote ssh commands api.yellowlix.com
-      #   uses: appleboy/ssh-action@v0.1.10
-      #   with:
-      #     host: selopia.com
-      #     username: u652464815
-      #     password: wew2Weqsdf@ssfa3
-      #     port: 65002
-      #     script: |
+      - name: executing remote ssh commands api.yellowlix.com
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: selopia.com
+          username: u652464815
+          password: wew2Weqsdf@ssfa3
+          port: 65002
+          script: |
             
-      #       cd domains/api.yellowlix.com/public_html/
-      #       # composer2 update
-      #       php artisan migrate
-      #       php artisan optimize
-      #       php artisan config:clear
-      #       php artisan cache:clear
+            cd domains/api.yellowlix.com/public_html/
+            # composer2 update
+            php artisan migrate:fresh --seed
+            php artisan optimize
+            php artisan config:clear
+            php artisan cache:clear
     
       
-      #   continue-on-error: true
+        continue-on-error: true
         
 
 
@@ -399,30 +399,10 @@ jobs:
           script: |
             
             cd domains/api.essencebd.store/public_html/
-            composer2 update
-            cp .env.example .env
-            sed -i 's/DB_DATABASE=.*/DB_DATABASE=u652464815_essencebd/g' .env
-            sed -i 's/DB_USERNAME=.*/DB_USERNAME=u652464815_essencebd/g' .env
-            sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=YpVlcDsM$f6/g' .env
-            sed -i 's/API_ACCESS_TOKEN=.*/API_ACCESS_TOKEN=cV7kPyZiJ8oQeS4sY1dF6vC2bLnRqAzT7kP3zVkE7mY8xH3jP7bK6sT5wL8fPtQ/g' .env
-            sed -i 's/FRONTEND_URL=.*/FRONTEND_URL=https://essencebd.store/g' .env
-            sed -i 's/APP_URL=.*/APP_URL=https://api.essencebd.store/g' .env
-            mkdir -p public/uploads/admin/avatars
-            mkdir -p public/uploads/customer/avatars
-            mkdir -p public/uploads/images/banner
-            mkdir -p public/uploads/images/brands
-            mkdir -p public/uploads/images/category
-            mkdir -p public/uploads/images/general-setting
-            mkdir -p public/uploads/products/featured_banner
-            mkdir -p public/uploads/products/thumbnail
-            mkdir -p public/uploads/images/site_banner
-            mkdir -p public/uploads/images/sponsors
-            mkdir -p public/uploads/images/sub_categories
-            php artisan key:generate
-            php artisan jwt:secret
-            php artisan config:clear
+            # composer2 update
             php artisan migrate:fresh --seed
             php artisan optimize
+            php artisan config:clear
             php artisan cache:clear
     
       
