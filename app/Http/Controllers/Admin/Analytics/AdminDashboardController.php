@@ -49,15 +49,19 @@ class AdminDashboardController extends Controller
                                 ->latest('orders.created_at')->take(5)->get();
 
             $recent_products = $product_model->clone()
-                                ->with(['category' => function($q) {
-                                    return $q->select('id','name');
-                                }])->with(['subCategory' => function($q) {
-                                    return $q->select('id','name');
-                                }])
-                                ->select('id','category_id','category_sub_id','name','slug','thumbnail_image','view_count')
-                                ->latest()->take(5)->get();
+                                        ->with(['category' => function($q) {
+                                            return $q->select('id','name');
+                                        }])->with(['subCategory' => function($q) {
+                                            return $q->select('id','name');
+                                        }])
+                                        ->select('id','category_id','category_sub_id','name','slug','thumbnail_image','view_count')
+                                        ->latest()->take(5)->get();
 
-            $recent_admins   = $admin_model->clone()->latest()->take(5)->select('id','name','username','phone')->get();
+            $recent_admins   = $admin_model->clone()
+                                        ->leftJoin('user_profiles', 'users.id', '=', 'user_profiles.user_id')
+                                        ->select('users.id as id','name','username as email','phone','user_profiles.image as avatar')
+                                        ->latest('users.created_at')->take(5)
+                                        ->get();
 
             $category        =  ProductCategory::join('products', 'product_categories.id', '=', 'products.category_id')
                                         ->leftjoin('product_combinations', 'products.id', '=', 'product_combinations.product_id')
