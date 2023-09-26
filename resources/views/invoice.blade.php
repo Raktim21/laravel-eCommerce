@@ -31,7 +31,7 @@
     </div>
     <div style="float: right">
         @if($general['logo'] != '')
-        <img style="height: 80px" src="{{ public_path($general['logo']) }}">
+        <img style="height: 50px" src="{{ public_path($general['logo']) }}">
         @endif
         <p style="font-size: 11px">{{ $general['address'] }}</p>
         <p>
