@@ -240,7 +240,7 @@ jobs:
             
             cd domains/apigreenbangla.selopia.com/public_html/
             # composer2 update
-            php artisan migrate
+            php artisan migrate:fresh --seed
             php artisan optimize
             php artisan config:clear
             php artisan cache:clear
@@ -281,7 +281,7 @@ jobs:
             
             cd domains/apibasictechnology.selopia.com/public_html/
             # composer2 update
-            php artisan migrate
+            php artisan migrate:fresh --seede
             php artisan optimize
             php artisan config:clear
             php artisan cache:clear
@@ -320,7 +320,7 @@ jobs:
             
             cd domains/apitechview.selopia.com/public_html/
             # composer2 update
-            php artisan migrate
+            php artisan migrate:fresh --seed
             php artisan optimize
             php artisan config:clear
             php artisan cache:clear
@@ -333,39 +333,39 @@ jobs:
 
 
 
-      - name: 📂 Sync files in api.yellowlix.com
-        uses: SamKirkland/FTP-Deploy-Action@4.3.0
-        with:
-          server: selopia.com
-          username: u652464815.api.yellowlix.com
-          password: dF@qa#4;k,vd
-          exclude:  |
-            **/.git*
-            **/.git*/**
-            **/public/upload*
-            **/public/upload*/**
-            **/public/json*
-            **/public/json*/**
-        continue-on-error: true     
+      # - name: 📂 Sync files in api.yellowlix.com
+      #   uses: SamKirkland/FTP-Deploy-Action@4.3.0
+      #   with:
+      #     server: selopia.com
+      #     username: u652464815.api.yellowlix.com
+      #     password: dF@qa#4;k,vd
+      #     exclude:  |
+      #       **/.git*
+      #       **/.git*/**
+      #       **/public/upload*
+      #       **/public/upload*/**
+      #       **/public/json*
+      #       **/public/json*/**
+      #   continue-on-error: true     
     
-      - name: executing remote ssh commands api.yellowlix.com
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: selopia.com
-          username: u652464815
-          password: wew2Weqsdf@ssfa3
-          port: 65002
-          script: |
+      # - name: executing remote ssh commands api.yellowlix.com
+      #   uses: appleboy/ssh-action@v0.1.10
+      #   with:
+      #     host: selopia.com
+      #     username: u652464815
+      #     password: wew2Weqsdf@ssfa3
+      #     port: 65002
+      #     script: |
             
-            cd domains/api.yellowlix.com/public_html/
-            # composer2 update
-            php artisan migrate
-            php artisan optimize
-            php artisan config:clear
-            php artisan cache:clear
+      #       cd domains/api.yellowlix.com/public_html/
+      #       # composer2 update
+      #       php artisan migrate
+      #       php artisan optimize
+      #       php artisan config:clear
+      #       php artisan cache:clear
     
       
-        continue-on-error: true
+      #   continue-on-error: true
         
 
 
