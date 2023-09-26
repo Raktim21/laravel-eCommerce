@@ -296,7 +296,7 @@ class OrderService
         try {
             $promo = $request->has('promo_code') ? PromoCode::where('code', $request->promo_code)->first() : null;
 
-            $user = User::firstOrCreate(
+            $user = User::withTrashed()->firstOrCreate(
                 ['username' => $request->email],
                 [
                     'name'                  => $request->name,
@@ -304,6 +304,7 @@ class OrderService
                     'password'              => Hash::make($request->password),
                 ]);
 
+            $user->restore();
             $user->is_active = 1;
             $user->save();
 

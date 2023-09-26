@@ -9,12 +9,10 @@ use App\Models\PromoProduct;
 use App\Models\PromoUser;
 use App\Models\Union;
 use App\Models\User;
-use App\Models\UserPromo;
 use Carbon\Carbon;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class MessengerOrderRequest extends FormRequest
@@ -45,9 +43,14 @@ class MessengerOrderRequest extends FormRequest
             'messenger_psid'      =>   'required|string|max:50',
             'password'            =>  ['required','string',
                                         function($attr, $val, $fail) {
-                                            $user = User::where('username', $this->input('email'))->first();
+                                            $user = User::where('username', $this->input('email'))->withTrashed()->first();
                                             if(!is_null($user) && !Hash::check($val, $user->password)) {
                                                 $fail('The password field does not match.');
+                                            }
+
+                                            if ($user && !is_null($user->shop_branch_id))
+                                            {
+                                                $fail('Invalid user.');
                                             }
                                         }],
             'order_items.*.product_attribute_combination_id'    => ['required',
