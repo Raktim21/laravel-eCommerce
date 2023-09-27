@@ -28,7 +28,7 @@ class SystemController extends Controller
 //        putenv("MAIL_MAILER=".$request->mailer);
 //        putenv("MAIL_HOST=".$request->host);
 //        putenv("MAIL_PORT=".$request->port);
-//        putenv(['MAIL_USERNAME' => $request->usernaame]);
+//        putenv(['MAIL_USERNAME' => $request->username]);
 //        putenv(['MAIL_PASSWORD' => $request->password]);
 //        putenv(['MAIL_ENCRYPTION' => $request->encryption]);
 //        putenv(['MAIL_FROM_ADDRESS' => $request->email]);
