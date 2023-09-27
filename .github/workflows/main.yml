@@ -32,6 +32,7 @@ on:
       # mkdir -p public/uploads/images/general-setting
       # mkdir -p public/uploads/products/featured_banner
       # mkdir -p public/uploads/products/thumbnail
+      # mkdir -p public/uploads/products/multiple_image
       # mkdir -p public/uploads/images/site_banner
       # mkdir -p public/uploads/images/sponsors
       # mkdir -p public/uploads/images/sub_categories
@@ -240,7 +241,7 @@ jobs:
             
             cd domains/apigreenbangla.selopia.com/public_html/
             # composer2 update
-            php artisan migrate:fresh --seed
+            php artisan migrate
             php artisan optimize
             php artisan config:clear
             php artisan cache:clear
@@ -281,7 +282,7 @@ jobs:
             
             cd domains/apibasictechnology.selopia.com/public_html/
             # composer2 update
-            php artisan migrate:fresh --seed
+            php artisan migrate
             php artisan optimize
             php artisan config:clear
             php artisan cache:clear
@@ -320,7 +321,7 @@ jobs:
             
             cd domains/apitechview.selopia.com/public_html/
             # composer2 update
-            php artisan migrate:fresh --seed
+            php artisan migrate
             php artisan optimize
             php artisan config:clear
             php artisan cache:clear
@@ -359,7 +360,7 @@ jobs:
             
             cd domains/api.yellowlix.com/public_html/
             # composer2 update
-            php artisan migrate:fresh --seed
+            php artisan migrate
             php artisan optimize
             php artisan config:clear
             php artisan cache:clear
@@ -400,7 +401,7 @@ jobs:
             
             cd domains/api.essencebd.store/public_html/
             # composer2 update
-            php artisan migrate:fresh --seed
+            php artisan migrate
             php artisan optimize
             php artisan config:clear
             php artisan cache:clear
