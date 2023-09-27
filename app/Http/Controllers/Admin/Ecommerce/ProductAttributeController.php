@@ -57,7 +57,7 @@ class ProductAttributeController extends Controller
     public function storeVariant(Request $request,$attribute_id)
     {
         $validator = Validator::make($request->all(), [
-            'name' => ['required','string','max:255',
+            'name' => ['required','string','max:255','not_in:default',
                         Rule::unique('product_attribute_values')->whereNull('deleted_at')
                             ->where(function ($query) use($attribute_id) {
                             return $query->where('product_attribute_id',$attribute_id);
@@ -147,7 +147,7 @@ class ProductAttributeController extends Controller
          $attr = ProductAttribute::findOrFail($id);
 
          $validator = Validator::make($request->all(), [
-             'name' => ['required','string','max:100',
+             'name' => ['required','string','max:100','not_in:default',
                  Rule::unique('product_attributes', 'name')
                      ->where('product_id', $attr->product_id)->ignore($id)
              ],
@@ -353,6 +353,14 @@ class ProductAttributeController extends Controller
             ], 422);
         }
 
+        if($variant->attribute->name == 'default')
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => ['Change the attribute name to update variants under it.']
+            ], 400);
+        }
+
         $variant->update(['name' => $request->name]);
         Cache::clear();
 
@@ -360,7 +368,6 @@ class ProductAttributeController extends Controller
             'status' => true,
         ]);
     }
-
 
     public function generateCombinations($attributes, $currentIndex = 0, $currentCombination = [])
     {
@@ -398,9 +405,6 @@ class ProductAttributeController extends Controller
 
         return $allCombinations;
     }
-
-
-
 
     public function updateCombination(Request $request, $id)
     {

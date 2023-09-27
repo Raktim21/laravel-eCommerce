@@ -40,9 +40,14 @@ class ProductAttributeStoreRequest extends FormRequest
                                     if(!is_null($product_attribute)) {
                                         $fail('Selected attribute already exists for this product.');
                                     }
+
+                                    if($val == 'default')
+                                    {
+                                        $fail('You cannot add product attribute named default.');
+                                    }
                                 }],
             'values'        => ['required','array','min:1'],
-            'values.*'      => 'required|distinct|string|max:100',
+            'values.*'      => 'required|distinct|string|max:100|not_in:default',
             'combinations'  => ['required','array','size:'.$this->getCount($this->input('product_id'), is_array($this->input('values')) ? count($this->input('values')) : 0),
                                     function($attr, $val, $fail) {
                                         $isDefaultCount = 0;
@@ -107,9 +112,10 @@ class ProductAttributeStoreRequest extends FormRequest
             'product_id.exists'      => __('Please select a valid product'),
             'name.required'          => __('Please provide the attribute name'),
             'name.max'               => __('The attribute name is too long'),
-            'values.required'      => __('Please select at least one variant'),
-            'values.*.required'    => __('Please select at least one variant'),
-            'values.*.max'         => __('The variant name is too long'),
+            'values.required'        => __('Please select at least one variant'),
+            'values.*.required'      => __('Please select at least one variant'),
+            'values.*.max'           => __('The variant name is too long'),
+            'values.*.not_in'        => 'Product attribute names cannot be default'
         ];
     }
 
