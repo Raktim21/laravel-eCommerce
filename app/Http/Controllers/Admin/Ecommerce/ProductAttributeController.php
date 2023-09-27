@@ -75,6 +75,16 @@ class ProductAttributeController extends Controller
         DB::beginTransaction();
 
         try {
+            $attribute = ProductAttribute::findOrFail($attribute_id);
+
+            if ($attribute->name == 'default')
+            {
+                return response()->json([
+                    'status' => false,
+                    'errors' => ['Change the attribute name to add variants under it.']
+                ], 400);
+            }
+
             $variant = ProductAttributeValue::create([
                 'product_attribute_id'=>$attribute_id,
                 'name' => $request->name
