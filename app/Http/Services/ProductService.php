@@ -155,7 +155,7 @@ class ProductService
             'description'               => $request->description ?? $product->description,
             'short_description'         => $request->short_description ?? $product->short_description,
             'category_id'               => $request->category_id,
-            'category_sub_id'           => $request->category_sub_id ?? $product->category_sub_id,
+            'category_sub_id'           => $request->category_sub_id ?? null,
             'brand_id'                  => $request->brand_id ?? $product->brand_id,
             'is_on_sale'                => $request->is_on_sale ?? $product->is_on_sale,
             'is_featured'               => $request->is_featured ?? $product->is_featured,
