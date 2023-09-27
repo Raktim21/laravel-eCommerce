@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Services\RoleService;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\RoleUpdateRequest;
 
@@ -64,7 +65,7 @@ class AdminRoleController extends Controller
         {
             Cache::delete('roleDetail'.$id);
             Cache::delete('adminRoles');
-            forgetCaches('permissions');
+//            forgetCaches('permissions');
 
             return response()->json([
                 'status' => true,

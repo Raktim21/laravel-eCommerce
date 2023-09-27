@@ -3,6 +3,8 @@
 namespace App\Http\Services;
 
 use App\Http\Requests\RoleUpdateRequest;
+use App\Models\User;
+use Illuminate\Support\Facades\Cache;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -38,7 +40,17 @@ class RoleService
         $role->update([
             'name' => $request->name
         ]);
+
         $role->syncPermissions($request->permissions);
+
+
+        $users = User::query()->role($role->name);
+
+        foreach($users as $user)
+        {
+            Cache::delete('permissions'.$user->id);
+        }
+
         return true;
     }
 
