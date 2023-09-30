@@ -51,14 +51,13 @@ Route::group(['middleware' => ['ApiAuth']],function () {
 
     Route::prefix('asset')->controller(StaticAssetController::class)->group(function () {
 
-
         Route::get('country-list','countryList');
         Route::get('division-list','divisionList');
         Route::get('district-list','districtList');
         Route::get('sub-district-list','subDistrictList');
         Route::get('union-list','unionList');
         Route::get('language-list', 'languageList');
-        Route::get('currency-list', 'currencyList');
+//        Route::get('currency-list', 'currencyList');
         Route::get('gender-list', 'genderList');
     });
 
@@ -278,6 +277,7 @@ Route::group(['prefix' => 'admin'], function () {
         Route::controller(GeneralSettingController::class)->group(function () {
 
             Route::get('general-setting-detail','detail');
+            Route::put('change-currency', 'changeCurrency')->middleware('permission:update general setting');
             Route::post('general-setting-update','update')->middleware('permission:update general setting');
 
             Route::group(['middleware' => ['permission:create/update/delete faqs']], function() {
@@ -285,7 +285,6 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::post('faq-store','faqStore');
                 Route::put('faq-update/{id}','faqUpdate');
                 Route::delete('faq-delete/{id}','faqDelete');
-                Route::post('faq-ordering', 'orderFaq');
             });
         });
 

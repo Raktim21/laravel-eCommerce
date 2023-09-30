@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\System;
 
+use App\Http\Services\GeneralSettingService;
+use App\Models\GeneralSetting;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Mews\Captcha\Facades\Captcha;
 use Illuminate\Support\Facades\App;
