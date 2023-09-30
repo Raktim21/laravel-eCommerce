@@ -47,8 +47,6 @@ Route::get('cron', [SystemController::class, 'runSchedule']);
 
 Route::group(['middleware' => ['ApiAuth']],function () {
 
-
-
     Route::prefix('asset')->controller(StaticAssetController::class)->group(function () {
 
         Route::get('country-list','countryList');

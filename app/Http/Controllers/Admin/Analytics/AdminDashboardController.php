@@ -16,6 +16,9 @@ use Illuminate\Support\Facades\Cache;
 
 class AdminDashboardController extends Controller
 {
+
+//    admin dashboard charts and analytics (cached for 10 minutes)
+
     public function index()
     {
         $data = Cache::remember('adminDashboardData', 60*10, function () {
@@ -34,6 +37,8 @@ class AdminDashboardController extends Controller
             $order_count     = $order_model->clone()->count();
             $product_count   = $product_model->clone()->count();
 
+//            5 recently joined users
+
             $recent_users    = $user_model->clone()
                                           ->leftJoin('user_profiles', 'users.id', '=', 'user_profiles.user_id')
                                           ->leftJoin('user_sexes', 'user_profiles.user_sex_id', '=', 'user_sexes.id')
@@ -41,12 +46,16 @@ class AdminDashboardController extends Controller
                                           ->latest('users.created_at')->take(5)
                                           ->get();
 
+//            5 recently placed orders
+
             $recent_orders   = $order_model->clone()
                                 ->leftJoin('order_statuses' , 'orders.order_status_id', '=', 'order_statuses.id')
                                 ->leftJoin('user_addresses', 'orders.delivery_address_id', '=', 'user_addresses.id')
                                 ->select('orders.id as id','orders.user_id as user_id','orders.order_number as order_number',
                                     'order_statuses.name as admin_status','orders.total_amount as total','user_addresses.phone_no as shipping_number')
                                 ->latest('orders.created_at')->take(5)->get();
+
+//            5 recently added products
 
             $recent_products = $product_model->clone()
                                         ->with(['category' => function($q) {
@@ -57,11 +66,15 @@ class AdminDashboardController extends Controller
                                         ->select('id','category_id','category_sub_id','name','slug','thumbnail_image','view_count')
                                         ->latest()->take(5)->get();
 
+//            admins
+
             $recent_admins   = $admin_model->clone()
                                         ->leftJoin('user_profiles', 'users.id', '=', 'user_profiles.user_id')
                                         ->select('users.id as id','name','username as email','phone','user_profiles.image as avatar')
                                         ->latest('users.created_at')->take(5)
                                         ->get();
+
+//            sales of top 3 categories, orders and monthly new user count in the following year
 
             $category        =  ProductCategory::join('products', 'product_categories.id', '=', 'products.category_id')
                                         ->leftjoin('product_combinations', 'products.id', '=', 'product_combinations.product_id')
@@ -129,6 +142,8 @@ class AdminDashboardController extends Controller
             'data'       => $data,
         ], is_null($data) ? 204 : 200);
     }
+
+//    pending orders count (cached for 5 minutes)
 
     public function pending_order_count()
     {
