@@ -312,7 +312,7 @@ class OrderService
             $user->assignRole(3);
             \Config::set('auth.defaults.guard','');
 
-            UserProfile::firstOrCreate([
+            UserProfile::firstOrUpdate([
                 'user_id'   => $user->id,
             ],[
                 'user_sex_id' => $request->user_sex_id,
