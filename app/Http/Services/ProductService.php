@@ -141,6 +141,7 @@ class ProductService
                     return $q->where('is_active', 1);
                 });
             }])
+            ->withSum('inventories', 'stock_quantity')
             ->withCount('requests')
             ->find($id);
     }
@@ -354,7 +355,6 @@ class ProductService
     public function getProductByCategory($cat_id)
     {
         return $this->product->clone()
-            ->whereHas('inventories')
             ->where('status', 1)
             ->where('category_id', $cat_id)
             ->select('id','category_id','category_sub_id','brand_id',
@@ -366,6 +366,7 @@ class ProductService
             }])->with(['brand' => function($q) {
                 return $q->select('id','name');
             }])
+            ->withSum('inventories', 'stock_quantity')
             ->latest()->take(5)->get();
     }
 
@@ -389,6 +390,8 @@ class ProductService
             ->with(['productCombinations' => function ($q) {
                 return $q->with('attributeValues')
                     ->with('inventory');
-            }])->first();
+            }])
+            ->withSum('inventories', 'stock_quantity')
+            ->first();
     }
 }
