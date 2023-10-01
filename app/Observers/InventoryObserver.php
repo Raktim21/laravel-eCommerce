@@ -3,11 +3,7 @@
 namespace App\Observers;
 
 use App\Jobs\InventoryRestockMailJob;
-use App\Mail\InventoryRestockMail;
 use App\Models\Inventory;
-use App\Models\ProductRestockRequest;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Mail;
 
 class InventoryObserver
 {
