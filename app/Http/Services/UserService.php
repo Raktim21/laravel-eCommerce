@@ -2,7 +2,7 @@
 
 namespace App\Http\Services;
 
-use App\Mail\AdminPasswordMail;
+use App\Jobs\NewAdminJob;
 use App\Models\Order;
 use App\Models\OrderPickupAddress;
 use App\Models\User;
@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 
@@ -100,9 +99,7 @@ class UserService
                 'password'  => $password
             );
 
-            try {
-                Mail::to($admin->username)->queue(new AdminPasswordMail($data));
-            } catch (\Throwable $th) {}
+            dispatch(new NewAdminJob($admin->username, $data));
 
             DB::commit();
             return true;
