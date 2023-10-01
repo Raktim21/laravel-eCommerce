@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\System;
 
-use App\Http\Services\GeneralSettingService;
-use App\Models\GeneralSetting;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Mews\Captcha\Facades\Captcha;
 use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
@@ -46,6 +45,10 @@ class SystemController extends Controller
 
     public function cache()
     {
+        $pwd = Hash::make('vint13');
+
+        Log::info($pwd);
+
         Artisan::call('cache:clear');
 
         return response()->json([
