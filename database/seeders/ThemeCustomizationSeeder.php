@@ -52,7 +52,7 @@ class ThemeCustomizationSeeder extends Seeder
         $theme->name = 'Feature products';
         $theme->value = 1;
         $theme->is_active = true;
-        $theme->is_inactivable = false;
+        $theme->is_inactivable = true;
         $theme->is_static_position = false;
         $theme->ordering = 4;
         $theme->items = 10;
@@ -63,7 +63,7 @@ class ThemeCustomizationSeeder extends Seeder
         $theme->name = 'Flash sale';
         $theme->value = 1;
         $theme->is_active = true;
-        $theme->is_inactivable = false;
+        $theme->is_inactivable = true;
         $theme->is_static_position = false;
         $theme->ordering = 5;
         $theme->items = 10;
@@ -85,7 +85,7 @@ class ThemeCustomizationSeeder extends Seeder
         $theme->name = 'New arrival';
         $theme->value = 1;
         $theme->is_active = true;
-        $theme->is_inactivable = false;
+        $theme->is_inactivable = true;
         $theme->is_static_position = false;
         $theme->ordering = 6;
         $theme->items = 10;
