@@ -64,9 +64,11 @@ class WishlistService
     {
         return $this->wish->clone()->with(['items' => function($q1) {
             $q1->with(['productCombination' => function($q) {
-                $q->with(['product' => function($q1) {
-                    return $q1->select('id','name','thumbnail_image');
-                }])->with('attributeValues.attribute');
+                $q->with('inventory')
+                    ->with(['product' => function($q1) {
+                        return $q1->select('id','name','thumbnail_image');
+                    }])
+                    ->with('attributeValues.attribute');
             }]);
         }])->where('user_id',auth()->user()->id)->latest()->get();
     }
