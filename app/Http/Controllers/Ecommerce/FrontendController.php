@@ -176,7 +176,8 @@ class FrontendController extends Controller
     public function staticMenu()
     {
         $data = Cache::remember('static_menus', 24*60*60, function () {
-            return StaticMenu::with('staticMenuType')->latest()->get();
+            return StaticMenu::with('staticMenuType')
+                ->where('status', '=', 1)->latest()->get();
         });
 
         return response()->json([
