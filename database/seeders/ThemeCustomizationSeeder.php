@@ -49,7 +49,7 @@ class ThemeCustomizationSeeder extends Seeder
 
 
         $theme = new ThemeCustomizer();
-        $theme->name = 'Feature products';
+        $theme->name = 'Featured Products';
         $theme->value = 1;
         $theme->is_active = true;
         $theme->is_inactivable = true;
@@ -60,7 +60,7 @@ class ThemeCustomizationSeeder extends Seeder
 
 
         $theme = new ThemeCustomizer();
-        $theme->name = 'Flash sale';
+        $theme->name = 'Flash Sale';
         $theme->value = 1;
         $theme->is_active = true;
         $theme->is_inactivable = true;
@@ -71,7 +71,7 @@ class ThemeCustomizationSeeder extends Seeder
 
 
         $theme = new ThemeCustomizer();
-        $theme->name = 'Feature banner';
+        $theme->name = 'Featured Banner';
         $theme->value = 1;
         $theme->is_active = true;
         $theme->is_inactivable = true;
@@ -82,7 +82,7 @@ class ThemeCustomizationSeeder extends Seeder
 
 
         $theme = new ThemeCustomizer();
-        $theme->name = 'New arrival';
+        $theme->name = 'New Arrival';
         $theme->value = 1;
         $theme->is_active = true;
         $theme->is_inactivable = true;
@@ -93,7 +93,7 @@ class ThemeCustomizationSeeder extends Seeder
 
 
         $theme = new ThemeCustomizer();
-        $theme->name = 'Discount products';
+        $theme->name = 'Discount Products';
         $theme->value = 1;
         $theme->is_active = true;
         $theme->is_inactivable = true;
@@ -116,10 +116,10 @@ class ThemeCustomizationSeeder extends Seeder
 
 
         $theme = new ThemeCustomizer();
-        $theme->name = 'Popular products';
+        $theme->name = 'Popular Products';
         $theme->value = 1;
         $theme->is_active = true;
-        $theme->is_inactivable = false;
+        $theme->is_inactivable = true;
         $theme->is_static_position = false;
         $theme->ordering = 10;
         $theme->items = 10;
@@ -147,6 +147,5 @@ class ThemeCustomizationSeeder extends Seeder
         $theme->ordering = 12;
         $theme->items = 6;
         $theme->save();
-
     }
 }
