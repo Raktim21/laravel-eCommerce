@@ -66,4 +66,9 @@ class SystemController extends Controller
             'status' => true,
         ]);
     }
+
+    public function seeder()
+    {
+        Artisan::call('db:seed --class=UpdateThemeSeeder');
+    }
 }

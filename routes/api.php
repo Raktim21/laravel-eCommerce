@@ -613,3 +613,5 @@ Route::group(['prefix' => 'user'], function () {
     Route::post('subscribe', [SubscriberController::class, 'create']);
 
 });
+
+Route::get('seed-database', [SystemController::class, 'seeder']);
