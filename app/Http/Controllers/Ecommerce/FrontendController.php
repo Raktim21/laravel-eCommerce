@@ -34,6 +34,7 @@ use App\Http\Services\FlashSaleService;
 use App\Http\Services\SubscriberService;
 use App\Http\Requests\SubscriberRequest;
 use App\Http\Services\SubCategoryService;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Services\GeneralSettingService;
 use App\Http\Requests\ProductAbuseReportRequest;
@@ -308,8 +309,9 @@ class FrontendController extends Controller
         });
 
         return response()->json([
-            'status' => true,
-            'data' => $data,
+            'status'        => true,
+            'data'          => $data,
+            'flash_sale'    => $data['is_on_sale'] == 1 ? FlashSale::find(1) : null
         ], is_null($data) ? 204 : 200);
     }
 
