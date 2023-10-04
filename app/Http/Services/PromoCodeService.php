@@ -105,7 +105,7 @@ class PromoCodeService
     {
         $promo = $this->code->clone()->findOrFail($id);
 
-        if($promo->is_active == 0 && $promo->end_date <= now())
+        if($promo->is_active == 0 && !is_null($promo->end_date) && $promo->end_date <= now())
         {
             return false;
         }
