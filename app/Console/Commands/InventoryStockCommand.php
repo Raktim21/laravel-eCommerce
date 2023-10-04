@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Branch;
 use App\Models\Product;
 use App\Models\User;
-use App\Notifications\InventoryRestockNotification;
+use App\Notifications\AdminNotification;
 use Illuminate\Console\Command;
 
 class InventoryStockCommand extends Command
@@ -56,7 +56,10 @@ class InventoryStockCommand extends Command
                     $admins = User::where('shop_branch_id', $branch->id)->get();
 
                     foreach ($admins as $admin) {
-                        $admin->notify(new InventoryRestockNotification($alert));
+                        $admin->notify(new AdminNotification(
+                            'Inventory',
+                            '/pos/inventory',
+                            $alert));
                     }
                 }
             }

@@ -16,6 +16,7 @@ class SalesReportController extends Controller
         $this->service = $service;
     }
 
+//    site general reports (i.e. total expense, gross profit, net profit, avg. order value)
 
     public function generalReport()
     {

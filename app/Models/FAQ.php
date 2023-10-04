@@ -27,5 +27,9 @@ class FAQ extends Model
         static::updated(function ($faq) {
             Cache::forget('faqs');
         });
+
+        static::deleted(function ($faq) {
+            Cache::forget('faqs');
+        });
     }
 }

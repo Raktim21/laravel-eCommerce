@@ -148,7 +148,7 @@ class MessengerController extends Controller
             'messenger_psid'        => 'required|exists:user_profiles,messenger_psid',
             'order_number'          => 'required|exists:orders,order_number',
             'email'                 => 'required|email|exists:users,username',
-            'reason'                => 'required|in:'
+            'reason'                => 'required|in:DELIVERY_ETA_TOO_LONG,MISTAKE_ERROR,REASON_UNKNOWN'
         ]);
 
         if($validator->fails())

@@ -47,7 +47,7 @@ class AdminAuthController extends Controller
 
     public function resetPassword(ResetPasswordRequest $request)
     {
-        $token = $this->service->resetPWD($request, 1);
+        $token = $this->service->resetPWD($request);
 
         return response()->json([
             'status'    => true,

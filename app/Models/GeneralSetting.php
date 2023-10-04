@@ -25,4 +25,19 @@ class GeneralSetting extends Model
     {
         return $this->belongsTo(Currency::class, 'currency_id');
     }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($setting) {
+            Cache::delete('generalSetting');
+            Cache::delete('general');
+        });
+
+        static::updated(function ($setting) {
+            Cache::delete('generalSetting');
+            Cache::delete('general');
+        });
+    }
 }

@@ -139,7 +139,6 @@ class ProductController extends Controller
 
     public function reviewGetAll()
     {
-        Cache::clear();
         $data = Cache::remember('allProductReviews'.request()->get('page', 1), 24*60*60, function () {
             return $this->service->getAllReviews();
         });
@@ -243,13 +242,15 @@ class ProductController extends Controller
         }
 
         $validator = Validator::make($data, [
-            '*.name'        => 'required|string|distinct',
+            '*.name'        => 'required|string|distinct|not_in:default',
             '*.values'      => 'required|array|min:1',
+            '*.values.*'    => 'required|string|max:98|distinct|not_in:default'
         ], [
             '*.values.required'   => 'The attribute value field is required.',
             '*.values.array'      => 'The attribute value field must be an array.',
             '*.name.distinct'     => 'Two attribute names must not be similar.',
-            '*.variants.min'      => 'The attribute value field must have at least 1 value.'
+            '*.values.min'        => 'The attribute value field must have at least 1 value.',
+            '*.values.not_in'     => 'Name of attribute values cannot be default.'
         ]);
 
         if($validator->fails()) {

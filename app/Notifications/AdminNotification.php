@@ -7,19 +7,22 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class OrderPlacedNotification extends Notification
+class AdminNotification extends Notification
 {
     use Queueable;
 
-    protected $order;
+    public $module, $link, $message;
+
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($order)
+    public function __construct($module, $link, $message)
     {
-        $this->order = $order;
+        $this->module = $module;
+        $this->message = $message;
+        $this->link = $link;
     }
 
     /**
@@ -41,13 +44,10 @@ class OrderPlacedNotification extends Notification
      */
     public function toArray($notifiable)
     {
-        $msg = $this->order->delivery_method_id == 1 ? 'You have a new order from '.$this->order->user->name :
-            $this->order->statusUpdatedBy->name.' has created a new order for ' .$this->order->user->name;
-
         return [
-            'module'      => 'Order',
-            'id'          => $this->order->id,
-            'message'     => $msg,
+            'module'    =>  $this->module,
+            'link'      =>  $this->link,
+            'message'   =>  $this->message,
         ];
     }
 }

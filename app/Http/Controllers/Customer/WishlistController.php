@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Customer;
 
+use App\Jobs\WishlistMailJob;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use App\Mail\SendWishListMail;
@@ -130,9 +131,7 @@ class WishlistController extends Controller
             ], 404);
         }
 
-        try {
-            Mail::to($request->email)->send(new SendWishListMail($wishlist));
-        } catch (\Throwable $th) {}
+        dispatch(new WishlistMailJob($request->email, $wishlist));
 
         return response()->json([
             'status' => true,

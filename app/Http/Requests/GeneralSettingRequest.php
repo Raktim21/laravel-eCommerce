@@ -27,7 +27,6 @@ class GeneralSettingRequest extends FormRequest
     {
         return [
             'dashboard_language_id' => 'sometimes|exists,dashboard_languages,id',
-            'currency_id' => 'sometimes|exists:currencies,id',
             'name' => 'sometimes|string|max:100',
             'email' => 'sometimes|email|max:100',
             'phone' => 'sometimes|string|max:30',

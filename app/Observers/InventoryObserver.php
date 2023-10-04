@@ -2,11 +2,8 @@
 
 namespace App\Observers;
 
-use App\Mail\InventoryRestockMail;
+use App\Jobs\InventoryRestockMailJob;
 use App\Models\Inventory;
-use App\Models\ProductRestockRequest;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Mail;
 
 class InventoryObserver
 {
@@ -18,30 +15,11 @@ class InventoryObserver
 
     public function updated(Inventory $inventory)
     {
+//        when a product is restocked, deleting the requests and sending emails (using queue)
+
         if($inventory->stock_quantity > $this->previous_quantity)
         {
-            $requests = ProductRestockRequest::where('product_id', $inventory->combination->product_id)
-                ->where('is_stocked',0)->get();
-
-            foreach ($requests as $request)
-            {
-                try {
-                    $mail_data = array(
-                        'user'      => $request->user->name,
-                        'product'   => $inventory->combination->product->name,
-                        'slug'      => $inventory->combination->product->slug,
-                        'stock'     => $inventory->stock_quantity,
-                        'pr_id'     => $inventory->combination->product->id
-                    );
-
-                    $to = $request->user->username;
-
-                    Mail::to($to)->queue(new InventoryRestockMail($mail_data));
-                }
-                catch (\Throwable $th) {}
-
-                $request->delete();
-            }
+            dispatch(new InventoryRestockMailJob($inventory));
         }
     }
 }

@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->foreignId('shop_branch_id')->nullable()->constrained('shop_branches')->onDelete('restrict');
-            $table->string('username', 100)->unique()->comment('email');
+            $table->string('username', 100)->comment('email');
             $table->string('password', 100);
             $table->string('salt', 100)->nullable();
             $table->string('name', 100);
@@ -32,6 +32,8 @@ return new class extends Migration
             $table->tinyInteger('is_active', false, true)->default(1);
             $table->timestamps();
             $table->softDeletes();
+
+            $table->unique(['username', 'deleted_at'], 'users_username_unique');
         });
     }
 

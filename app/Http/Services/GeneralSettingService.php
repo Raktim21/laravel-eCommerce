@@ -4,7 +4,6 @@ namespace App\Http\Services;
 
 use App\Models\GeneralSetting;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 
 class GeneralSettingService
 {
@@ -23,7 +22,6 @@ class GeneralSettingService
     public function updateSetting(Request $request)
     {
 //        $this->setting->dashboard_language_id = $request->dashboard_language_id ?? $this->setting->dashboard_language_id;
-        $this->setting->currency_id = $request->currency_id ?? $this->setting->currency_id;
         $this->setting->name = $request->name ?? $this->setting->name;
         $this->setting->email = $request->email ?? $this->setting->email;
         $this->setting->phone = $request->phone ?? $this->setting->phone;
@@ -63,7 +61,12 @@ class GeneralSettingService
             deleteFile($this->setting->site_favicon);
             saveImage($request->file('favicon'), '/uploads/images/general-setting/', $this->setting, 'favicon');
         }
-        Cache::delete('generalSetting');
-        Cache::delete('general');
+
+    }
+
+    public function changeCurrency($currency_id)
+    {
+        $this->setting->currency_id = $currency_id;
+        $this->setting->save();
     }
 }
