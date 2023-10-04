@@ -23,13 +23,13 @@ class OrderDeliverySystemSeeder extends Seeder
                 'created_at' => now(), 'updated_at' => now()
             ],
             [
-                'title' => 'XIT Delivery System',
+                'title' => 'XIT',
                 'detail' => 'XIT is a one-stop delivery service provider company offering doorstep delivery services all around Bangladesh,
                             with warehousing and packaging facilities.',
                 'active_status' => 0,
                 'created_at' => now(), 'updated_at' => now()],
             [
-                'title' => 'Pandago Delivery System',
+                'title' => 'Pandago',
                 'detail' => 'Pandago is an instant package delivery service to send food to your customers across zone borders up to 10KM from your location.',
                 'active_status' => 0,
                 'created_at' => now(), 'updated_at' => now()],
