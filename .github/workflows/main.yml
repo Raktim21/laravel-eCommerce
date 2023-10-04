@@ -204,6 +204,7 @@ jobs:
             # composer2 update
             php artisan db:seed --class=UpdateThemeSeeder
             php artisan db:seed --class=OrderDeliverySystemSeeder
+            
             php artisan migrate
             php artisan optimize
             php artisan config:clear
