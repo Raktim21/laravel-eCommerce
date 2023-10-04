@@ -19,7 +19,7 @@ use GuzzleHttp\Client;
 
 Route::get('email-configuration', [SystemController::class, 'configureEmailView'])->name('configure-email-view');
 Route::get('save-email-configuration', [SystemController::class, 'configureEmail'])->name('configureEmail');
-Route::get('/crone-job', [SystemController::class, 'crone'])->name('crone.job');
+Route::get('/crone-job', [SystemController::class, 'runSchedule'])->name('crone.job');
 
 Route::controller(GoogleFacebookController::class)->group(function () {
     Route::get('redirect-auth', 'redirect');

@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Services\PromoCodeService;
 use App\Http\Requests\PromoCreateRequest;
-use App\Http\Requests\PromoUpdateRequest;
 
 class PromocodeController extends Controller
 {
@@ -62,13 +61,13 @@ class PromocodeController extends Controller
     }
 
 
-    public function update(PromoUpdateRequest $request, $id)
-    {
-        $this->service->update($request, $id);
-        return response()->json([
-            'status' => true,
-        ]);
-    }
+//    public function update(PromoUpdateRequest $request, $id)
+//    {
+//        $this->service->update($request, $id);
+//        return response()->json([
+//            'status' => true,
+//        ]);
+//    }
 
     public function updateStatus($id)
     {
