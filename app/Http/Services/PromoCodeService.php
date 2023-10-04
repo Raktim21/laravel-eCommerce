@@ -83,7 +83,7 @@ class PromoCodeService
             ->with(['products' => function($q) {
                 return $q->select('products.id','products.name');
             }])->with(['users' => function($q) {
-                return $q->select('users.id','users.name');
+                return $q->select('users.id','users.name','users.username','users.phone');
             }])->find($id);
     }
 
