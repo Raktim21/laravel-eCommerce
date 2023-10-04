@@ -34,6 +34,23 @@ class OrderDeliverySystemSeeder extends Seeder
                 'active_status' => 0,
                 'created_at' => now(), 'updated_at' => now()],
         ]);
+
+        DB::table('order_delivery_charge_lookups')->insert([
+            [
+                'category' => 'Same District',
+                'amount' => 0.00,
+                'created_at' => now(), 'updated_at' => now()
+            ],
+            [
+                'category' => 'Different District, Same Division',
+                'amount' => 0.00,
+                'created_at' => now(), 'updated_at' => now()
+            ],[
+                'category' => 'Different Division',
+                'amount' => 0.00,
+                'created_at' => now(), 'updated_at' => now()
+            ]
+        ]);
     }
 }
 
