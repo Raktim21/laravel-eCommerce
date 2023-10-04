@@ -363,7 +363,7 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::get('promocode-list','index');
                 Route::post('promocode-store','store');
                 Route::get('promocode-detail/{id}','detail');
-                Route::put('promocode-update/{id}', 'update');
+//                Route::put('promocode-update/{id}', 'update');
                 Route::get('promocode-inactive/{id}', 'updateStatus');
             });
         });
