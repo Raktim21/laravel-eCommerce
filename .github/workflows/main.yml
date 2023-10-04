@@ -80,7 +80,8 @@ jobs:
           port: 65002
           script: |
             cd domains/api.shukkarun.com/public_html/
-            composer2 update
+            # composer2 update
+            sed -i 's/QUEUE_CONNECTION=.*/QUEUE_CONNECTION=database/g' .env
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -119,6 +120,7 @@ jobs:
           script: |
             cd domains/api.vintbd.com/public_html/
             # composer2 update
+            sed -i 's/QUEUE_CONNECTION=.*/QUEUE_CONNECTION=database/g' .env
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -159,6 +161,7 @@ jobs:
           script: |
             cd domains/api.glamdesmit.com/public_html/
             # composer2 update
+            sed -i 's/QUEUE_CONNECTION=.*/QUEUE_CONNECTION=database/g' .env
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -199,9 +202,8 @@ jobs:
           port: 65002
           script: |
             cd domains/api.jannatistore.com/public_html/
-            composer2 update
-            php artisan db:seed --class=UpdateThemeSeeder
-            php artisan db:seed --class=OrderDeliverySystemSeeder
+            # composer2 update
+            sed -i 's/QUEUE_CONNECTION=.*/QUEUE_CONNECTION=database/g' .env
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -243,6 +245,7 @@ jobs:
             
             cd domains/apigreenbangla.selopia.com/public_html/
             # composer2 update
+            sed -i 's/QUEUE_CONNECTION=.*/QUEUE_CONNECTION=database/g' .env
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -284,6 +287,7 @@ jobs:
             
             cd domains/apibasictechnology.selopia.com/public_html/
             # composer2 update
+            sed -i 's/QUEUE_CONNECTION=.*/QUEUE_CONNECTION=database/g' .env
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -323,6 +327,7 @@ jobs:
             
             cd domains/apitechview.selopia.com/public_html/
             # composer2 update
+            sed -i 's/QUEUE_CONNECTION=.*/QUEUE_CONNECTION=database/g' .env
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -362,6 +367,7 @@ jobs:
             
             cd domains/api.yellowlix.com/public_html/
             # composer2 update
+            sed -i 's/QUEUE_CONNECTION=.*/QUEUE_CONNECTION=database/g' .env
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -403,6 +409,7 @@ jobs:
             
             cd domains/api.essencebd.store/public_html/
             # composer2 update
+            sed -i 's/QUEUE_CONNECTION=.*/QUEUE_CONNECTION=database/g' .env
             php artisan migrate
             php artisan optimize
             php artisan config:clear
