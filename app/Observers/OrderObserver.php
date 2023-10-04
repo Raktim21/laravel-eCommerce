@@ -30,8 +30,9 @@ class OrderObserver
                 $user_promo->save();
             } else {
                 PromoUser::create([
-                    'user_id'   => $order->user_id,
-                    'promo_id'  => $promo->id,
+                    'user_id'       => $order->user_id,
+                    'promo_id'      => $promo->id,
+                    'usage_number'  => 1
                 ]);
             }
         }
