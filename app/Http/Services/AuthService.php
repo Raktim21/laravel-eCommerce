@@ -2,18 +2,17 @@
 
 namespace App\Http\Services;
 
-use App\Mail\PasswordResetMail;
 use App\Models\CustomerCart;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\UserProfile;
 use Carbon\Carbon;
-use Illuminate\Database\QueryException;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use App\Jobs\ResetPasswordMailJob;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Token;
@@ -237,11 +236,11 @@ class AuthService
         ], 401);
     }
 
-    public function resetPWD(Request $request, $isAdmin)
+    public function resetPWD(Request $request)
     {
         $user = User::where('username', $request->username)->first();
 
-        $code = Str::random($isAdmin==1 ? 5 : 6);
+        $code = Str::random(6);
         $token = Hash::make($code);
 
         $user->update([
@@ -249,14 +248,18 @@ class AuthService
             'password_reset_code'  => $code,
         ]);
 
-        try{
-            $this->notifyUser($user, $code);
+        $to = $user->username;
 
-            return $token;
-        } catch (\Exception $e)
-        {
-            return null;
-        }
+        $data = [
+            'user' => $user->name,
+            'code' => $code
+        ];
+
+//        sending password reset token via email (using queue)
+
+        dispatch(new ResetPasswordMailJob($to, $data));
+
+        return $token;
     }
 
     public function confirmPWD(Request $request): void
@@ -275,11 +278,15 @@ class AuthService
     {
         $user = auth()->user()->id;
 
+//        cannot deactivate account if order exists
+
         if(Order::where('user_id', $user)
             ->whereIn('order_status_id', [1,2])->exists())
         {
             return 0;
         }
+
+//        logging out the user before deactivating
 
         if($this->logout($token))
         {
@@ -288,19 +295,5 @@ class AuthService
             return 1;
         }
         return 2;
-    }
-
-    private function notifyUser($user, $code): void
-    {
-        try {
-            $to = $user->username;
-
-            $data = [
-                'user' => $user->name,
-                'code' => $code
-            ];
-
-            Mail::to($to)->send(new PasswordResetMail($data));
-        } catch (\Throwable $th) {}
     }
 }

@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Http\Services\GeneralSettingService;
 use App\Http\Services\OrderDeliverySystemService;
+use App\Jobs\OrderNotificationJob;
 use App\Models\CustomerCart;
 use App\Models\GeneralSetting;
 use App\Models\Inventory;
@@ -12,9 +13,6 @@ use App\Models\Order;
 use App\Models\OrderAdditionalCharge;
 use App\Models\PromoCode;
 use App\Models\PromoUser;
-use App\Models\User;
-use App\Notifications\OrderDeliveryNotification;
-use App\Notifications\OrderPlacedNotification;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
 
@@ -60,17 +58,12 @@ class OrderObserver
                 sendMessengerResponse($payload, 'order_confirmation');
             }
 
-            $admins = User::whereHas('roles', function ($query) {
-                    $query->whereIn('id', [1,2]);
-                })->get();
+//            notifying admins about new order (using queue)
 
-//        notify admins about new order
+            dispatch(new OrderNotificationJob($order));
 
-            foreach ($admins as $admin) {
-                $admin->notify(new OrderPlacedNotification($order));
-            }
+//            delete customer cart
 
-//        delete customer cart
             if(auth()->guard('user-api')->check())
             {
                 CustomerCart::where('user_id',auth()->user()->id)->delete();
@@ -106,13 +99,9 @@ class OrderObserver
         if ($order->delivery_status == 'Delivered' || $order->delivery_status == 'Picked' || $order->delivery_status == 'Cancelled') {
             if ($order->delivery_status == 'Delivered') {
 
-                $admins = User::whereDoesntHave('roles', function ($query) {
-                    $query->where('id', 3);
-                })->get();
+//                notify admins about order delivery (using queue)
 
-                foreach ($admins as $admin) {
-                    $admin->notify(new OrderDeliveryNotification($order));
-                }
+                dispatch(new OrderNotificationJob($order));
             }
 
             $subscription = MessengerSubscriptions::where('user_id', $order->user_id)

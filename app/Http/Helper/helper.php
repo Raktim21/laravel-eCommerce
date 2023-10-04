@@ -48,31 +48,6 @@ function deleteFile($filepath): void
     }
 }
 
-function getDeliveryCharge($address_id, $total_price): float|int
-{
-    $address = UserAddress::find($address_id);
-
-    $pickup_address = OrderPickupAddress::first();
-
-    if(is_null($address) || is_null($pickup_address)) {
-        return 0;
-    }
-
-    if ($address->upazila->district->division_id == $pickup_address->upazila->district->division_id) {
-
-        if ($address->upazila->district_id == $pickup_address->upazila->district_id) {
-            $delivery_price = 55;
-        } else {
-            $delivery_price = 90 + (($total_price + 90) * 0.01);
-        }
-
-    } else {
-        $delivery_price = 120 + (($total_price + 120) * 0.01);
-    }
-
-    return $delivery_price;
-}
-
 function sendMessengerResponse($response, $route): void
 {
     $url = 'https://chatbotapi.selopian.us/api/v1/' . $route;

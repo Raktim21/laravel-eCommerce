@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Ecommerce;
 
-use App\Models\FAQ;
+use App\Models\GeneralSetting;
 use Illuminate\Http\Request;
 use App\Http\Services\AssetService;
 use App\Http\Controllers\Controller;
@@ -106,24 +106,22 @@ class GeneralSettingController extends Controller
         ]);
     }
 
-    public function orderFaq(Request $request)
+    public function changeCurrency(Request $request)
     {
-        $validator = Validator::make(request()->all(), [
-            'ids'       => 'required|array|size:'.FAQ::count(),
-            'ids.*'     => 'required|exists:static_faqs,id'
+        $validator = Validator::make($request->all(), [
+            'currency_id' => 'required|in:1,2'
         ]);
 
-        if ($validator->fails()) {
+        if ($validator->fails())
+        {
             return response()->json([
                 'status' => false,
                 'errors' => $validator->errors()->all()
             ], 422);
         }
 
-        (new AssetService())->orderFAQ($request);
+        $this->service->changeCurrency($request->currency_id);
 
-        return response()->json([
-            'status'    => true,
-        ]);
+        return response()->json(['status' => true]);
     }
 }

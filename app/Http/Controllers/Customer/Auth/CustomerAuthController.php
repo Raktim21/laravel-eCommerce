@@ -97,7 +97,7 @@ class CustomerAuthController extends Controller
 
     public function resetPassword(ResetPasswordRequest $request)
     {
-        $token = $this->service->resetPWD($request, 0);
+        $token = $this->service->resetPWD($request);
 
         if($token==null)
         {

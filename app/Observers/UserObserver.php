@@ -2,12 +2,11 @@
 
 namespace App\Observers;
 
-use App\Mail\EmailVerificationMail;
+use App\Jobs\EmailVerificationMailJob;
+use Illuminate\Support\Facades\Hash;
 use App\Models\EmailVerification;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 
 class UserObserver
 {
@@ -23,9 +22,9 @@ class UserObserver
                 'expired_at'            => Carbon::now()->addMonth()
             ]);
 
-            try {
-                Mail::to($user->username)->queue(new EmailVerificationMail($user, $code));
-            } catch (\Throwable $th) {}
+//            sending verification code via email (using queue)
+
+            dispatch(new EmailVerificationMailJob($user, $code));
         }
     }
 }

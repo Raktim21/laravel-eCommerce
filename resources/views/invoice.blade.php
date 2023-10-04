@@ -59,7 +59,7 @@
                         @foreach($item['combination']['attributeValues'] as $key=>$val)
                             @if($key!=0 &&
                                 $item['combination']['attributeValues'][$key-1]['name']!='default' &&
-                                $val['name']!='default'),@endif
+                                $val['name']!='default')-@endif
                                 {{ $val['name']=='default' ? '' : $val['name'] }}
                         @endforeach
                     @endif
@@ -73,17 +73,17 @@
     <div style="background-color: #374151; height: 1px; width: 100%;"></div>
     <div style="float: right; margin-right: 27px">
         <p>
-            <span style="margin-right: 140px">Subtotal</span> Tk {{ $order['sub_total_amount'] }}<br>
-            <span style="margin-right: 135px">Discount</span> Tk {{ $order['promo_discount'] }}<br>
-            <span style="margin-right: 102px">Shipping Cost</span> Tk {{ $order['delivery_cost'] }}<br>
-            <span style="margin-right: 74px">Additional Charge</span> Tk {{ $order['additional_charges'] }}<br>
+            <span style="margin-right: 140px">Subtotal</span> Tk {{ $order['sub_total_amount'] }}<br><br>
+            <span style="margin-right: 135px">Discount</span> Tk {{ $order['promo_discount'] }}<br><br>
+            <span style="margin-right: 102px">Shipping Cost</span> Tk {{ $order['delivery_cost'] }}<br><br>
+            <span style="margin-right: 74px">Additional Charge</span> Tk {{ $order['additional_charges'] }}<br><br>
             <span style="margin-right: 160px">Total</span> Tk {{ $order['total_amount'] }}
         </p>
     </div>
 </section>
-<section style="position: absolute; bottom: 0; width: 100%">
+<section style="position: absolute; bottom: 20px; width: 100%">
     <div style="background-color: brown; height: 1px; width: 100%"></div>
-    <p>Email: <span>{{ $general['email'] }}</span><br>Phone: {{ $general['phone'] }}</p>
+    <p>Email: <span>{{ $general['email'] }}</span><br><br>Phone: {{ $general['phone'] }}</p>
 </section>
 </body>
 </html>
