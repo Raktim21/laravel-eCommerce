@@ -87,19 +87,19 @@ class PromoCodeService
             }])->find($id);
     }
 
-    public function update(Request $request, $id)
-    {
-        $this->code->clone()->findOrFail($id)->update([
-            'title'             => $request->title,
-            'code'              => $request->code,
-            'discount'          => $request->discount,
-            'start_date'        => Carbon::parse($request->start_date)->format('Y-m-d H-i-s'),
-            'end_date'          => $request->expiration==1 ? Carbon::parse($request->end_date)->format('Y-m-d H-i-s') : null,
-            'is_percentage'     => $request->is_percent,
-            'max_usage'         => $request->max_usage,
-            'max_num_users'     => $request->max_num_users ?? 0
-        ]);
-    }
+//    public function update(Request $request, $id)
+//    {
+//        $this->code->clone()->findOrFail($id)->update([
+//            'title'             => $request->title,
+//            'code'              => $request->code,
+//            'discount'          => $request->discount,
+//            'start_date'        => Carbon::parse($request->start_date)->format('Y-m-d H-i-s'),
+//            'end_date'          => $request->expiration==1 ? Carbon::parse($request->end_date)->format('Y-m-d H-i-s') : null,
+//            'is_percentage'     => $request->is_percent,
+//            'max_usage'         => $request->max_usage,
+//            'max_num_users'     => $request->max_num_users ?? 0
+//        ]);
+//    }
 
     public function updateStatus($id): bool
     {
