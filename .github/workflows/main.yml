@@ -81,6 +81,8 @@ jobs:
           script: |
             cd domains/api.shukkarun.com/public_html/
             # composer2 update
+            php artisan db:seed --class=UpdateThemeSeeder
+            php artisan db:seed --class=OrderDeliverySystemSeeder
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -200,6 +202,8 @@ jobs:
           script: |
             cd domains/api.jannatistore.com/public_html/
             # composer2 update
+            php artisan db:seed --class=UpdateThemeSeeder
+            php artisan db:seed --class=OrderDeliverySystemSeeder
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -241,6 +245,8 @@ jobs:
             
             cd domains/apigreenbangla.selopia.com/public_html/
             # composer2 update
+            php artisan db:seed --class=UpdateThemeSeeder
+            php artisan db:seed --class=OrderDeliverySystemSeeder
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -282,6 +288,8 @@ jobs:
             
             cd domains/apibasictechnology.selopia.com/public_html/
             # composer2 update
+            php artisan db:seed --class=UpdateThemeSeeder
+            php artisan db:seed --class=OrderDeliverySystemSeeder
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -321,6 +329,8 @@ jobs:
             
             cd domains/apitechview.selopia.com/public_html/
             # composer2 update
+            php artisan db:seed --class=UpdateThemeSeeder
+            php artisan db:seed --class=OrderDeliverySystemSeeder
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -360,6 +370,8 @@ jobs:
             
             cd domains/api.yellowlix.com/public_html/
             # composer2 update
+            php artisan db:seed --class=UpdateThemeSeeder
+            php artisan db:seed --class=OrderDeliverySystemSeeder
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -401,6 +413,8 @@ jobs:
             
             cd domains/api.essencebd.store/public_html/
             # composer2 update
+            php artisan db:seed --class=UpdateThemeSeeder
+            php artisan db:seed --class=OrderDeliverySystemSeeder
             php artisan migrate
             php artisan optimize
             php artisan config:clear
