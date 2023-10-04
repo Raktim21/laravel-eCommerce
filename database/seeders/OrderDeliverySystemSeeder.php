@@ -18,14 +18,14 @@ class OrderDeliverySystemSeeder extends Seeder
         DB::table('order_delivery_systems')->insert([
             [
                 'title' => 'Personal Delivery System',
-                'detail' => '',
+                'detail' => 'Your personal delivery system.',
                 'active_status' => 1,
                 'created_at' => now(), 'updated_at' => now()
             ],
             [
-                'title' => 'Paperfly Delivery System',
-                'detail' => 'Paperfly is a one-stop logistics solutions provider company offering doorstep delivery services all around Bangladesh at the union level,
-                            along with warehousing and fulfillment facilities.',
+                'title' => 'XIT Delivery System',
+                'detail' => 'XIT is a one-stop delivery service provider company offering doorstep delivery services all around Bangladesh,
+                            with warehousing and packaging facilities.',
                 'active_status' => 0,
                 'created_at' => now(), 'updated_at' => now()],
             [
