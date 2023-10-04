@@ -78,7 +78,7 @@ class FrontendController extends Controller
 
         if($theme[1]['is_active'] == 1) {
             $data['banners'] = Cache::remember('allBanner', 60*60*24, function () {
-                return BannerSetting::latest()->get();
+                return BannerSetting::orderBy('id')->get();
             });
         }
 
