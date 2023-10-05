@@ -32,10 +32,12 @@ class OrderPickupAddress extends Model
 
         static::created(function ($address) {
             Cache::delete('pickupAddress');
+            Cache::delete('pickup_info');
         });
 
         static::updated(function ($address) {
             Cache::delete('pickupAddress');
+            Cache::delete('pickup_info');
         });
     }
 }
