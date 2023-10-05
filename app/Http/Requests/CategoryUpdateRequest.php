@@ -26,7 +26,7 @@ class CategoryUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'  => 'required|unique:product_categories,name,'.$this->route()->id,
+            'name'  => 'required|unique:product_categories,name,'.$this->route('id'),
             'image' => 'sometimes|nullable|image|mimes:jpg,jpeg,png|max:2048'
         ];
     }
@@ -35,7 +35,7 @@ class CategoryUpdateRequest extends FormRequest
     {
         return [
             'name.required'  => __('Category name is required'),
-            'name.unique'    => __('Categotu name must be unique'),
+            'name.unique'    => __('Category name must be unique'),
             'image.required' => __('Please provide a category image'),
             'image.mimes'    => __('Invalid category image.'),
             'image.max'      => __('Category image must be less than 2MB.'),
