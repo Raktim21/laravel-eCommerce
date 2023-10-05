@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Ecommerce;
 
 use App\Models\Contact;
+use App\Models\OrderPickupAddress;
 use App\Models\Product;
 use App\Models\Sponsor;
 use App\Models\FlashSale;
@@ -78,7 +79,7 @@ class FrontendController extends Controller
 
         if($theme[1]['is_active'] == 1) {
             $data['banners'] = Cache::remember('allBanner', 60*60*24, function () {
-                return BannerSetting::latest()->get();
+                return BannerSetting::orderBy('id')->get();
             });
         }
 
@@ -116,7 +117,7 @@ class FrontendController extends Controller
             });
         }
 
-        if($theme[5]['is_active'] == 1 &&  SiteBanners::first() &&   $image = SiteBanners::first()->featured_banner_image)
+        if($theme[5]['is_active'] == 1 &&  SiteBanners::first() && $image = SiteBanners::first()->featured_banner_image)
         {
             $data['featured_banner'] = Cache::remember('featuredBannerImage', 60*60*24, function () use ($image) {
                 return $image;
@@ -422,5 +423,17 @@ class FrontendController extends Controller
             'status' => true,
             'data'   => $data
         ],$data['flash_sale'] == null ? 204 : 200);
+    }
+
+    public function pickupAddress()
+    {
+        $data = Cache::remember('pickup_info', 24*60*60*7, function () {
+            return OrderPickupAddress::first();
+        });
+
+        return response()->json([
+            'status' => true,
+            'data' => $data
+        ], is_null($data) ? 204 : 200);
     }
 }

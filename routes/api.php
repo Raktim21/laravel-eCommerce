@@ -77,6 +77,7 @@ Route::group(['middleware' => ['ApiAuth']],function () {
         Route::get('category','category');
         Route::get('sub-category-list/{category_id}', 'getSubCategoryList');
         Route::get('brand','brand');
+        Route::get('pick-up', 'pickupAddress');
         Route::get('product-details/{id}','productDetails')->middleware('view_count');
         Route::get('product-reviews/{product_id}','productReviews');
         Route::get('product-filter','productFilter');
