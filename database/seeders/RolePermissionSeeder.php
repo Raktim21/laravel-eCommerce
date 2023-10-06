@@ -29,11 +29,12 @@ class RolePermissionSeeder extends Seeder
             'create/update/delete banner setting',
             'create/update/delete sponsors',
             'update general setting',
-            'update delivery status',
+            'update delivery system',
             'get product data',
             'create/update/delete products',
             'update/transfer inventory stocks',
             'create/update promo-codes',
+            'create/update/delete order additional charges',
             'create/update orders',
             'update theme-setting',
             'create/update/delete expense categories',
@@ -42,7 +43,9 @@ class RolePermissionSeeder extends Seeder
             'create/update/delete static content',
             'manage role',
             'manage inbox',
+            'create/update flash sale',
             'view/update seo setting',
+            'update order delivery charge information'
         ];
 
         foreach ($permissions as $value) {

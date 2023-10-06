@@ -5,12 +5,21 @@ use App\Models\UserAddress;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 
-function peperfly(): array
+//function paperfly(): array
+//{
+//    return array(
+//        'paperFlyUrl'   => 'https://api.paperfly.com.bd',
+//        'credential'    => ['m142154', '968556'],
+//        'paperFlyKey'   => 'Paperfly_~La?Rj73FcLm'
+//    );
+//}
+
+function xit()
 {
     return array(
-        'paperFlyUrl'   => 'https://api.paperfly.com.bd',
-        'credential'    => ['m142154', '968556'],
-        'paperFlyKey'   => 'Paperfly_~La?Rj73FcLm'
+        'xitUrl'    => 'https://api.xpressintown.com/api',
+        'pickup_id' => '46a79a7e-10db-473e-b70f-77cffd9197a3',
+        ''
     );
 }
 
