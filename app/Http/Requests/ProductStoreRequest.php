@@ -53,11 +53,6 @@ class ProductStoreRequest extends FormRequest
             'attribute_list'       => 'nullable|string',
         ];
 
-        if($this->input('is_featured') == 1)
-        {
-            $rules['featured_image'] = 'required';
-        }
-
         return $rules;
     }
 
