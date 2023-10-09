@@ -49,7 +49,7 @@ class ProductStoreRequest extends FormRequest
             'brand_id'             => 'nullable|exists:product_brands,id',
             'is_featured'          => 'sometimes|in:0,1',
             'cost_price'           => 'required|numeric|max:999999',
-            'multiple_image'       => 'nullable|array|min:1',
+            'multiple_image'       => 'nullable|array|min:1|max:5',
             'multiple_image.*'     => 'required|image|mimes:jpeg,png,jpg,gif,svg',
             'weight'               => 'required|numeric|max:5',
             'meta_title'           => 'sometimes|nullable|string|max:100',

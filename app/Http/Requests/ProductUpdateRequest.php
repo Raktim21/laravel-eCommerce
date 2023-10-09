@@ -44,6 +44,8 @@ class ProductUpdateRequest extends FormRequest
                                         }],
             'brand_id'             => 'nullable|sometimes|exists:product_brands,id',
             'is_featured'          => 'sometimes|in:0,1',
+            'multiple_image'       => 'nullable|array|min:1|max:5',
+            'multiple_image.*'     => 'required|image|mimes:jpeg,png,jpg,gif,svg',
             'status'               => 'required|in:0,1',
         ];
     }

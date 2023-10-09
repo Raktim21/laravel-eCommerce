@@ -167,6 +167,12 @@ class ProductService
             deleteFile($product->thumbnail_image);
             saveImage($request->file('thumbnail_image'), '/uploads/products/thumbnail/', $product, 'thumbnail_image');
         }
+
+        if ($request->has('multiple_image') && count($request->multiple_image) > 0)
+        {
+            $this->saveMultipleImage($request->multiple_image, $product->id);
+        }
+
         Cache::clear();
     }
 

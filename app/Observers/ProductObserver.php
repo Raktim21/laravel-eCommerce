@@ -2,17 +2,13 @@
 
 namespace App\Observers;
 
-use App\Models\AttributeVariant;
-use App\Models\Inventory;
 use App\Models\Product;
 use App\Models\ProductAttribute;
 use App\Models\ProductAttributeValue;
 use App\Models\ProductCombination;
 use App\Models\ProductCombinationValue;
-use App\Models\ProductCombinationVariant;
 use App\Models\ProductMeta;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\File;
 
 class ProductObserver
 {
