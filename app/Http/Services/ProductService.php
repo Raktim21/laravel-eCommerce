@@ -163,11 +163,6 @@ class ProductService
             'status'                    => $request->status,
         ]);
 
-        if ($request->is_featured == 1 && $request->hasFile('featured_image')) {
-            deleteFile($product->featured_image);
-            saveImage($request->file('featured_image'), '/uploads/products/featured_banner/', $product, 'featured_image');
-        }
-
         if($request->hasFile('thumbnail_image')) {
             deleteFile($product->thumbnail_image);
             saveImage($request->file('thumbnail_image'), '/uploads/products/thumbnail/', $product, 'thumbnail_image');

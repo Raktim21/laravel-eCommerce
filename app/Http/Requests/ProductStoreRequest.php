@@ -40,7 +40,12 @@ class ProductStoreRequest extends FormRequest
                                             ->where('category_id', $this->input('category_id'))
                                        ],
             'display_price'        => 'required|numeric|max:999999',
-            'previous_display_price' => 'nullable|numeric|max:999999',
+            'previous_display_price' => ['nullable','numeric','max:999999',
+                                        function ($attr, $val, $fail) {
+                                            if ($val >= $this->input('display_price')) {
+                                                $fail('Previous display price must be less than display price.');
+                                            }
+                                        }],
             'brand_id'             => 'nullable|exists:product_brands,id',
             'is_featured'          => 'sometimes|in:0,1',
             'cost_price'           => 'required|numeric|max:999999',

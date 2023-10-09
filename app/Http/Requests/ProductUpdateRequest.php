@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\ProductSubCategory;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -31,10 +32,18 @@ class ProductUpdateRequest extends FormRequest
             'short_description'    => 'string|max:500',
             'thumbnail_image'      => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'category_id'          => 'required|exists:product_categories,id',
-            'category_sub_id'      => 'sometimes|exists:product_categories_sub,id',
+            'category_sub_id'      => ['sometimes',
+                                        function($attr, $val, $fail) {
+                                            $exist = ProductSubCategory::where('id', $val)
+                                                ->where('category_id', $this->input('category_id'))->first();
+
+                                            if (!$exist)
+                                            {
+                                                $fail('Selected sub category does not belong to the given category.');
+                                            }
+                                        }],
             'brand_id'             => 'nullable|sometimes|exists:product_brands,id',
             'is_featured'          => 'sometimes|in:0,1',
-            'featured_image'       => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'status'               => 'required|in:0,1',
         ];
     }
