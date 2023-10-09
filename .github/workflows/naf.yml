@@ -14,19 +14,27 @@ on:
 
 
 
-      # cd domains/apigrocery.selopia.com/public_html/
+       # cd domains/api.shukkarun.com/public_html/
       # composer2 update
-      # php artisan db:seed --class=ThemeCustomizationSeeder
       # cp .env.example .env
-      # sed -i 's/DB_DATABASE=.*/DB_DATABASE=u652464815_sports/g' .env
-      # sed -i 's/DB_USERNAME=.*/DB_USERNAME=u652464815_sports/g' .env
-      # sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=9;t@^gFkJg/g' .env
+      # sed -i 's/DB_DATABASE=.*/DB_DATABASE=u652464815_shukkarun/g' .env
+      # sed -i 's/DB_USERNAME=.*/DB_USERNAME=u652464815_shukkarun/g' .env
+      # sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=ueCV/7hoDp:3/g' .env
+      # sed -i 's/API_ACCESS_TOKEN=.*/API_ACCESS_TOKEN=pS6rGh2wL8fPtQa4jX3zVkE7cM9bNuH5mWsY1dF6vC2bLnRqAzT7kPyZiJ8oQeS4/g' .env
+      # sed -i 's/FRONTEND_URL=.*/FRONTEND_URL=https://shukkarun.com/g' .env
+      # sed -i 's/APP_URL=.*/APP_URL=https://api.shukkarun.com/g' .env
+      # mkdir -p public/uploads/admin/avatars
+      # mkdir -p public/uploads/customer/avatars
+      # mkdir -p public/uploads/images/banner
+      # mkdir -p public/uploads/images/brands
+      # mkdir -p public/uploads/images/category
+      # mkdir -p public/uploads/images/general-setting
+      # mkdir -p public/uploads/products/featured_banner
       # mkdir -p public/uploads/products/thumbnail
       # mkdir -p public/uploads/products/multiple_image
-      # mkdir -p public/uploads/products/featured_banner
-      # mkdir -p public/uploads/images/banner
-      # mkdir -p public/uploads/images/category
-      # mkdir -p public/uploads/images/brands
+      # mkdir -p public/uploads/images/site_banner
+      # mkdir -p public/uploads/images/sponsors
+      # mkdir -p public/uploads/images/sub_categories
       # php artisan key:generate
       # php artisan jwt:secret
       # php artisan config:clear
@@ -69,8 +77,20 @@ jobs:
           port: 65002
           script: |
             cd domains/testback.selopia.com/public_html/
-            composer2 update
-            php artisan migrate
+            # composer2 update
+            mkdir -p public/uploads/admin/avatars
+            mkdir -p public/uploads/customer/avatars
+            mkdir -p public/uploads/images/banner
+            mkdir -p public/uploads/images/brands
+            mkdir -p public/uploads/images/category
+            mkdir -p public/uploads/images/general-setting
+            mkdir -p public/uploads/products/featured_banner
+            mkdir -p public/uploads/products/thumbnail
+            mkdir -p public/uploads/products/multiple_image
+            mkdir -p public/uploads/images/site_banner
+            mkdir -p public/uploads/images/sponsors
+            mkdir -p public/uploads/images/sub_categories
+            php artisan migrate --seed
             php artisan optimize
             php artisan config:clear
             php artisan cache:clear
