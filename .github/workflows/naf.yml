@@ -1,115 +1,102 @@
 on:
-    push:
-      branches:
-        - naf
+  push:
+    branches:
+      - naf
 
 
-        # cd domains/frb-engineering.com/public_html/core/
-        # composer2 update
-        # php artisan db:seed --class=ThemeCustomizationSeeder
-        # php artisan migrate
-        # php artisan optimize
-        # php artisan cache:clear
+      # cd domains/frb-engineering.com/public_html/core/
+      # composer2 update
+      # php artisan db:seed --class=ThemeCustomizationSeeder
+      # php artisan migrate
+      # php artisan optimize
+      # php artisan cache:clear
 
 
 
 
-        # cd domains/apigrocery.selopia.com/public_html/
-        # composer2 update
-        # php artisan db:seed --class=ThemeCustomizationSeeder
-        # cp .env.example .env
-        # sed -i 's/DB_DATABASE=.*/DB_DATABASE=u652464815_sports/g' .env
-        # sed -i 's/DB_USERNAME=.*/DB_USERNAME=u652464815_sports/g' .env
-        # sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=9;t@^gFkJg/g' .env
-        # mkdir -p public/uploads/products/thumbnail
-        # mkdir -p public/uploads/products/multiple_image
-        # mkdir -p public/uploads/products/featured_banner
-        # mkdir -p public/uploads/images/banner
-        # mkdir -p public/uploads/images/category
-        # mkdir -p public/uploads/images/brands
-        # php artisan key:generate
-        # php artisan jwt:secret
-        # php artisan config:clear
-        # php artisan migrate:fresh --seed
-        # php artisan optimize
-        # php artisan cache:clear
+      # cd domains/apigrocery.selopia.com/public_html/
+      # composer2 update
+      # php artisan db:seed --class=ThemeCustomizationSeeder
+      # cp .env.example .env
+      # sed -i 's/DB_DATABASE=.*/DB_DATABASE=u652464815_sports/g' .env
+      # sed -i 's/DB_USERNAME=.*/DB_USERNAME=u652464815_sports/g' .env
+      # sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=9;t@^gFkJg/g' .env
+      # mkdir -p public/uploads/products/thumbnail
+      # mkdir -p public/uploads/products/multiple_image
+      # mkdir -p public/uploads/products/featured_banner
+      # mkdir -p public/uploads/images/banner
+      # mkdir -p public/uploads/images/category
+      # mkdir -p public/uploads/images/brands
+      # php artisan key:generate
+      # php artisan jwt:secret
+      # php artisan config:clear
+      # php artisan migrate:fresh --seed
+      # php artisan optimize
+      # php artisan cache:clear
 
 name: 🚀 Deploy website on push main
 jobs:
-    deploy:
-      name: 🎉 Deploy
-      runs-on: ubuntu-latest
-      steps:
+  deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    steps:
 
-        - name: 🚚 Get latest code
-          uses: actions/checkout@v2
-
-
-
-        # - name: 📂 Sync files in fairfusion
-        #   uses: SamKirkland/FTP-Deploy-Action@4.3.0
-        #   with:
-        #     server: selopia.com
-        #     username: u652464815.apifairfusion.selopia.com
-        #     password: dF@qa#4;k,vd
-        #     exclude:  |
-        #       **/.git*
-        #       **/.git*/**
-        #       **/public/upload*
-        #       **/public/upload*/**
-        #   continue-on-error: true
-
-        # - name: executing remote ssh commands in fairfusion
-        #   uses: appleboy/ssh-action@v0.1.10
-        #   with:
-        #     host: selopia.com
-        #     username: u652464815
-        #     password: wew2Weqsdf@ssfa3
-        #     port: 65002
-        #     script: |
-
-        #       cd domains/apigrocery.selopia.com/public_html/
-        #         # composer2 update
-        #         php artisan migrate
-        #         php artisan optimize
-        #         php artisan cache:clear
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v2
 
 
 
 
-        #   continue-on-error: true
+      - name: 📂 Sync files in testback
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        with:
+          server: selopia.com
+          username: u652464815.testback.selopia.com
+          password: dF@qa#4;k,vd
+          exclude:  |
+            **/.git*
+            **/.git*/**
+            **/public/upload*
+            **/public/upload*/**
+        continue-on-error: true
+
+      - name: executing remote ssh commands in testback
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: selopia.com
+          username: u652464815
+          password: wew2Weqsdf@ssfa3
+          port: 65002
+          script: |
+            cd domains/testback.selopia.com/public_html/
+            composer2 update
+            cp .env.example .env
+            sed -i 's/DB_DATABASE=.*/DB_DATABASE=u652464815_testback/g' .env
+            sed -i 's/DB_USERNAME=.*/DB_USERNAME=u652464815_testback/g' .env
+            sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=5Qa!ZR@XP?/g' .env
+            sed -i 's/API_ACCESS_TOKEN=.*/API_ACCESS_TOKEN=aR8tFc2wJ1fXsGk9pQ3zVbE7dM6lNuH4oWsY5eF7rC2vLnRqBxU7zGyKjI8dPxW3/g' .env
+            sed -i 's/FRONTEND_URL=.*/FRONTEND_URL=https://testecom.selopia.com/g' .env
+            sed -i 's/APP_URL=.*/APP_URL=https://testback.selopia.com/g' .env
+            mkdir -p public/uploads/admin/avatars
+            mkdir -p public/uploads/customer/avatars
+            mkdir -p public/uploads/images/banner
+            mkdir -p public/uploads/images/brands
+            mkdir -p public/uploads/images/category
+            mkdir -p public/uploads/images/general-setting
+            mkdir -p public/uploads/products/featured_banner
+            mkdir -p public/uploads/products/thumbnail
+            mkdir -p public/uploads/products/multiple_image
+            mkdir -p public/uploads/images/site_banner
+            mkdir -p public/uploads/images/sponsors
+            mkdir -p public/uploads/images/sub_categories
+            php artisan key:generate
+            php artisan jwt:secret
+            php artisan config:clear
+            php artisan migrate:fresh --seed
+            php artisan optimize
+            php artisan cache:clear
 
 
-
-        - name: 📂 Sync files in testmerchnaf
-          uses: SamKirkland/FTP-Deploy-Action@4.3.0
-          with:
-            server: selopia.com
-            username: u652464815.testmerchnaf.selopia.com
-            password: dF@qa#4;k,vd
-            exclude:  |
-              **/.git*
-              **/.git*/**
-              **/public/upload*
-              **/public/upload*/**
-          continue-on-error: true
-
-        - name: executing remote ssh commands in testmerchnaf
-          uses: appleboy/ssh-action@v0.1.10
-          with:
-            host: selopia.com
-            username: u652464815
-            password: wew2Weqsdf@ssfa3
-            port: 65002
-            script: |
-              cd domains/testmerchnaf.selopia.com/public_html/
-              # composer2 update
-              php artisan migrate
-              php artisan optimize
-              php artisan config:clear
-              php artisan cache:clear
-
-
-          continue-on-error: true
+        continue-on-error: true
 
 
