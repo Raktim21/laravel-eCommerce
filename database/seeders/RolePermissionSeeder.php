@@ -63,6 +63,6 @@ class RolePermissionSeeder extends Seeder
                 $role->givePermissionTo(Permission::all());
             }
         }
-
+        
     }
 }
