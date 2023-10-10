@@ -28,6 +28,10 @@ class FlashSale extends Model
             Cache::delete('flash_sale');
             Cache::delete('flashSale');
             Cache::delete('productOnSale');
+            if ($sale->status == 0)
+            {
+                Product::where('is_on_sale', 1)->update(['is_on_sale' => 0]);
+            }
         });
     }
 }
