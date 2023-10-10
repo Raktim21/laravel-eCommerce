@@ -26,9 +26,10 @@ class UserObserver
 
 //            sending verification code via email (using queue)
 //            dispatch(new EmailVerificationMailJob($user, $code));
-            Mail::to($user->username)->send(new EmailVerificationMail($user, $code));
 
-
+            try {
+                Mail::to($user->username)->send(new EmailVerificationMail($user, $code));
+            } catch (\Throwable $th) {}
         }
     }
 }
