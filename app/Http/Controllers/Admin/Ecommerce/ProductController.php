@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Ecommerce;
 
+use App\Models\FlashSale;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
@@ -26,9 +27,14 @@ class ProductController extends Controller
     {
         $data = $this->service->getAll($request, 1);
 
+        $sale_status = Cache::remember('flashSaleStatus', 24*60*60, function () {
+            FlashSale::first()->status ?? 0;
+        });
+
         return response()->json([
-            'status'   => true,
-            'data'     => $data
+            'status'        => true,
+            'data'          => $data,
+            'sale_status'   => $sale_status
         ], $data->isEmpty() ? 204 : 200);
     }
 
