@@ -2,11 +2,13 @@
 
 namespace App\Http\Services;
 
+use App\Mail\PasswordResetMail;
 use App\Models\CustomerCart;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\UserProfile;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Hash;
@@ -248,16 +250,15 @@ class AuthService
             'password_reset_code'  => $code,
         ]);
 
-        $to = $user->username;
-
         $data = [
             'user' => $user->name,
             'code' => $code
         ];
 
 //        sending password reset token via email (using queue)
+//        dispatch(new ResetPasswordMailJob($to, $data));
 
-        dispatch(new ResetPasswordMailJob($to, $data));
+        Mail::to($user->username)->send(new PasswordResetMail($data));
 
         return $token;
     }

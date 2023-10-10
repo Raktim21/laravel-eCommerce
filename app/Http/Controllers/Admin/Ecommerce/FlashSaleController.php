@@ -48,6 +48,7 @@ class FlashSaleController extends Controller
     {
         if($this->service->updateSaleStatus())
         {
+            Cache::clear();
             return response()->json(['status' => true]);
         }
         return response()->json([

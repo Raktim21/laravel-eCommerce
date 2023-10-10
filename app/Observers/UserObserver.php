@@ -3,10 +3,13 @@
 namespace App\Observers;
 
 use App\Jobs\EmailVerificationMailJob;
+use App\Mail\EmailVerificationMail;
 use Illuminate\Support\Facades\Hash;
 use App\Models\EmailVerification;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class UserObserver
 {
@@ -23,8 +26,13 @@ class UserObserver
             ]);
 
 //            sending verification code via email (using queue)
+//            dispatch(new EmailVerificationMailJob($user, $code));
 
-            dispatch(new EmailVerificationMailJob($user, $code));
+            try {
+                Mail::to($user->username)->send(new EmailVerificationMail($user, $code));
+            } catch (\Throwable $th) {
+                Log::error('Email Verification' . $th->getMessage());
+            }
         }
     }
 }
