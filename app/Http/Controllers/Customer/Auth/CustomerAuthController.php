@@ -185,7 +185,7 @@ class CustomerAuthController extends Controller
         }
 
         try {
-            Mail::to(auth()->guard('user-api')->user()->username)->queue(new EmailVerificationMail(auth()->user(), $new_code));
+            Mail::to(auth()->guard('user-api')->user()->username)->send(new EmailVerificationMail(auth()->user(), $new_code));
         } catch (\Throwable $th) {}
 
         return response()->json([

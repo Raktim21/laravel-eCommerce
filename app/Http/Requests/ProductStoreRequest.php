@@ -40,11 +40,16 @@ class ProductStoreRequest extends FormRequest
                                             ->where('category_id', $this->input('category_id'))
                                        ],
             'display_price'        => 'required|numeric|max:999999',
-            'previous_display_price' => 'nullable|numeric|max:999999',
+            'previous_display_price' => ['nullable','numeric','max:999999',
+                                        function ($attr, $val, $fail) {
+                                            if ($val >= $this->input('display_price')) {
+                                                $fail('Previous display price must be less than display price.');
+                                            }
+                                        }],
             'brand_id'             => 'nullable|exists:product_brands,id',
             'is_featured'          => 'sometimes|in:0,1',
             'cost_price'           => 'required|numeric|max:999999',
-            'multiple_image'       => 'nullable|array|min:1',
+            'multiple_image'       => 'nullable|array|min:1|max:5',
             'multiple_image.*'     => 'required|image|mimes:jpeg,png,jpg,gif,svg',
             'weight'               => 'required|numeric|max:5',
             'meta_title'           => 'sometimes|nullable|string|max:100',
@@ -52,11 +57,6 @@ class ProductStoreRequest extends FormRequest
             'meta_keywords'        => 'sometimes|nullable|string|max:100',
             'attribute_list'       => 'nullable|string',
         ];
-
-        if($this->input('is_featured') == 1)
-        {
-            $rules['featured_image'] = 'required';
-        }
 
         return $rules;
     }

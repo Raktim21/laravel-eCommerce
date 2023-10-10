@@ -36,6 +36,7 @@ on:
       # mkdir -p public/uploads/images/site_banner
       # mkdir -p public/uploads/images/sponsors
       # mkdir -p public/uploads/images/sub_categories
+      # mkdir -p public/uploads/reviews
       # php artisan key:generate
       # php artisan jwt:secret
       # php artisan config:clear
@@ -81,6 +82,7 @@ jobs:
           script: |
             cd domains/api.shukkarun.com/public_html/
             # composer2 update
+            mkdir -p public/uploads/reviews
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -119,6 +121,7 @@ jobs:
           script: |
             cd domains/api.vintbd.com/public_html/
             # composer2 update
+            mkdir -p public/uploads/reviews
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -159,6 +162,7 @@ jobs:
           script: |
             cd domains/api.glamdesmit.com/public_html/
             # composer2 update
+            mkdir -p public/uploads/reviews
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -200,6 +204,7 @@ jobs:
           script: |
             cd domains/api.jannatistore.com/public_html/
             # composer2 update
+            mkdir -p public/uploads/reviews
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -241,6 +246,7 @@ jobs:
             
             cd domains/apigreenbangla.selopia.com/public_html/
             # composer2 update
+            mkdir -p public/uploads/reviews
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -282,6 +288,7 @@ jobs:
             
             cd domains/apibasictechnology.selopia.com/public_html/
             # composer2 update
+            mkdir -p public/uploads/reviews
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -321,6 +328,7 @@ jobs:
             
             cd domains/apitechview.selopia.com/public_html/
             # composer2 update
+            mkdir -p public/uploads/reviews
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -360,6 +368,7 @@ jobs:
             
             cd domains/api.yellowlix.com/public_html/
             # composer2 update
+            mkdir -p public/uploads/reviews
             php artisan migrate
             php artisan optimize
             php artisan config:clear
@@ -401,6 +410,7 @@ jobs:
             
             cd domains/api.essencebd.store/public_html/
             # composer2 update
+            mkdir -p public/uploads/reviews
             php artisan migrate
             php artisan optimize
             php artisan config:clear
