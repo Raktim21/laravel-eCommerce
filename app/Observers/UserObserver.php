@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\EmailVerification;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class UserObserver
@@ -29,7 +30,9 @@ class UserObserver
 
             try {
                 Mail::to($user->username)->send(new EmailVerificationMail($user, $code));
-            } catch (\Throwable $th) {}
+            } catch (\Throwable $th) {
+                Log::error('Email Verification' . $th->getMessage());
+            }
         }
     }
 }
