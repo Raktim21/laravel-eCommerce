@@ -15,18 +15,18 @@ class FlashSaleService
     {
         $sale = FlashSale::first();
 
-        if ($sale->status == 1 && $sale->start_date <= date('Y-m-d') && $sale->end_date >= date('Y-m-d'))
+        if (!auth()->guard('admin-api')->check() && $sale->status == 1 && $sale->start_date <= date('Y-m-d') && $sale->end_date >= date('Y-m-d'))
         {
-            return array(
-                'flash_sale' => $sale,
-                'products' => Product::where('is_on_sale', 1)
-                    ->select('id', 'category_id', 'name', 'thumbnail_image', 'display_price', 'uuid', 'slug')
-                    ->with(['category' => function ($q) {
-                        return $q->select('id', 'name');
-                    }])->get()
-            );
+            return null;
         }
-        return null;
+        return array(
+        'flash_sale' => $sale,
+        'products' => Product::where('is_on_sale', 1)
+            ->select('id', 'category_id', 'name', 'thumbnail_image', 'display_price', 'uuid', 'slug')
+            ->with(['category' => function ($q) {
+                return $q->select('id', 'name');
+            }])->get()
+        );
     }
 
     public function updateSale(Request $request)
