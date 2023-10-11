@@ -13,14 +13,20 @@ class FlashSaleService
 {
     public function getSale()
     {
-        return array(
-            'flash_sale'    => FlashSale::first(),
-            'products'      => Product::where('is_on_sale', 1)
-                ->select('id','category_id','name','thumbnail_image','display_price','uuid','slug')
-                ->with(['category' => function($q) {
-                    return $q->select('id','name');
-                }])->get()
-        );
+        $sale = FlashSale::first();
+
+        if ($sale->status == 1 && $sale->start_date <= date('Y-m-d') && $sale->end_date >= date('Y-m-d'))
+        {
+            return array(
+                'flash_sale' => $sale,
+                'products' => Product::where('is_on_sale', 1)
+                    ->select('id', 'category_id', 'name', 'thumbnail_image', 'display_price', 'uuid', 'slug')
+                    ->with(['category' => function ($q) {
+                        return $q->select('id', 'name');
+                    }])->get()
+            );
+        }
+        return null;
     }
 
     public function updateSale(Request $request)

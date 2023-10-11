@@ -87,9 +87,7 @@ class FrontendController extends Controller
             return (new CategoryService(new ProductCategory()))->getAll(0, false);
         });
 
-        $data['flash_sale'] = Cache::remember('flash_sale', 60*60*24, function () {
-            return FlashSale::where('status', 1)->first();
-        });
+        $data['flash_sale'] = FlashSale::where('status', 1)->where('start_date', '<', date('Y-m-d'))->where('end_date', '>', date('Y-m-d'))->first();
 
         if($theme[3]['is_active'] == 1) {
             $data['featured_products'] = Cache::remember('allProductsFeatured', 60*60*24, function () {
@@ -422,7 +420,7 @@ class FrontendController extends Controller
         return response()->json([
             'status' => true,
             'data'   => $data
-        ],$data['flash_sale'] == null ? 204 : 200);
+        ],is_null($data) ? 204 : 200);
     }
 
     public function pickupAddress()
