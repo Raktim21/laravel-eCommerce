@@ -12,7 +12,7 @@ class Contact extends Model
 
     protected $table = 'contact_forms';
 
-    protected $guarded = ['id','user_id','guest_session_id','ip_address'];
+    protected $guarded = ['id'];
 
     protected $hidden = ['updated_at'];
 
