@@ -310,7 +310,7 @@ class FrontendController extends Controller
         return response()->json([
             'status'        => true,
             'data'          => $data,
-            'flash_sale'    => $data['is_on_sale'] == 1 ? FlashSale::find(1) : null
+            'flash_sale'    => FlashSale::where('status',1)->where('start_date','<=',date('Y-m-d'))->where('end_date','>=',date('Y-m-d'))->first()
         ], is_null($data) ? 204 : 200);
     }
 
