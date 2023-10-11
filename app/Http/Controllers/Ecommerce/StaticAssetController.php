@@ -33,6 +33,13 @@ class StaticAssetController extends Controller
 
     public function divisionList(Request $request)
     {
+        if(!$request->input('country_id'))
+        {
+            return response()->json([
+                'status' => false,
+                'error'  => ['Country is required.']
+            ], 400);
+        }
         $data = Cache::rememberForever('divisionList'.$request->country_id, function () use ($request) {
             return $request->country_id ? $this->service->getDivisions($request->country_id) : null;
         });
@@ -47,6 +54,13 @@ class StaticAssetController extends Controller
 
     public function districtList(Request $request)
     {
+        if(!$request->input('division_id'))
+        {
+            return response()->json([
+                'status' => false,
+                'error'  => ['Division is required.']
+            ], 400);
+        }
         $data = Cache::rememberForever('districtList'.$request->division_id, function () use ($request) {
             return $request->division_id ? $this->service->getDistricts($request->division_id) : null;
         });
@@ -61,6 +75,13 @@ class StaticAssetController extends Controller
 
     public function subDistrictList(Request $request)
     {
+        if (!$request->input('district_id'))
+        {
+            return response()->json([
+                'status' => false,
+                'error'  => ['District is required.']
+            ], 400);
+        }
         $data = Cache::rememberForever('subDistrictList'.$request->district_id, function () use ($request) {
             return $request->district_id ? $this->service->getSubDistricts($request->district_id) : null;
         });
@@ -75,6 +96,13 @@ class StaticAssetController extends Controller
 
     public function unionList(Request $request)
     {
+        if(!$request->input('sub_district_id'))
+        {
+            return response()->json([
+                'status' => false,
+                'error'  => ['Sub district is required.']
+            ], 400);
+        }
         $data = Cache::rememberForever('unionList'.$request->sub_district_id, function () use ($request) {
             return $request->sub_district_id ? $this->service->getUnions($request->sub_district_id) : null;
         });
