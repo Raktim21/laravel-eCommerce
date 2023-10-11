@@ -94,7 +94,7 @@ class FrontendController extends Controller
                 return Product::where('is_featured', 1)
                     ->where('status', 1)
                     ->select('id','category_id','category_sub_id','description','name','slug','uuid','thumbnail_image',
-                        'display_price','previous_display_price','view_count')
+                        'display_price','previous_display_price','view_count','is_on_sale')
                     ->with('productReviewRating')
                     ->withSum('inventories', 'stock_quantity')
                     ->with('inventories')
@@ -107,7 +107,7 @@ class FrontendController extends Controller
             $data['sale_products'] = Cache::remember('productOnSale', 60*60*24, function () {
                 return  Product::where('is_on_sale',1)->where('status', 1)
                     ->select('id','category_id','category_sub_id','description','name','slug','uuid','thumbnail_image',
-                        'display_price','previous_display_price','view_count')
+                        'display_price','previous_display_price','view_count','is_on_sale')
                     ->with('productReviewRating')
                     ->withSum('inventories', 'stock_quantity')
                     ->with('subCategory','category')
@@ -127,7 +127,7 @@ class FrontendController extends Controller
 
                 return Product::where('status', 1)
                     ->select('id','category_id','category_sub_id','description','name','slug','uuid','thumbnail_image',
-                        'display_price','previous_display_price','view_count')
+                        'display_price','previous_display_price','view_count','is_on_sale')
                     ->with('productReviewRating')
                     ->withSum('inventories', 'stock_quantity')
                     ->with('subCategory','category')
@@ -140,7 +140,7 @@ class FrontendController extends Controller
 
                 return Product::where('status', 1)->whereNotNull('previous_display_price')
                     ->select('id','category_id','category_sub_id','description','name','slug','uuid','thumbnail_image',
-                        'display_price','previous_display_price','view_count')
+                        'display_price','previous_display_price','view_count','is_on_sale')
                     ->with('productReviewRating')
                     ->withSum('inventories', 'stock_quantity')
                     ->with('subCategory','category')
@@ -158,7 +158,7 @@ class FrontendController extends Controller
             $data['popular_products'] = Cache::remember('productPopular', 60*60*24, function () {
                 return Product::where('status', 1)
                     ->select('id','category_id','category_sub_id','description','name','slug','uuid','thumbnail_image',
-                        'display_price','previous_display_price','view_count')
+                        'display_price','previous_display_price','view_count','is_on_sale')
                     ->with('productReviewRating')
                     ->withSum('inventories', 'stock_quantity')
                     ->with('subCategory','category')
