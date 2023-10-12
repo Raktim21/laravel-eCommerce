@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use App\Models\GeneralSetting;
 use App\Models\OrderDeliveryChargeLookup;
 use App\Models\OrderPickupAddress;
 use App\Models\UserAddress;
@@ -104,7 +105,8 @@ class OrderDeliverySystemService
         }
         else if ($delivery_system == 2) // paperfly
         {
-            return $this->getPaperFlyDeliveryCharge($delivery_address_id, $total_price);
+//            return $this->getPaperFlyDeliveryCharge($delivery_address_id, $total_price);
+            return 0;
         }
         else if ($delivery_system == 3) // pandago
         {
@@ -282,5 +284,64 @@ class OrderDeliverySystemService
         }
 
         return 'done';
+    }
+
+    public function eCourierOrder($order, $weight)
+    {
+        $client = new Client();
+        $pickup = $order->branch->pickup_address;
+
+        if($pickup)
+        {
+            $detail = '';
+            foreach($order->items as $item)
+            {
+                $detail .= $item->combination->product->name.'('.$item->quantity.')';
+            }
+
+            $response = $client->post(eCourier()['url'].'/order-place-reseller', [
+                'headers' => [
+                    'Content-Type'  => 'application/json',
+                    'API-KEY'       => eCourier()['api_key'],
+                    'API-SECRET'    => eCourier()['api_secret'],
+                    'USER-ID'       => eCourier()['user_id']
+                ],
+                'json' => [
+                    "ep_name"                 => (new GeneralSettingService(new GeneralSetting()))->name,
+                    "pick_contact_person"     => $pickup->name,
+                    "pick_division"           => $pickup->upazila->district->division->name,
+                    "pick_district"           => $pickup->upazila->district->name,
+                    "pick_thana"              => $pickup->upazila->name,
+                    "pick_union"              => $pickup->postal_code,
+                    "pick_address"            => $pickup->address,
+                    "pick_hub"                => 1,
+                    "pick_mobile"             => $pickup->phone,
+                    "recipient_name"          => $order->user->name,
+                    "recipient_mobile"        => $order->deliveryAddress->phone_no,
+                    "recipient_division"      => $order->deliveryAddress->upazila->district->division->name,
+                    "recipient_district"      => $order->deliveryAddress->upazila->district->name,
+                    "recipient_city"          => $order->deliveryAddress->upazila->district->name,
+                    "recipient_area"          => $order->deliveryAddress->address,
+                    "package_code"            => $order->order_number,
+                    "product_price"           => $order->total_amount,
+                    "payment_method"          => 'COD',
+                    "parcel_detail"           => $detail,
+                    "ep_id"                   => $pickup->pickup_unique_id,
+                    "parcel_type"             => 'BOX'
+                ],
+            ]);
+
+            if ($response->getStatusCode() == 200)
+            {
+                $data = json_decode($response->getBody());
+                $order->delivery_tracking_number = $data->ID;
+                $order->save();
+            }
+        }
+    }
+
+    public function eCourierCancelOrder($order_number)
+    {
+
     }
 }

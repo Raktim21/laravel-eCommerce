@@ -72,7 +72,7 @@ class OrderService
                 $weight += $combo->weight * $item['quantity'];
             }
 
-            if($request->delivery_method_id == 1 && $weight > 5) {
+            if($request->delivery_method_id == 1 && $weight > 1) {
                 return 2;
             }
 
@@ -86,7 +86,7 @@ class OrderService
                 $delivery_system = (new AssetService())->activeDeliverySystem();
 
                 if ($delivery_system == 2) {
-                    (new OrderDeliverySystemService())->paperFlyOrder($new_order, $weight);
+                    (new OrderDeliverySystemService())->eCourierOrder($new_order, $weight);
                 }
                 else if ($delivery_system == 3)
                 {
@@ -198,7 +198,7 @@ class OrderService
     {
         $client = new Client();
 
-        $response = $client->post(peperfly()['paperFlyUrl'] . '/api/v1/cancel-order/', [
+        $response = $client->post(paperfly()['paperFlyUrl'] . '/api/v1/cancel-order/', [
             'headers' => [
                 'paperflykey' =>  peperfly()['paperFlyKey']
             ],

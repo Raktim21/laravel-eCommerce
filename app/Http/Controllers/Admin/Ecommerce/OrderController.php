@@ -174,7 +174,7 @@ class OrderController extends Controller
         } else if($status == 2) {
             return response()->json([
                 'status'    => false,
-                'errors'    => ['You can not place an order that weighs over 5kg.']
+                'errors'    => ['You can not place an order that weighs over 1kg.']
             ], 422);
         } else {
             return response()->json([
@@ -285,7 +285,7 @@ class OrderController extends Controller
             if ($delivery_system == 2)
             {
                 $weight = $this->service->getOrderWeight($order);
-                (new OrderDeliverySystemService())->paperFlyOrder($order, $weight);
+                (new OrderDeliverySystemService())->eCourierOrder($order, $weight);
             } else if ($delivery_system == 3)
             {
                 (new OrderDeliverySystemService())->pandaGoOrder($order);
@@ -298,7 +298,7 @@ class OrderController extends Controller
             {
                 if($order->delivery_system_id == 2)
                 {
-                    (new OrderDeliverySystemService())->paperFlyCancelOrder($order->order_number);
+                    (new OrderDeliverySystemService())->eCourierCancelOrder($order->order_number);
                 } else if ($order->delivery_system_id == 3)
                 {
                     $response = (new OrderDeliverySystemService())->pandaGoCancelOrder($order->delivery_tracking_number);
