@@ -87,7 +87,7 @@ class FrontendController extends Controller
             return (new CategoryService(new ProductCategory()))->getAll(0, false);
         });
 
-        $data['flash_sale'] = FlashSale::where('status', 1)->where('start_date', '<=', date('Y-m-d'))->where('end_date', '>=', date('Y-m-d'))->first();
+        $data['flash_sale'] = FlashSale::where('status', 1)->where('start_date', '<=', now('Asia/Dhaka'))->where('end_date', '>=', now('Asia/Dhaka'))->first();
 
         if($theme[3]['is_active'] == 1) {
             $data['featured_products'] = Cache::remember('allProductsFeatured', 60*60*24, function () {
@@ -103,7 +103,7 @@ class FrontendController extends Controller
             });
         }
 
-        if($theme[4]['is_active'] == 1 && FlashSale::first() != null && FlashSale::first()->status == 1) {
+        if($theme[4]['is_active'] == 1 && $data['flash_sale']) {
             $data['sale_products'] = Cache::remember('productOnSale', 60*60*24, function () {
                 return  Product::where('is_on_sale',1)->where('status', 1)
                     ->select('id','category_id','category_sub_id','description','name','slug','uuid','thumbnail_image',

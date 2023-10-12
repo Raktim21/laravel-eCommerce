@@ -15,7 +15,7 @@ class FlashSaleService
     {
         $sale = FlashSale::first();
 
-        if (!auth()->guard('admin-api')->check() && $sale->status == 1 && $sale->start_date <= date('Y-m-d') && $sale->end_date >= date('Y-m-d'))
+        if (!auth()->guard('admin-api')->check() && $sale->status == 1 && $sale->start_date <= now('Asia/Dhaka') && $sale->end_date >= now('Asia/Dhaka'))
         {
             return null;
         }
