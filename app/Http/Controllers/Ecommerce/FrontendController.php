@@ -87,7 +87,7 @@ class FrontendController extends Controller
             return (new CategoryService(new ProductCategory()))->getAll(0, false);
         });
 
-        $data['flash_sale'] = FlashSale::where('status', 1)->where('start_date', '<', date('Y-m-d'))->where('end_date', '>', date('Y-m-d'))->first();
+        $data['flash_sale'] = FlashSale::where('status', 1)->where('start_date', '<=', date('Y-m-d'))->where('end_date', '>=', date('Y-m-d'))->first();
 
         if($theme[3]['is_active'] == 1) {
             $data['featured_products'] = Cache::remember('allProductsFeatured', 60*60*24, function () {
