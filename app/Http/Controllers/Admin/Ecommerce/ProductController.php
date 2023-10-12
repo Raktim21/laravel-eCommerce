@@ -27,9 +27,9 @@ class ProductController extends Controller
     {
         $data = $this->service->getAll($request, 1);
 
-        $sale_status = Cache::remember('flashSaleStatus', 24*60*60, function () {
-            return FlashSale::first()->status ?? 0;
-        });
+        $flash_sale = FlashSale::first()->where('status',1)->where('start_date','<=',now('Asia/Dhaka'))->where('end_date','>=',now('Asia/Dhaka'))->first();
+
+        $sale_status = $flash_sale ? 1 : 0;
 
         return response()->json([
             'status'        => true,
