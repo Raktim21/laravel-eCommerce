@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\GeneralSetting;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class GeneralSettingSeeder extends Seeder
 {
@@ -17,6 +18,7 @@ class GeneralSettingSeeder extends Seeder
     {
         $setting = new GeneralSetting();
         $setting->id        = 1;
+        $setting->merchant_unique_id    = uuid_create('int');
         $setting->dashboard_language_id = 1;
         $setting->currency_id           = 1;
         $setting->name      = 'Selopia Ecommerce';
@@ -26,13 +28,13 @@ class GeneralSettingSeeder extends Seeder
         $setting->email     = 'selopia@gmail.com';
         $setting->phone     = '01700000000';
         $setting->address   = 'Dhaka, Bangladesh';
-        $setting->facebook  = 'https://www.facebook.com';
-        $setting->twitter   = 'https://www.twitter.com';
-        $setting->linkedin  = 'https://www.linkedin.com';
-        $setting->instagram = 'https://www.instagram.com';
-        $setting->youtube   = 'https://www.youtube.com';
-        $setting->google    = 'https://www.google.com';
-        $setting->pinterest = 'https://www.pinterest.com';
+        $setting->facebook  = null;
+        $setting->twitter   = null;
+        $setting->linkedin  = null;
+        $setting->instagram = null;
+        $setting->youtube   = null;
+        $setting->google    = null;
+        $setting->pinterest = null;
         $setting->about     = 'Selopia Ecommerce is a laravel ecommerce project';
         $setting->save();
     }

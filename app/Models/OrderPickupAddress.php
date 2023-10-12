@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class OrderPickupAddress extends Model
 {
@@ -14,7 +15,12 @@ class OrderPickupAddress extends Model
 
     protected $guarded = ['id'];
 
-    protected $hidden = ['created_at','updated_at','deleted_at'];
+    protected $hidden = ['pickup_unique_id','created_at','updated_at'];
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class, 'shop_branch_id');
+    }
 
     public function upazila()
     {
@@ -29,6 +35,10 @@ class OrderPickupAddress extends Model
     public static function boot()
     {
         parent::boot();
+
+        static::creating(function ($address) {
+            $address->pickup_unique_id = Str::before(uuid_create(), '-');
+        });
 
         static::created(function ($address) {
             Cache::delete('pickupAddress');

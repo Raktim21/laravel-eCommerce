@@ -31,6 +31,7 @@ class PickupAddressRequest extends FormRequest
     public function rules()
     {
         return [
+            'shop_branch_id'  => 'required|exists:shop_branches,id',
             'name'            => 'required|string|max:200',
             'phone'           => [
                                     'required',

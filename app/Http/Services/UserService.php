@@ -341,15 +341,13 @@ class UserService
 
     public function adminAddress()
     {
-        return OrderPickupAddress::with('union','upazila.district.division.country')->first();
+        return OrderPickupAddress::with('union','upazila.district.division.country','branch')->get();
     }
 
     public function updateAdminAddress(Request $request): void
     {
-        $address = OrderPickupAddress::latest()->first();
-
-        $address->updateOrCreate(
-            ['id' => $address->id ?? 1],
+        OrderPickupAddress::updateOrCreate(
+            ['shop_branch_id' => $request->shop_branch_id],
             [
                 'name'          => $request->name,
                 'phone'         => $request->phone,
