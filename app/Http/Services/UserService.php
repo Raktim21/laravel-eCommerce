@@ -339,9 +339,10 @@ class UserService
     }
 
 
-    public function adminAddress()
+    public function adminAddress($branch)
     {
-        return OrderPickupAddress::with('union','upazila.district.division.country','branch')->get();
+        return OrderPickupAddress::with('union','upazila.district.division.country','branch')
+            ->where('shop_branch_id', $branch)->first();
     }
 
     public function updateAdminAddress(Request $request): void
