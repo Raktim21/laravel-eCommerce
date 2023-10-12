@@ -307,7 +307,7 @@ class OrderDeliverySystemService
                     'USER-ID'       => eCourier()['user_id']
                 ],
                 'json' => [
-                    "ep_name"                 => (new GeneralSettingService(new GeneralSetting()))->name,
+                    "ep_name"                 => (new GeneralSettingService(new GeneralSetting()))->getSetting()->name,
                     "pick_contact_person"     => $pickup->name,
                     "pick_division"           => $pickup->upazila->district->division->name,
                     "pick_district"           => $pickup->upazila->district->name,
