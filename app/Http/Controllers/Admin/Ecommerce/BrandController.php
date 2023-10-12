@@ -48,6 +48,13 @@ class BrandController extends Controller
 
     public function store(BrandRequest $request)
     {
+        if (!$request->hasFile('image'))
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => ['The image field is required.']
+            ], 422);
+        }
         $this->service->store($request);
 
         return response()->json([
