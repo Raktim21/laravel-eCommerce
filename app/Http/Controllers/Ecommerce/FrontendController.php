@@ -104,15 +104,13 @@ class FrontendController extends Controller
         }
 
         if($theme[4]['is_active'] == 1 && $data['flash_sale']) {
-            $data['sale_products'] = Cache::remember('productOnSale', 60*60*24, function () {
-                return  Product::where('is_on_sale',1)->where('status', 1)
+            $data['sale_products'] = Product::where('is_on_sale',1)->where('status', 1)
                     ->select('id','category_id','category_sub_id','description','name','slug','uuid','thumbnail_image',
                         'display_price','previous_display_price','view_count','is_on_sale')
                     ->with('productReviewRating')
                     ->withSum('inventories', 'stock_quantity')
                     ->with('subCategory','category')
                     ->latest()->take(20)->get();
-            });
         }
 
         if($theme[5]['is_active'] == 1 &&  SiteBanners::first() && $image = SiteBanners::first()->featured_banner_image)
