@@ -63,8 +63,19 @@ class OrderObserver
             }
 
 //            notifying admins about new order (using queue)
+//            dispatch(new OrderNotificationJob($order));
 
-            dispatch(new OrderNotificationJob($order));
+            if (auth()->guard('user-api')->check()) {
+                $admins = User::whereNotNull('shop_branch_id')->get();
+
+                foreach ($admins as $admin) {
+                    $admin->notify(new AdminNotification(
+                        'Order',
+                        '/order/details/' . $order->id,
+                        'You have a new order from ' . $order->user->name
+                    ));
+                }
+            }
 
 //            delete customer cart
 
@@ -102,19 +113,18 @@ class OrderObserver
 
         if ($order->delivery_status == 'Delivered' || $order->delivery_status == 'Picked' || $order->delivery_status == 'Cancelled') {
             if ($order->delivery_status == 'Delivered') {
+//              notify admins about order delivery (using queue)
+//                dispatch(new OrderNotificationJob($order));
 
                 $admins = User::whereNotNull('shop_branch_id')->get();
 
                 foreach ($admins as $admin) {
                     $admin->notify(new AdminNotification(
                         'Order',
-                        '/order/details/'.$order->id,
-                        $order->order_status_id == 1 ? 'You have a new order from '.$order->user->name :
-                            'Order ID: '. $order->order_number .' has been successfully delivered.',
+                        '/order/details/' . $order->id,
+                        'Order ID: ' . $order->order_number . ' has been successfully delivered.',
                     ));
                 }
-//              notify admins about order delivery (using queue)
-//                dispatch(new OrderNotificationJob($order));
             }
 
 //          notify customer via messenger about updated order status (using queue)
