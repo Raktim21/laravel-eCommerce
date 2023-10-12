@@ -37,7 +37,7 @@ class OrderPickupAddress extends Model
         parent::boot();
 
         static::creating(function ($address) {
-            $address->pickup_unique_id = Str::before(uuid_create(), '-');
+            $address->pickup_unique_id = rand(10000,99999);
         });
 
         static::created(function ($address) {

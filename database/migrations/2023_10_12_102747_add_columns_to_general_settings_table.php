@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('order_pickup_addresses', function (Blueprint $table) {
-            $table->string('pickup_unique_id', 20)->unique()->after('id');
+            $table->integer('pickup_unique_id', false, true)->unique()->after('id');
             $table->unsignedBigInteger('shop_branch_id')->default(1)->after('pickup_unique_id');
             $table->foreign('shop_branch_id')
                 ->references('id')->on('shop_branches');
