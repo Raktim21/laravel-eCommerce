@@ -284,8 +284,8 @@ class OrderController extends Controller
         {
             if ($delivery_system == 2)
             {
-                $weight = $this->service->getOrderWeight($order);
-                (new OrderDeliverySystemService())->eCourierOrder($order, $weight);
+//                $weight = $this->service->getOrderWeight($order);
+                (new OrderDeliverySystemService())->eCourierOrder($order);
             } else if ($delivery_system == 3)
             {
                 (new OrderDeliverySystemService())->pandaGoOrder($order);

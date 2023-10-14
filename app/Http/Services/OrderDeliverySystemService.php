@@ -106,7 +106,7 @@ class OrderDeliverySystemService
         else if ($delivery_system == 2) // paperfly
         {
 //            return $this->getPaperFlyDeliveryCharge($delivery_address_id, $total_price);
-            return 0;
+            return $this->getECourierDeliveryCharge($delivery_address_id);
         }
         else if ($delivery_system == 3) // pandago
         {
@@ -212,6 +212,16 @@ class OrderDeliverySystemService
         return 0;
     }
 
+    private function getECourierDeliveryCharge($delivery_address_id): int
+    {
+        $address = UserAddress::find($delivery_address_id);
+        if ($address->upazila->district->name == 'Dhaka')
+        {
+            return 75;
+        }
+        return 150;
+    }
+
     public function cancelOrder($order)
     {
         if($order->delivery_status == 'Picked')
@@ -286,7 +296,7 @@ class OrderDeliverySystemService
         return 'done';
     }
 
-    public function eCourierOrder($order, $weight)
+    public function eCourierOrder($order)
     {
         try {
             $client = new Client();
