@@ -12,6 +12,7 @@ use App\Models\Union;
 use App\Models\Upazila;
 use App\Models\UserAddress;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\QueryException;
 use Illuminate\Database\Seeder;
 
 class DistrictsSeeder extends Seeder
@@ -23,15 +24,20 @@ class DistrictsSeeder extends Seeder
      */
     public function run()
     {
-        ProductReviewImage::query()->delete();
-        ProductReview::query()->delete();
-        OrderPickupAddress::query()->delete();
-        OrderItems::query()->delete();
-        Order::query()->delete();
-        UserAddress::query()->delete();
-        Union::query()->delete();
-        Upazila::query()->delete();
-        Districts::query()->delete();
+        try {
+            ProductReviewImage::query()->delete();
+            ProductReview::query()->delete();
+            OrderPickupAddress::query()->delete();
+            OrderItems::query()->delete();
+            Order::query()->delete();
+            UserAddress::query()->forceDelete();
+            Union::query()->delete();
+            Upazila::query()->delete();
+            Districts::query()->delete();
+        } catch (QueryException $ex)
+        {
+            dd($ex->getMessage());
+        }
 
         $districts = array(
             array('id' => '1','division_id' => '1','name' => 'Comilla','local_name' => 'কুমিল্লা','lat' => '23.4682747','lon' => '91.1788135','url' => 'www.comilla.gov.bd'),
@@ -97,14 +103,12 @@ class DistrictsSeeder extends Seeder
             array('id' => '61','division_id' => '8','name' => 'Sherpur','local_name' => 'শেরপুর','lat' => '25.0204933','lon' => '90.0152966','url' => 'www.sherpur.gov.bd'),
             array('id' => '62','division_id' => '8','name' => 'Mymenshing','local_name' => 'ময়মনসিংহ','lat' => '24.7465670','lon' => '90.4072093','url' => 'www.mymensingh.gov.bd'),
             array('id' => '63','division_id' => '8','name' => 'Jamalpur','local_name' => 'জামালপুর','lat' => '24.937533','lon' => '89.937775','url' => 'www.jamalpur.gov.bd'),
-            array('id' => '64','division_id' => '8','name' => 'Netrokona','local_name' => 'নেত্রকোণা','lat' => '24.870955','lon' => '90.727887','url' => 'www.netrokona.gov.bd'),
+            array('id' => '64','division_id' => '8','name' => 'Netrakona','local_name' => 'নেত্রকোণা','lat' => '24.870955','lon' => '90.727887','url' => 'www.netrokona.gov.bd'),
             array('id' => '65','division_id' => '6','name' => 'Dhaka','local_name' => 'ঢাকা','lat' => '23.7115253','lon' => '90.4111451','url' => 'www.dhaka.gov.bd'),
         );
 
         foreach ($districts as $district) {
             Districts::create($district);
         }
-
-
     }
 }

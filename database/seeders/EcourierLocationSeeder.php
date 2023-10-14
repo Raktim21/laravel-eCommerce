@@ -3,12 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Districts;
-use App\Models\Order;
-use App\Models\OrderItems;
-use App\Models\OrderPickupAddress;
-use App\Models\Union;
-use App\Models\Upazila;
-use App\Models\UserAddress;
 use GuzzleHttp\Client;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\QueryException;
@@ -57,6 +51,10 @@ class EcourierLocationSeeder extends Seeder
                             'name' => $value['name']
                         ]);
                     }
+                }
+                else if ($response->getStatusCode() == 400)
+                {
+                    dd($item['name']);
                 }
             }
             DB::commit();
