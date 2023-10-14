@@ -324,6 +324,8 @@ class OrderService
                 'upazila_id'                => $request->upazila_id,
                 'union_id'                  => $request->union_id,
                 'address'                   => $request->address,
+                'postal_code'               => $request->postal_code,
+                'area'                      => $request->area,
                 'phone_no'                  => $request->phone_no,
                 'lat'                       => $request->lat,
                 'lng'                       => $request->lng
@@ -332,6 +334,8 @@ class OrderService
                 'upazila_id'                => $request->upazila_id,
                 'union_id'                  => $request->union_id,
                 'address'                   => $request->address,
+                'postal_code'               => $request->postal_code,
+                'area'                      => $request->area,
                 'phone_no'                  => $request->phone_no,
                 'lat'                       => $request->lat,
                 'lng'                       => $request->lng

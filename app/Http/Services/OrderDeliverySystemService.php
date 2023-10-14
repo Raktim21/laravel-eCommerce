@@ -7,6 +7,7 @@ use App\Models\OrderDeliveryChargeLookup;
 use App\Models\OrderPickupAddress;
 use App\Models\UserAddress;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 
 class OrderDeliverySystemService
 {
@@ -85,11 +86,14 @@ class OrderDeliverySystemService
                         "pick_mobile"           => $pickup->phone,
                         "recipient_name"        => $order->user->name,
                         "recipient_mobile"      => $order->deliveryAddress->phone_no,
-                        "recipient_division"    => $order->deliveryAddress->upazila->district->division->name,
-                        "recipient_district"    => $order->deliveryAddress->upazila->district->name,
                         "recipient_city"        => $order->deliveryAddress->upazila->district->name,
                         "recipient_area"        => $order->deliveryAddress->area,
-                        "package_code"          => $order->order_number,
+                        "recipient_thana"       => $order->deliveryAddress->upazila->name,
+                        "recipient_division"    => $order->deliveryAddress->upazila->district->division->name,
+                        "recipient_district"    => $order->deliveryAddress->upazila->district->name,
+                        "recipient_union"       => $order->deliveryAddress->postal_code,
+                        "recipient_address"     => $order->deliveryAddress->address,
+                        "package_code"          => $order->deliveryAddress->upazila->district->name == 'Dhaka' ? '#2416' : '#2453',
                         "product_price"         => $order->total_amount,
                         "payment_method"        => 1,
                         "parcel_detail"         => $detail,
@@ -104,7 +108,9 @@ class OrderDeliverySystemService
                     $order->save();
                 }
             }
-        } catch (\Throwable $th) {}
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+        }
     }
 
     public function pandaGoOrder($order)
