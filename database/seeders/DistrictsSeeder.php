@@ -6,6 +6,8 @@ use App\Models\Districts;
 use App\Models\Order;
 use App\Models\OrderItems;
 use App\Models\OrderPickupAddress;
+use App\Models\ProductReview;
+use App\Models\ProductReviewImage;
 use App\Models\Union;
 use App\Models\Upazila;
 use App\Models\UserAddress;
@@ -21,6 +23,8 @@ class DistrictsSeeder extends Seeder
      */
     public function run()
     {
+        ProductReviewImage::query()->delete();
+        ProductReview::query()->delete();
         OrderPickupAddress::query()->delete();
         OrderItems::query()->delete();
         Order::query()->delete();
