@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers\System;
 
+use App\Models\Districts;
+use GuzzleHttp\Client;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Mews\Captcha\Facades\Captcha;
@@ -71,5 +75,33 @@ class SystemController extends Controller
     public function seeder()
     {
         Artisan::call('db:seed --class=UpdateThemeSeeder');
+    }
+
+    public function locationChecker()
+    {
+        $client = new Client();
+
+        $response1 = $client->post('https://staging.ecourier.com.bd/api/city-list', [
+            'headers' => [
+                'Content-Type' => 'application/json',
+                'API-KEY'      => '34PK',
+                'API-SECRET'   => 'PGE5w',
+                'USER-ID'      => 'U6013'
+            ],
+            'json' => [
+
+            ]
+        ]);
+
+        if ($response1->getStatusCode() == 200)
+        {
+            $data = json_decode($response1->getBody(), true);
+
+            $db_data = Districts::orderBy('id')->get();
+
+            $db_data = json_decode($db_data, true);
+
+
+        }
     }
 }
