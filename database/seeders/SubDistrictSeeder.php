@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\SubDistrict;
 use App\Models\Upazila;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;

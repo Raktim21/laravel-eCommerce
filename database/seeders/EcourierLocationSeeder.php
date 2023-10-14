@@ -3,8 +3,12 @@
 namespace Database\Seeders;
 
 use App\Models\Districts;
+use App\Models\Order;
+use App\Models\OrderItems;
+use App\Models\OrderPickupAddress;
 use App\Models\Union;
 use App\Models\Upazila;
+use App\Models\UserAddress;
 use GuzzleHttp\Client;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\QueryException;
@@ -29,9 +33,6 @@ class EcourierLocationSeeder extends Seeder
         DB::beginTransaction();
 
         try {
-            Union::query()->delete();
-            Upazila::query()->delete();
-
             foreach ($data as $item) {
 
                 $response = $client->post('https://staging.ecourier.com.bd/api/thana-list', [

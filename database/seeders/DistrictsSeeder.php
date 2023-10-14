@@ -3,6 +3,12 @@
 namespace Database\Seeders;
 
 use App\Models\Districts;
+use App\Models\Order;
+use App\Models\OrderItems;
+use App\Models\OrderPickupAddress;
+use App\Models\Union;
+use App\Models\Upazila;
+use App\Models\UserAddress;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,6 +21,12 @@ class DistrictsSeeder extends Seeder
      */
     public function run()
     {
+        OrderPickupAddress::query()->delete();
+        OrderItems::query()->delete();
+        Order::query()->delete();
+        UserAddress::query()->delete();
+        Union::query()->delete();
+        Upazila::query()->delete();
         Districts::query()->delete();
 
         $districts = array(
