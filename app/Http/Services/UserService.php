@@ -229,6 +229,7 @@ class UserService
             'postal_code'=> $request->postal_code,
             'lat'        => $request->lat,
             'lng'        => $request->lng,
+            'area'       => $request->area
         ]);
 
         if ($request->is_default == 1) {

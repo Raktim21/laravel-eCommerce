@@ -300,33 +300,33 @@ class OrderDeliverySystemService
 
                 $response = $client->post(eCourier()['url'] . '/order-place-reseller', [
                     'headers' => [
-                        'Content-Type' => 'application/json',
-                        'API-KEY' => eCourier()['api_key'],
-                        'API-SECRET' => eCourier()['api_secret'],
-                        'USER-ID' => eCourier()['user_id']
+                        'Content-Type'  => 'application/json',
+                        'API-KEY'       => eCourier()['api_key'],
+                        'API-SECRET'    => eCourier()['api_secret'],
+                        'USER-ID'       => eCourier()['user_id']
                     ],
                     'json' => [
-                        "ep_name" => (new GeneralSettingService(new GeneralSetting()))->getSetting()->name,
-                        "pick_contact_person" => $pickup->name,
-                        "pick_division" => $pickup->upazila->district->division->name,
-                        "pick_district" => $pickup->upazila->district->name,
-                        "pick_thana" => $pickup->upazila->name,
-                        "pick_union" => $pickup->postal_code,
-                        "pick_address" => $pickup->address,
-                        "pick_hub" => 1,
-                        "pick_mobile" => $pickup->phone,
-                        "recipient_name" => $order->user->name,
-                        "recipient_mobile" => $order->deliveryAddress->phone_no,
-                        "recipient_division" => $order->deliveryAddress->upazila->district->division->name,
-                        "recipient_district" => $order->deliveryAddress->upazila->district->name,
-                        "recipient_city" => $order->deliveryAddress->upazila->district->name,
-                        "recipient_area" => $order->deliveryAddress->address,
-                        "package_code" => $order->order_number,
-                        "product_price" => $order->total_amount,
-                        "payment_method" => 'COD',
-                        "parcel_detail" => $detail,
-                        "ep_id" => $pickup->pickup_unique_id,
-                        "parcel_type" => 'BOX'
+                        "ep_name"               => (new GeneralSettingService(new GeneralSetting()))->getSetting()->name,
+                        "pick_contact_person"   => $pickup->name,
+                        "pick_division"         => $pickup->upazila->district->division->name,
+                        "pick_district"         => $pickup->upazila->district->name,
+                        "pick_thana"            => $pickup->upazila->name,
+                        "pick_union"            => $pickup->postal_code,
+                        "pick_address"          => $pickup->address,
+                        "pick_hub"              => 1,
+                        "pick_mobile"           => $pickup->phone,
+                        "recipient_name"        => $order->user->name,
+                        "recipient_mobile"      => $order->deliveryAddress->phone_no,
+                        "recipient_division"    => $order->deliveryAddress->upazila->district->division->name,
+                        "recipient_district"    => $order->deliveryAddress->upazila->district->name,
+                        "recipient_city"        => $order->deliveryAddress->upazila->district->name,
+                        "recipient_area"        => $order->deliveryAddress->area,
+                        "package_code"          => $order->order_number,
+                        "product_price"         => $order->total_amount,
+                        "payment_method"        => 1,
+                        "parcel_detail"         => $detail,
+                        "ep_id"                 => $pickup->pickup_unique_id,
+                        "parcel_type"           => 'BOX'
                     ],
                 ]);
 

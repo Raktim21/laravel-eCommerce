@@ -49,7 +49,7 @@ class PickupAddressRequest extends FormRequest
                                         }
                                     }],
             'address'         => 'required|string|max:500',
-            'postal_code'     => 'required',
+            'postal_code'     => 'required|string|max:40',
             'lat'             => 'required|max:20',
             'lng'             => 'required|max:20'
         ];
