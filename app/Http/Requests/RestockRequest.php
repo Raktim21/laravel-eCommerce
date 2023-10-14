@@ -32,7 +32,7 @@ class RestockRequest extends FormRequest
                                 function ($attr, $val, $fail) {
                                     $stock = Product::whereHas('inventories', function ($q) {
                                         return $q->whereNot('stock_quantity', 0)
-                                            ->whereNull('deleted_at');
+                                            ->whereNull('deleted_at')->withTrashed();
                                     })->first();
 
                                     if($stock)
