@@ -54,6 +54,59 @@ class OrderDeliverySystemService
         }
     }
 
+    public function eCourierOrder($order)
+    {
+        try {
+            $client = new Client();
+            $pickup = $order->branch->pickup_address;
+
+            if ($pickup) {
+                $detail = '';
+                foreach ($order->items as $item) {
+                    $detail .= $item->combination->product->name . '(' . $item->quantity . ')';
+                }
+
+                $response = $client->post(eCourier()['url'] . '/order-place-reseller', [
+                    'headers' => [
+                        'Content-Type'  => 'application/json',
+                        'API-KEY'       => eCourier()['api_key'],
+                        'API-SECRET'    => eCourier()['api_secret'],
+                        'USER-ID'       => eCourier()['user_id']
+                    ],
+                    'json' => [
+                        "ep_name"               => (new GeneralSettingService(new GeneralSetting()))->getSetting()->name,
+                        "pick_contact_person"   => $pickup->name,
+                        "pick_division"         => $pickup->upazila->district->division->name,
+                        "pick_district"         => $pickup->upazila->district->name,
+                        "pick_thana"            => $pickup->upazila->name,
+                        "pick_union"            => $pickup->postal_code,
+                        "pick_address"          => $pickup->address,
+                        "pick_hub"              => 1,
+                        "pick_mobile"           => $pickup->phone,
+                        "recipient_name"        => $order->user->name,
+                        "recipient_mobile"      => $order->deliveryAddress->phone_no,
+                        "recipient_division"    => $order->deliveryAddress->upazila->district->division->name,
+                        "recipient_district"    => $order->deliveryAddress->upazila->district->name,
+                        "recipient_city"        => $order->deliveryAddress->upazila->district->name,
+                        "recipient_area"        => $order->deliveryAddress->area,
+                        "package_code"          => $order->order_number,
+                        "product_price"         => $order->total_amount,
+                        "payment_method"        => 1,
+                        "parcel_detail"         => $detail,
+                        "ep_id"                 => $pickup->pickup_unique_id,
+                        "parcel_type"           => 'BOX'
+                    ],
+                ]);
+
+                if ($response->getStatusCode() == 200) {
+                    $data = json_decode($response->getBody());
+                    $order->delivery_tracking_number = $data->ID;
+                    $order->save();
+                }
+            }
+        } catch (\Throwable $th) {}
+    }
+
     public function pandaGoOrder($order)
     {
         $client = new Client();
@@ -103,7 +156,7 @@ class OrderDeliverySystemService
         {
             return $this->getPersonalDeliveryCharge($delivery_address_id, $total_price);
         }
-        else if ($delivery_system == 2) // paperfly
+        else if ($delivery_system == 2) // eCourier
         {
 //            return $this->getPaperFlyDeliveryCharge($delivery_address_id, $total_price);
             return $this->getECourierDeliveryCharge($delivery_address_id);
@@ -239,7 +292,7 @@ class OrderDeliverySystemService
         if($order->delivery_tracking_number != null)
         {
             if($order->delivery_system_id == 2) {
-                $this->paperFlyCancelOrder($order->order_number);
+                $this->eCourierCancelOrder($order->delivery_tracking_number);
             } else if ($order->delivery_system_id == 3) {
                 $response = $this->pandaGoCancelOrder($order->delivery_tracking_number);
 
@@ -260,20 +313,20 @@ class OrderDeliverySystemService
         return 'done';
     }
 
-    public function paperFlyCancelOrder($order_number)
-    {
-        $response = (new Client())->post(peperfly()['paperFlyUrl'] . '/api/v1/cancel-order/', [
-            'headers' => [
-                'paperflykey' =>  peperfly()['paperFlyKey']
-            ],
-            'auth' => peperfly()['credential'],
-            'json' => [
-                "order_id" => $order_number,
-            ],
-        ]);
-
-        json_decode($response->getBody()->getContents(), true);
-    }
+//    public function paperFlyCancelOrder($order_number)
+//    {
+//        $response = (new Client())->post(peperfly()['paperFlyUrl'] . '/api/v1/cancel-order/', [
+//            'headers' => [
+//                'paperflykey' =>  peperfly()['paperFlyKey']
+//            ],
+//            'auth' => peperfly()['credential'],
+//            'json' => [
+//                "order_id" => $order_number,
+//            ],
+//        ]);
+//
+//        json_decode($response->getBody()->getContents(), true);
+//    }
 
     public function pandaGoCancelOrder($tracker)
     {
@@ -296,61 +349,34 @@ class OrderDeliverySystemService
         return 'done';
     }
 
-    public function eCourierOrder($order)
+    public function eCourierCancelOrder($tracker)
     {
-        try {
-            $client = new Client();
-            $pickup = $order->branch->pickup_address;
+        $message = request()->input('reason') == 'DELIVERY_ETA_TOO_LONG' ? 'Delivery time is too long.' :
+            (request()->input('reason') == 'MISTAKE_ERROR' ? 'Provided information is incorrect.' :
+                (request()->input('reason') == 'REASON_UNKNOWN' ? 'Unknown reason.' : null));
 
-            if ($pickup) {
-                $detail = '';
-                foreach ($order->items as $item) {
-                    $detail .= $item->combination->product->name . '(' . $item->quantity . ')';
-                }
+        $response = (new Client())->post(eCourier()['url'] . '/cancel-order', [
+            'headers' => [
+                'Content-Type'  => 'application/json',
+                'API-KEY'       => eCourier()['api_key'],
+                'API-SECRET'    => eCourier()['api_secret'],
+                'USER-ID'       => eCourier()['user_id']
+            ],
+            'json'    => [
+                'tracking'      => $tracker,
+                'comment'       => $message
+            ]
+        ]);
 
-                $response = $client->post(eCourier()['url'] . '/order-place-reseller', [
-                    'headers' => [
-                        'Content-Type'  => 'application/json',
-                        'API-KEY'       => eCourier()['api_key'],
-                        'API-SECRET'    => eCourier()['api_secret'],
-                        'USER-ID'       => eCourier()['user_id']
-                    ],
-                    'json' => [
-                        "ep_name"               => (new GeneralSettingService(new GeneralSetting()))->getSetting()->name,
-                        "pick_contact_person"   => $pickup->name,
-                        "pick_division"         => $pickup->upazila->district->division->name,
-                        "pick_district"         => $pickup->upazila->district->name,
-                        "pick_thana"            => $pickup->upazila->name,
-                        "pick_union"            => $pickup->postal_code,
-                        "pick_address"          => $pickup->address,
-                        "pick_hub"              => 1,
-                        "pick_mobile"           => $pickup->phone,
-                        "recipient_name"        => $order->user->name,
-                        "recipient_mobile"      => $order->deliveryAddress->phone_no,
-                        "recipient_division"    => $order->deliveryAddress->upazila->district->division->name,
-                        "recipient_district"    => $order->deliveryAddress->upazila->district->name,
-                        "recipient_city"        => $order->deliveryAddress->upazila->district->name,
-                        "recipient_area"        => $order->deliveryAddress->area,
-                        "package_code"          => $order->order_number,
-                        "product_price"         => $order->total_amount,
-                        "payment_method"        => 1,
-                        "parcel_detail"         => $detail,
-                        "ep_id"                 => $pickup->pickup_unique_id,
-                        "parcel_type"           => 'BOX'
-                    ],
-                ]);
+        if ($response->getStatusCode() == 200)
+        {
+            $data = json_decode($response->getBody());
 
-                if ($response->getStatusCode() == 200) {
-                    $data = json_decode($response->getBody());
-                    $order->delivery_tracking_number = $data->ID;
-                    $order->save();
-                }
+            if($data->message == 'Order Canceled')
+            {
+                return 'done';
             }
-        } catch (\Throwable $th) {}
-    }
-
-    public function eCourierCancelOrder($order_number)
-    {
-
+            return $data->message;
+        }
     }
 }

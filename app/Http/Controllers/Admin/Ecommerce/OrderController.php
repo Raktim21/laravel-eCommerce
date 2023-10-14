@@ -298,7 +298,7 @@ class OrderController extends Controller
             {
                 if($order->delivery_system_id == 2)
                 {
-                    (new OrderDeliverySystemService())->eCourierCancelOrder($order->order_number);
+                    (new OrderDeliverySystemService())->eCourierCancelOrder($order->delivery_tracking_number);
                 } else if ($order->delivery_system_id == 3)
                 {
                     $response = (new OrderDeliverySystemService())->pandaGoCancelOrder($order->delivery_tracking_number);
