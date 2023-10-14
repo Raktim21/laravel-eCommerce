@@ -13,6 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
+        Schema::table('user_addresses', function (Blueprint $table) {
+            $table->string('area', 50)->after('lng');
+        });
+
         Schema::table('location_upazilas', function (Blueprint $table) {
             $table->string('name', 100)->change();
         });

@@ -220,7 +220,7 @@ class UserService
 
     public function storeAddress(Request $request, $uid): void
     {
-        $address =  UserAddress::create([
+        $address =  UserAddress::firstOrCreate([
             'user_id'    => $uid,
             'address'    => $request->address,
             'phone_no'   => $request->phone_no,
