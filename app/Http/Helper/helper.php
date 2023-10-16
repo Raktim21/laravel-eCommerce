@@ -14,12 +14,13 @@ use Illuminate\Support\Facades\File;
 //    );
 //}
 
-function xit()
+function eCourier()
 {
     return array(
-        'xitUrl'    => 'https://api.xpressintown.com/api',
-        'pickup_id' => '46a79a7e-10db-473e-b70f-77cffd9197a3',
-        ''
+        'url'           => 'https://staging.ecourier.com.bd/api',
+        'user_id'       => 'U6013',
+        'api_key'       => '34PK',
+        'api_secret'    => 'PGE5w'
     );
 }
 

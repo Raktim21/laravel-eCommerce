@@ -22,9 +22,11 @@ class FlashSale extends Model
             Cache::delete('flash_sale');
             Cache::delete('flashSale');
             Cache::delete('productOnSale');
+            Cache::delete('productDiscount');
         });
 
         static::updated(function ($sale) {
+            Cache::delete('productDiscount');
             Cache::delete('flash_sale');
             Cache::delete('flashSale');
             Cache::delete('productOnSale');

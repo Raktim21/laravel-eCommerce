@@ -13,13 +13,19 @@ class FlashSaleService
 {
     public function getSale()
     {
+        $sale = FlashSale::first();
+
+        if (!auth()->guard('admin-api')->check() && $sale->status == 1 && $sale->start_date <= now('Asia/Dhaka') && $sale->end_date >= now('Asia/Dhaka'))
+        {
+            return null;
+        }
         return array(
-            'flash_sale'    => FlashSale::first(),
-            'products'      => Product::where('is_on_sale', 1)
-                ->select('id','category_id','name','thumbnail_image','display_price','uuid','slug')
-                ->with(['category' => function($q) {
-                    return $q->select('id','name');
-                }])->get()
+        'flash_sale' => $sale,
+        'products' => Product::where('is_on_sale', 1)
+            ->select('id', 'category_id', 'name', 'thumbnail_image', 'display_price', 'uuid', 'slug')
+            ->with(['category' => function ($q) {
+                return $q->select('id', 'name');
+            }])->get()
         );
     }
 

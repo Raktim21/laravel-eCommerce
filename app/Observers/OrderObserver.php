@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Http\Services\GeneralSettingService;
 use App\Http\Services\OrderDeliverySystemService;
 use App\Jobs\OrderNotificationJob;
+use App\Jobs\OrderStatusMessengerNotificationJob;
 use App\Models\CustomerCart;
 use App\Models\GeneralSetting;
 use App\Models\Inventory;
@@ -13,6 +14,8 @@ use App\Models\Order;
 use App\Models\OrderAdditionalCharge;
 use App\Models\PromoCode;
 use App\Models\PromoUser;
+use App\Models\User;
+use App\Notifications\AdminNotification;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
 
@@ -60,8 +63,19 @@ class OrderObserver
             }
 
 //            notifying admins about new order (using queue)
+//            dispatch(new OrderNotificationJob($order));
 
-            dispatch(new OrderNotificationJob($order));
+            if (auth()->guard('user-api')->check()) {
+                $admins = User::whereNotNull('shop_branch_id')->get();
+
+                foreach ($admins as $admin) {
+                    $admin->notify(new AdminNotification(
+                        'Order',
+                        '/order/details/' . $order->id,
+                        'You have a new order from ' . $order->user->name
+                    ));
+                }
+            }
 
 //            delete customer cart
 
@@ -99,11 +113,22 @@ class OrderObserver
 
         if ($order->delivery_status == 'Delivered' || $order->delivery_status == 'Picked' || $order->delivery_status == 'Cancelled') {
             if ($order->delivery_status == 'Delivered') {
+//              notify admins about order delivery (using queue)
+//                dispatch(new OrderNotificationJob($order));
 
-//                notify admins about order delivery (using queue)
+                $admins = User::whereNotNull('shop_branch_id')->get();
 
-                dispatch(new OrderNotificationJob($order));
+                foreach ($admins as $admin) {
+                    $admin->notify(new AdminNotification(
+                        'Order',
+                        '/order/details/' . $order->id,
+                        'Order ID: ' . $order->order_number . ' has been successfully delivered.',
+                    ));
+                }
             }
+
+//          notify customer via messenger about updated order status (using queue)
+//            dispatch(new OrderStatusMessengerNotificationJob($order));
 
             $subscription = MessengerSubscriptions::where('user_id', $order->user_id)
                 ->where('subscription_type_id', 2)->first();

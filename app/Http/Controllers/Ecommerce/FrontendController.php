@@ -87,16 +87,16 @@ class FrontendController extends Controller
             return (new CategoryService(new ProductCategory()))->getAll(0, false);
         });
 
-        $data['flash_sale'] = Cache::remember('flash_sale', 60*60*24, function () {
-            return FlashSale::where('status', 1)->first();
-        });
+        $flash = FlashSale::where('status', 1)->where('start_date', '<=', now('Asia/Dhaka'))->where('end_date', '>=', now('Asia/Dhaka'))->first();
+
+        $data['flash_sale'] = $flash;
 
         if($theme[3]['is_active'] == 1) {
             $data['featured_products'] = Cache::remember('allProductsFeatured', 60*60*24, function () {
                 return Product::where('is_featured', 1)
                     ->where('status', 1)
                     ->select('id','category_id','category_sub_id','description','name','slug','uuid','thumbnail_image',
-                        'display_price','previous_display_price','view_count')
+                        'display_price','previous_display_price','view_count','is_on_sale')
                     ->with('productReviewRating')
                     ->withSum('inventories', 'stock_quantity')
                     ->with('inventories')
@@ -105,16 +105,14 @@ class FrontendController extends Controller
             });
         }
 
-        if($theme[4]['is_active'] == 1 && FlashSale::first() != null && FlashSale::first()->status == 1) {
-            $data['sale_products'] = Cache::remember('productOnSale', 60*60*24, function () {
-                return  Product::where('is_on_sale',1)->where('status', 1)
+        if($theme[4]['is_active'] == 1 && $data['flash_sale']) {
+            $data['sale_products'] = Product::where('is_on_sale',1)->where('status', 1)
                     ->select('id','category_id','category_sub_id','description','name','slug','uuid','thumbnail_image',
-                        'display_price','previous_display_price','view_count')
+                        'display_price','previous_display_price','view_count','is_on_sale')
                     ->with('productReviewRating')
                     ->withSum('inventories', 'stock_quantity')
                     ->with('subCategory','category')
                     ->latest()->take(20)->get();
-            });
         }
 
         if($theme[5]['is_active'] == 1 &&  SiteBanners::first() && $image = SiteBanners::first()->featured_banner_image)
@@ -129,7 +127,7 @@ class FrontendController extends Controller
 
                 return Product::where('status', 1)
                     ->select('id','category_id','category_sub_id','description','name','slug','uuid','thumbnail_image',
-                        'display_price','previous_display_price','view_count')
+                        'display_price','previous_display_price','view_count','is_on_sale')
                     ->with('productReviewRating')
                     ->withSum('inventories', 'stock_quantity')
                     ->with('subCategory','category')
@@ -138,11 +136,14 @@ class FrontendController extends Controller
         }
 
         if($theme[7]['is_active'] == 1) {
-            $data['discount_products'] = Cache::remember('productDiscount', 60*60*24, function () {
+            $data['discount_products'] = Cache::remember('productDiscount', 60*60*2, function () use ($flash) {
 
                 return Product::where('status', 1)->whereNotNull('previous_display_price')
+                    ->when($flash, function ($q) {
+                        return $q->where('is_on_sale', 0);
+                    })
                     ->select('id','category_id','category_sub_id','description','name','slug','uuid','thumbnail_image',
-                        'display_price','previous_display_price','view_count')
+                        'display_price','previous_display_price','view_count','is_on_sale')
                     ->with('productReviewRating')
                     ->withSum('inventories', 'stock_quantity')
                     ->with('subCategory','category')
@@ -160,7 +161,7 @@ class FrontendController extends Controller
             $data['popular_products'] = Cache::remember('productPopular', 60*60*24, function () {
                 return Product::where('status', 1)
                     ->select('id','category_id','category_sub_id','description','name','slug','uuid','thumbnail_image',
-                        'display_price','previous_display_price','view_count')
+                        'display_price','previous_display_price','view_count','is_on_sale')
                     ->with('productReviewRating')
                     ->withSum('inventories', 'stock_quantity')
                     ->with('subCategory','category')
@@ -312,7 +313,7 @@ class FrontendController extends Controller
         return response()->json([
             'status'        => true,
             'data'          => $data,
-            'flash_sale'    => $data['is_on_sale'] == 1 ? FlashSale::find(1) : null
+            'flash_sale'    => FlashSale::where('status',1)->where('start_date','<=',now('Asia/Dhaka'))->where('end_date','>=',now('Asia/Dhaka'))->first()
         ], is_null($data) ? 204 : 200);
     }
 
@@ -422,7 +423,7 @@ class FrontendController extends Controller
         return response()->json([
             'status' => true,
             'data'   => $data
-        ],$data['flash_sale'] == null ? 204 : 200);
+        ],is_null($data) ? 204 : 200);
     }
 
     public function pickupAddress()

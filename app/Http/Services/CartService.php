@@ -34,6 +34,7 @@ class CartService
                 return $q->where('user_id', auth()->guard('user-api')->user()->id);
             })->with(['productCombination' => function($q) {
                 $q->with('attributeValues.attribute')
+                    ->withSum('inventory','stock_quantity')
                   ->with(['product' => function($q) {
                         $q->select('id','name','slug','uuid','thumbnail_image');
                 }]);

@@ -220,7 +220,7 @@ class UserService
 
     public function storeAddress(Request $request, $uid): void
     {
-        $address =  UserAddress::create([
+        $address =  UserAddress::firstOrCreate([
             'user_id'    => $uid,
             'address'    => $request->address,
             'phone_no'   => $request->phone_no,
@@ -229,6 +229,7 @@ class UserService
             'postal_code'=> $request->postal_code,
             'lat'        => $request->lat,
             'lng'        => $request->lng,
+            'area'       => $request->area
         ]);
 
         if ($request->is_default == 1) {
@@ -339,17 +340,16 @@ class UserService
     }
 
 
-    public function adminAddress()
+    public function adminAddress($branch)
     {
-        return OrderPickupAddress::with('union','upazila.district.division.country')->first();
+        return OrderPickupAddress::with('union','upazila.district.division.country','branch')
+            ->where('shop_branch_id', $branch)->first();
     }
 
     public function updateAdminAddress(Request $request): void
     {
-        $address = OrderPickupAddress::latest()->first();
-
-        $address->updateOrCreate(
-            ['id' => $address->id ?? 1],
+        OrderPickupAddress::updateOrCreate(
+            ['shop_branch_id' => $request->shop_branch_id],
             [
                 'name'          => $request->name,
                 'phone'         => $request->phone,
