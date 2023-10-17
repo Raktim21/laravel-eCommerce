@@ -43,9 +43,9 @@ class AppServiceProvider extends ServiceProvider
 //             Log::info($query->sql . ' - ' . $query->time);
 //         });
 
-        LogViewer::auth(function ($request) {
-            return request()->header('Authorization') == 'WoPnaBmQmEinDWxrVfRkzcOOEuTJSxLWqBaxwnLMsQnIokdNayMqwvDmRzrB';
-        });
+//        LogViewer::auth(function ($request) {
+//            return request()->header('Authorization') == 'WoPnaBmQmEinDWxrVfRkzcOOEuTJSxLWqBaxwnLMsQnIokdNayMqwvDmRzrB';
+//        });
     }
 }
 
