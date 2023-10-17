@@ -2,13 +2,13 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Services\AssetService;
 use App\Models\Inventory;
+use App\Models\OrderPickupAddress;
 use App\Models\UserAddress;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\Rule;
 
 class SalesRequest extends FormRequest
 {
@@ -48,8 +48,29 @@ class SalesRequest extends FormRequest
                                                         }],
             'delivery_method_id'                    => ['required','in:1,2',
                                                         function($attr,$val,$fail) {
-                                                            if($val == 1 & !$this->input('delivery_address_id')) {
-                                                                $fail('The delivery address is required.');
+                                                            if($val == 1)
+                                                            {
+                                                                if (!$this->input('delivery_address_id')) {
+                                                                    $fail('The delivery address is required.');
+                                                                }
+                                                                else {
+                                                                    $active_system = (new AssetService())->activeDeliverySystem();
+
+                                                                    $pickup = OrderPickupAddress::where('shop_branch_id', auth()->guard('admin-api')->user()->shop_branch_id)->first();
+
+                                                                    if(!$pickup)
+                                                                    {
+                                                                        $fail('No pickup address found for your branch.');
+                                                                    }
+
+                                                                    if ($active_system == 2)
+                                                                    {
+                                                                        if ($pickup && !$pickup->hub_id)
+                                                                        {
+                                                                            $fail('No hub has been configured for eCourier service.');
+                                                                        }
+                                                                    }
+                                                                }
                                                             }
                                                         }],
             'delivery_address_id'                   => ['sometimes',

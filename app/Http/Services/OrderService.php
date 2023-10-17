@@ -39,7 +39,7 @@ class OrderService
 
         try {
             $new_order = $this->order->newQuery()->create([
-                'shop_branch_id'             => auth()->guard('admin-api')->user()->shop_branch_id,
+                'shop_branch_id'        => auth()->guard('admin-api')->user()->shop_branch_id,
                 'user_id'               => $request->user_id,
                 'order_number'          => 'ORD-' . implode('-', str_split(hexdec(uniqid()), 4)),
                 'order_status_id'       => $request->delivery_method_id == 2 ? 4 : 2,
@@ -86,7 +86,7 @@ class OrderService
                 $delivery_system = (new AssetService())->activeDeliverySystem();
 
                 if ($delivery_system == 2) {
-                    (new OrderDeliverySystemService())->eCourierOrder($new_order, $weight);
+                    (new OrderDeliverySystemService())->eCourierOrder($new_order);
                 }
                 else if ($delivery_system == 3)
                 {

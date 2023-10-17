@@ -104,13 +104,12 @@ class OrderDeliverySystemService
 
                 if ($response->getStatusCode() == 200) {
                     $data = json_decode($response->getBody());
-                    Log::info($data->ID);
                     $order->delivery_tracking_number = $data->ID;
                     $order->save();
                 }
             }
         } catch (\Throwable $th) {
-            Log::error($th->getMessage());
+            Log::error('eCourier order placement: '.$th->getMessage());
         }
     }
 

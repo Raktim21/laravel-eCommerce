@@ -27,7 +27,7 @@ class ProductStoreRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'name'                 => 'required|string|max:98',
+            'name'                 => 'required|string|max:100',
             'description'          => 'required|string|max:1000',
             'short_description'    => 'nullable|string|max:500',
             'thumbnail_image'      => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
