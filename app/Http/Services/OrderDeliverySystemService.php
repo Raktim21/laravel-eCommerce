@@ -59,7 +59,7 @@ class OrderDeliverySystemService
     {
         try {
             $client = new Client();
-            $pickup = $order->branch->pickup_address;
+            $pickup = $order->branch->pickup_address()->first();
 
             if ($pickup) {
                 $detail = '';
@@ -104,6 +104,7 @@ class OrderDeliverySystemService
 
                 if ($response->getStatusCode() == 200) {
                     $data = json_decode($response->getBody());
+                    Log::info($data->ID);
                     $order->delivery_tracking_number = $data->ID;
                     $order->save();
                 }
@@ -295,17 +296,17 @@ class OrderDeliverySystemService
         {
             return 'You cannot cancel order after being delivered.';
         }
-        if($order->delivery_tracking_number != null)
+        if($order->delivery_tracking_number != null && $order->delivery_system_id != 1)
         {
             if($order->delivery_system_id == 2) {
-                $this->eCourierCancelOrder($order->delivery_tracking_number);
-            } else if ($order->delivery_system_id == 3) {
+                $response = $this->eCourierCancelOrder($order->delivery_tracking_number);
+            } else {
                 $response = $this->pandaGoCancelOrder($order->delivery_tracking_number);
+            }
 
-                if($response != 'done')
-                {
-                    return $response;
-                }
+            if($response != 'done')
+            {
+                return $response;
             }
         }
 
@@ -361,7 +362,7 @@ class OrderDeliverySystemService
             (request()->input('reason') == 'MISTAKE_ERROR' ? 'Provided information is incorrect.' :
                 (request()->input('reason') == 'REASON_UNKNOWN' ? 'Unknown reason.' : null));
 
-        $response = (new Client())->post(eCourier()['url'] . '/cancel-order', [
+        $response = (new Client())->post(eCourier()['url'] . '/cancel-order-child', [
             'headers' => [
                 'Content-Type'  => 'application/json',
                 'API-KEY'       => eCourier()['api_key'],
@@ -378,11 +379,13 @@ class OrderDeliverySystemService
         {
             $data = json_decode($response->getBody());
 
-            if($data->message == 'Order Canceled')
+            if($data->message == 'Order canceled')
             {
                 return 'done';
             }
             return $data->message;
         }
+
+        return 'This order cannot be cancelled.';
     }
 }

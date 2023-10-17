@@ -208,7 +208,6 @@ class OrderController extends Controller
                 'delivery_charge' => $delivery_charge
             ),
         ]);
-
     }
 
 
@@ -292,24 +291,24 @@ class OrderController extends Controller
             }
         }
 
-        if($request->status == 3)
+        if($request->status == 3 && $order->delivery_system_id != 1)
         {
             if($order->delivery_tracking_number)
             {
                 if($order->delivery_system_id == 2)
                 {
-                    (new OrderDeliverySystemService())->eCourierCancelOrder($order->delivery_tracking_number);
-                } else if ($order->delivery_system_id == 3)
+                    $response = (new OrderDeliverySystemService())->eCourierCancelOrder($order->delivery_tracking_number);
+                } else
                 {
                     $response = (new OrderDeliverySystemService())->pandaGoCancelOrder($order->delivery_tracking_number);
+                }
 
-                    if ($response != 'done')
-                    {
-                        return response()->json([
-                            'status' => false,
-                            'errors' => [$response]
-                        ], 400);
-                    }
+                if ($response != 'done')
+                {
+                    return response()->json([
+                        'status' => false,
+                        'errors' => [$response]
+                    ], 400);
                 }
             }
             $order->delivery_status = 'Cancelled';
