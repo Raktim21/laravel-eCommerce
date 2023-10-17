@@ -311,6 +311,7 @@ class OrderController extends Controller
                     ], 400);
                 }
             }
+            $order->delivery_tracking_number = null;
             $order->delivery_status = 'Cancelled';
         }
         if($request->status == 4)
