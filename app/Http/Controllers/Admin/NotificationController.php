@@ -77,12 +77,12 @@ class NotificationController extends Controller
                                 {
                                     for( $i=0; $i < ob_get_level(); $i++ )
                                     {
-                                        Log::info('notification');
+//                                        Log::info('notification');
                                         ob_flush();
                                     }
                                 }
 
-//                                Log::info('notification');
+                                Log::info('notification');
                                 flush();
 
                                 $c++;
