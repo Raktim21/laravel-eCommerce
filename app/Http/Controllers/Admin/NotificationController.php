@@ -73,16 +73,16 @@ class NotificationController extends Controller
 //                                if( ob_get_level() > 0 ) for( $i=0; $i < ob_get_level(); $i++ )
 //                                    Log::info('notification');
 //                                    ob_flush();
-//                                if( ob_get_level() > 0 )
-//                                {
-//                                    for( $i=0; $i < ob_get_level(); $i++ )
-//                                    {
-//                                        Log::info('notification');
-//                                        ob_flush();
-//                                    }
-//                                }
+                                if( ob_get_level() > 0 )
+                                {
+                                    for( $i=0; $i < ob_get_level(); $i++ )
+                                    {
+                                        Log::info('notification');
+                                        ob_flush();
+                                    }
+                                }
 
-                                Log::info('notification');
+//                                Log::info('notification');
                                 flush();
 
                                 $c++;
