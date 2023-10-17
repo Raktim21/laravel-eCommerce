@@ -69,8 +69,7 @@ class NotificationController extends Controller
 
                                 $notification->update(['is_send' => 1]);
 
-//                                if( ob_get_level() > 0 ) for( $i=0; $i < ob_get_level(); $i++ ) ob_flush();
-                                ob_flush();
+                                if( ob_get_level() > 0 ) for( $i=0; $i < ob_get_level(); $i++ ) ob_flush();
                                 flush();
 
                                 $c++;
