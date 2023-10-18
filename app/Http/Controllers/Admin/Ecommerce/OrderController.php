@@ -279,6 +279,12 @@ class OrderController extends Controller
             ], 400);
         }
 
+        if(is_null($order->shop_branch_id))
+        {
+            $order->shop_branch_id  = $request->shop_branch_id;
+            $order->save();
+        }
+
         if($request->status == 2)
         {
             if ($delivery_system == 2)
@@ -322,10 +328,6 @@ class OrderController extends Controller
         }
         $order->order_status_id = $request->status;
 
-        if(is_null($order->shop_branch_id))
-        {
-            $order->shop_branch_id  = $request->shop_branch_id;
-        }
         $order->order_status_updated_by = auth()->user()->id;
         $order->merchant_remarks = $request->reason == 'DELIVERY_ETA_TOO_LONG' ? 'Order is cancelled because delivery time is too long.' :
             ($request->reason == 'MISTAKE_ERROR' ? 'Order is cancelled because provided information is incorrect.' :
