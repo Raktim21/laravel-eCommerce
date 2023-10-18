@@ -167,13 +167,13 @@ class BillingService
 
                 if ($delivery_system == 2)
                 {
-                    if ($weight > 5)
+                    if ($weight > 1)
                     {
                         DB::rollback();
                         return 6;
                     }
 
-                    (new OrderDeliverySystemService())->paperFlyOrder($order, $weight);
+                    (new OrderDeliverySystemService())->eCourierOrder($order);
                 }
                 else if ($delivery_system == 3)
                 {
