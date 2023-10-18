@@ -33,7 +33,7 @@ class InventoryService
                 return $q->get();
             })
             ->when($isPaginated==1, function ($q) {
-                return $q->paginate(20)->appends(request()->except('page'));
+                return $q->paginate(10)->appends(request()->except('page'));
             });
     }
 
