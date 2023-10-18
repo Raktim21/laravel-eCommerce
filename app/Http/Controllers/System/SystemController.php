@@ -4,11 +4,7 @@ namespace App\Http\Controllers\System;
 
 use App\Models\Districts;
 use GuzzleHttp\Client;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Mews\Captcha\Facades\Captcha;
 use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
@@ -18,7 +14,7 @@ class SystemController extends Controller
 {
     public function runSchedule(): void
     {
-        Artisan::call('queue:work');
+//        Artisan::call('queue:work');
         Artisan::call('schedule:run');
     }
 
@@ -50,10 +46,6 @@ class SystemController extends Controller
 
     public function cache()
     {
-        $pwd = Hash::make('vint13');
-
-        Log::info($pwd);
-
         Artisan::call('cache:clear');
 
         return response()->json([

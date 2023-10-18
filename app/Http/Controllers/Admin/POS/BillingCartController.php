@@ -114,7 +114,7 @@ class BillingCartController extends Controller
         {
             return response()->json([
                 'status' => false,
-                'errors' => ['You cannot place an order that weighs over 5 KG.']
+                'errors' => ['You cannot place an order that weighs over 1 KG.']
             ], 400);
         }
         else

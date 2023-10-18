@@ -82,7 +82,7 @@ class OrderDeliverySystemService
                         "pick_thana"            => $pickup->upazila->name,
                         "pick_union"            => $pickup->postal_code,
                         "pick_address"          => $pickup->address,
-                        "pick_hub"              => 1,
+                        "pick_hub"              => $pickup->hub_id ?? 18488,
                         "pick_mobile"           => $pickup->phone,
                         "recipient_name"        => $order->user->name,
                         "recipient_mobile"      => $order->deliveryAddress->phone_no,
