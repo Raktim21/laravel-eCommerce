@@ -119,10 +119,10 @@ class OrderController extends Controller
             $total_weight += $cart_item->product_quantity * $cart_item->productCombination->weight;
         }
 
-        if ($total_weight > 5) {
+        if ($total_weight > 1) {
             return response()->json([
                 'status' => false,
-                'errors' => ['You cannot place order that weighs over 5KG.'],
+                'errors' => ['You cannot place order that weighs over 1KG.'],
             ],422);
         }
         if($this->service->placeOrder($request, $cart_items)) {

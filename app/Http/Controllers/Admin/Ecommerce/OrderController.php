@@ -174,7 +174,7 @@ class OrderController extends Controller
         } else if($status == 2) {
             return response()->json([
                 'status'    => false,
-                'errors'    => ['You can not place an order that weighs over 5kg.']
+                'errors'    => ['You can not place an order that weighs over 1kg.']
             ], 422);
         } else {
             return response()->json([
@@ -208,7 +208,6 @@ class OrderController extends Controller
                 'delivery_charge' => $delivery_charge
             ),
         ]);
-
     }
 
 
@@ -280,38 +279,45 @@ class OrderController extends Controller
             ], 400);
         }
 
+        if(is_null($order->shop_branch_id))
+        {
+            $order->shop_branch_id  = $request->shop_branch_id;
+            $order->save();
+        }
+
         if($request->status == 2)
         {
             if ($delivery_system == 2)
             {
-                $weight = $this->service->getOrderWeight($order);
-                (new OrderDeliverySystemService())->paperFlyOrder($order, $weight);
+//                $weight = $this->service->getOrderWeight($order);
+                (new OrderDeliverySystemService())->eCourierOrder($order);
             } else if ($delivery_system == 3)
             {
                 (new OrderDeliverySystemService())->pandaGoOrder($order);
             }
         }
 
-        if($request->status == 3)
+        if($request->status == 3 && $order->delivery_system_id != 1)
         {
             if($order->delivery_tracking_number)
             {
                 if($order->delivery_system_id == 2)
                 {
-                    (new OrderDeliverySystemService())->paperFlyCancelOrder($order->order_number);
-                } else if ($order->delivery_system_id == 3)
+                    $response = (new OrderDeliverySystemService())->eCourierCancelOrder($order->delivery_tracking_number);
+                } else
                 {
                     $response = (new OrderDeliverySystemService())->pandaGoCancelOrder($order->delivery_tracking_number);
+                }
 
-                    if ($response != 'done')
-                    {
-                        return response()->json([
-                            'status' => false,
-                            'errors' => [$response]
-                        ], 400);
-                    }
+                if ($response != 'done')
+                {
+                    return response()->json([
+                        'status' => false,
+                        'errors' => [$response]
+                    ], 400);
                 }
             }
+            $order->delivery_tracking_number = null;
             $order->delivery_status = 'Cancelled';
         }
         if($request->status == 4)
@@ -322,10 +328,6 @@ class OrderController extends Controller
         }
         $order->order_status_id = $request->status;
 
-        if(is_null($order->shop_branch_id))
-        {
-            $order->shop_branch_id  = $request->shop_branch_id;
-        }
         $order->order_status_updated_by = auth()->user()->id;
         $order->merchant_remarks = $request->reason == 'DELIVERY_ETA_TOO_LONG' ? 'Order is cancelled because delivery time is too long.' :
             ($request->reason == 'MISTAKE_ERROR' ? 'Order is cancelled because provided information is incorrect.' :

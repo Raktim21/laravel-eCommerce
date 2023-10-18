@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Services\AssetService;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Validator;
 
 class StaticAssetController extends Controller
 {
@@ -33,6 +34,18 @@ class StaticAssetController extends Controller
 
     public function divisionList(Request $request)
     {
+        $validate = Validator::make($request->all(), [
+            'country_id' => 'required|exists:location_countries,id'
+        ]);
+
+        if($validate->fails())
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => $validate->errors()->all()
+            ], 400);
+        }
+
         $data = Cache::rememberForever('divisionList'.$request->country_id, function () use ($request) {
             return $request->country_id ? $this->service->getDivisions($request->country_id) : null;
         });
@@ -47,6 +60,18 @@ class StaticAssetController extends Controller
 
     public function districtList(Request $request)
     {
+        $validate = Validator::make($request->all(), [
+            'division_id' => 'required|exists:location_divisions,id'
+        ]);
+
+        if($validate->fails())
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => $validate->errors()->all()
+            ], 400);
+        }
+
         $data = Cache::rememberForever('districtList'.$request->division_id, function () use ($request) {
             return $request->division_id ? $this->service->getDistricts($request->division_id) : null;
         });
@@ -61,6 +86,17 @@ class StaticAssetController extends Controller
 
     public function subDistrictList(Request $request)
     {
+        $validate = Validator::make($request->all(), [
+            'district_id' => 'required|exists:location_districts,id'
+        ]);
+
+        if($validate->fails())
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => $validate->errors()->all()
+            ], 400);
+        }
         $data = Cache::rememberForever('subDistrictList'.$request->district_id, function () use ($request) {
             return $request->district_id ? $this->service->getSubDistricts($request->district_id) : null;
         });
@@ -75,6 +111,17 @@ class StaticAssetController extends Controller
 
     public function unionList(Request $request)
     {
+        $validate = Validator::make($request->all(), [
+            'sub_district_id' => 'required|exists:location_upazilas,id'
+        ]);
+
+        if($validate->fails())
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => $validate->errors()->all()
+            ], 400);
+        }
         $data = Cache::rememberForever('unionList'.$request->sub_district_id, function () use ($request) {
             return $request->sub_district_id ? $this->service->getUnions($request->sub_district_id) : null;
         });

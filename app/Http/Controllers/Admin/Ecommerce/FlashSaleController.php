@@ -25,7 +25,7 @@ class FlashSaleController extends Controller
         return response()->json([
             'status' => true,
             'data'   => $data
-        ],$data['flash_sale'] == null ? 204 : 200);
+        ],is_null($data) ? 204 : 200);
     }
 
 

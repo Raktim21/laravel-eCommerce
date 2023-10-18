@@ -36,6 +36,11 @@ class Branch extends Model
         return $this->hasMany(InventoryTrace::class, 'to_branch_id');
     }
 
+    public function pickup_address()
+    {
+        return $this->hasOne(OrderPickupAddress::class, 'shop_branch_id');
+    }
+
     public static function boot()
     {
         parent::boot();

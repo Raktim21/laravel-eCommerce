@@ -44,6 +44,7 @@ class UserAddressCreateRequest extends FormRequest
                                   ],
             'address'         => 'required|string|max:255',
             'postal_code'     => 'required|string|max:50',
+            'area'            => 'required|string|max:45',
             'phone_no'        => ['required', 'regex:/^(?:\+88|88)?(01[3-9]\d{8})$/'],
             'lat'             => 'required|max:20',
             'lng'             => 'required|max:20',

@@ -39,7 +39,7 @@ class OrderService
 
         try {
             $new_order = $this->order->newQuery()->create([
-                'shop_branch_id'             => auth()->guard('admin-api')->user()->shop_branch_id,
+                'shop_branch_id'        => auth()->guard('admin-api')->user()->shop_branch_id,
                 'user_id'               => $request->user_id,
                 'order_number'          => 'ORD-' . implode('-', str_split(hexdec(uniqid()), 4)),
                 'order_status_id'       => $request->delivery_method_id == 2 ? 4 : 2,
@@ -72,7 +72,7 @@ class OrderService
                 $weight += $combo->weight * $item['quantity'];
             }
 
-            if($request->delivery_method_id == 1 && $weight > 5) {
+            if($request->delivery_method_id == 1 && $weight > 1) {
                 return 2;
             }
 
@@ -86,7 +86,7 @@ class OrderService
                 $delivery_system = (new AssetService())->activeDeliverySystem();
 
                 if ($delivery_system == 2) {
-                    (new OrderDeliverySystemService())->paperFlyOrder($new_order, $weight);
+                    (new OrderDeliverySystemService())->eCourierOrder($new_order);
                 }
                 else if ($delivery_system == 3)
                 {
@@ -198,7 +198,7 @@ class OrderService
     {
         $client = new Client();
 
-        $response = $client->post(peperfly()['paperFlyUrl'] . '/api/v1/cancel-order/', [
+        $response = $client->post(paperfly()['paperFlyUrl'] . '/api/v1/cancel-order/', [
             'headers' => [
                 'paperflykey' =>  peperfly()['paperFlyKey']
             ],
@@ -324,6 +324,8 @@ class OrderService
                 'upazila_id'                => $request->upazila_id,
                 'union_id'                  => $request->union_id,
                 'address'                   => $request->address,
+                'postal_code'               => $request->postal_code,
+                'area'                      => $request->area,
                 'phone_no'                  => $request->phone_no,
                 'lat'                       => $request->lat,
                 'lng'                       => $request->lng
@@ -332,6 +334,8 @@ class OrderService
                 'upazila_id'                => $request->upazila_id,
                 'union_id'                  => $request->union_id,
                 'address'                   => $request->address,
+                'postal_code'               => $request->postal_code,
+                'area'                      => $request->area,
                 'phone_no'                  => $request->phone_no,
                 'lat'                       => $request->lat,
                 'lng'                       => $request->lng

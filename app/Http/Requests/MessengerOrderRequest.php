@@ -138,6 +138,8 @@ class MessengerOrderRequest extends FormRequest
                                                 $fail('Selected union is invalid.');
                                             }
                                         }],
+            'postal_code'         =>  'required|string|max:40',
+            'area'                =>  'required|string|max:35',
             'address'             =>  'nullable|string',
             'lat'                 =>  'required|max:20',
             'lng'                 =>  'required|max:20',

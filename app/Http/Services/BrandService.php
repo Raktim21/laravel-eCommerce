@@ -34,12 +34,7 @@ class BrandService
             'slug' => Str::slug($request->name).'-'.Str::random(5)
         ]);
 
-        if($request->hasFile('image'))
-        {
-            saveImage($request->file('image'), '/uploads/images/brands/', $brand, 'image');
-        }
-
-        Cache::forget('brands');
+        saveImage($request->file('image'), '/uploads/images/brands/', $brand, 'image');
     }
 
 
@@ -57,8 +52,6 @@ class BrandService
             deleteFile($brand->image);
             saveImage($request->file('image'), '/uploads/images/brands/', $brand, 'image');
         }
-
-        Cache::forget('brands');
     }
 
 
@@ -69,7 +62,6 @@ class BrandService
         try {
             $brand->delete();
             deleteFile($brand->image);
-            Cache::forget('brands');
             return true;
         }
         catch (QueryException $e)
