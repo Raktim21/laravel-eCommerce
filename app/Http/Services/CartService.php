@@ -36,7 +36,7 @@ class CartService
                 $q->with('attributeValues.attribute')
                     ->withSum('inventory','stock_quantity')
                   ->with(['product' => function($q) {
-                        $q->select('id','name','slug','uuid','thumbnail_image');
+                        $q->select('id','name','slug','uuid','thumbnail_image','is_on_sale');
                 }]);
             }])
             ->get();
