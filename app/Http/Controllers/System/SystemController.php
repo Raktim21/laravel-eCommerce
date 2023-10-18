@@ -14,7 +14,7 @@ class SystemController extends Controller
 {
     public function runSchedule(): void
     {
-        Artisan::call('queue:work');
+//        Artisan::call('queue:work');
         Artisan::call('schedule:run');
     }
 

@@ -15,13 +15,13 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('order:status')->everyMinute();
+//        $schedule->command('order:status')->everyMinute();
         $schedule->command('flashsale:status')->everyMinute();
         $schedule->command('order:review')->everyMinute();
-        $schedule->command('email:verify')->everyMinute();
+//        $schedule->command('email:verify')->everyMinute();
         $schedule->command('order:placed')->everyMinute();
         $schedule->command('check:stock')->everySixHours();
-        $schedule->command('queue:work', [ '--max-time' => 300])->withoutOverlapping();
+//        $schedule->command('queue:work', [ '--max-time' => 300])->withoutOverlapping();
 
     }
 

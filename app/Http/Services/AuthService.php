@@ -31,6 +31,7 @@ class AuthService
                 'name'              => $request->name,
                 'username'          => $request->username,
                 'password'          => Hash::make($request['password']),
+                'email_verified_at' => now('Asia/Dhaka'),
                 'phone'             => $request->phone,
                 'phone_verified_at' => Carbon::now(),
             ]);
