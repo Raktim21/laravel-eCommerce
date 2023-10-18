@@ -70,19 +70,14 @@ class NotificationController extends Controller
 
                                 $notification->update(['is_send' => 1]);
 
-//                                if( ob_get_level() > 0 ) for( $i=0; $i < ob_get_level(); $i++ )
-//                                    Log::info('notification');
-//                                    ob_flush();
                                 if( ob_get_level() > 0 )
                                 {
                                     for( $i=0; $i < ob_get_level(); $i++ )
                                     {
-//                                        Log::info('notification');
                                         ob_flush();
                                     }
                                 }
 
-                                Log::info('notification');
                                 flush();
 
                                 $c++;
