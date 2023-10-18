@@ -359,7 +359,9 @@ class UserService
                 'postal_code'   => $request->postal_code,
                 'address'       => $request->address,
                 'lat'           => $request->lat,
-                'lng'           => $request->lng
+                'lng'           => $request->lng,
+                'hub_id'        => $request->hub_id,
+                'hub_name'      => $request->hub_name
             ]
         );
     }

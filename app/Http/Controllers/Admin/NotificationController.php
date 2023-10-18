@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Notification;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -69,7 +70,19 @@ class NotificationController extends Controller
 
                                 $notification->update(['is_send' => 1]);
 
-                                if( ob_get_level() > 0 ) for( $i=0; $i < ob_get_level(); $i++ ) ob_flush();
+//                                if( ob_get_level() > 0 ) for( $i=0; $i < ob_get_level(); $i++ )
+//                                    Log::info('notification');
+//                                    ob_flush();
+                                if( ob_get_level() > 0 )
+                                {
+                                    for( $i=0; $i < ob_get_level(); $i++ )
+                                    {
+//                                        Log::info('notification');
+                                        ob_flush();
+                                    }
+                                }
+
+                                Log::info('notification');
                                 flush();
 
                                 $c++;

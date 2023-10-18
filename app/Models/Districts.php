@@ -11,7 +11,7 @@ class Districts extends Model
 
     protected $table = 'location_districts';
 
-    protected $hidden = ['created_at','updated_at'];
+    protected $hidden = ['local_name', 'lat', 'lon', 'url', 'created_at','updated_at'];
 
     public function division()
     {

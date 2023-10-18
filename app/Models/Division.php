@@ -11,7 +11,7 @@ class Division extends Model
 
     protected $table = 'location_divisions';
 
-    protected $hidden = ['created_at','updated_at'];
+    protected $hidden = ['local_name', 'url', 'created_at','updated_at'];
 
     public function country()
     {

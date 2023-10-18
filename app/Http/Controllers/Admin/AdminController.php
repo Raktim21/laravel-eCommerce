@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Services\AssetService;
 use App\Http\Services\UserService;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
@@ -120,6 +121,13 @@ class AdminController extends Controller
 
     public function pickUpAddressUpdate(PickupAddressRequest $request)
     {
+        if((new AssetService())->activeDeliverySystem() == 2 && !$request->hub_id)
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => ['eCourier Hub configuration is missing.']
+            ], 400);
+        }
         $this->service->updateAdminAddress($request);
 
         return response()->json([
