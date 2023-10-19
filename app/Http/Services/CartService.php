@@ -134,8 +134,9 @@ class CartService
 
     public function convertToAuthCart(Request $request): void
     {
+        $data = $this->cart->clone()->where('guest_session_id', request()->cookie('customer_unique_token'))->get();
+
         if($request->status == 1){
-            $data = $this->cart->clone()->where('guest_session_id', request()->cookie('customer_unique_token'))->get();
 
             foreach ($data as $item) {
                 $cart = $this->cart->clone()->where('user_id', auth()->guard('user-api')->user()->id)
@@ -152,7 +153,7 @@ class CartService
                 }
             }
         } else {
-            $this->cart->clone()->where('guest_session_id', request()->cookie('customer_unique_token'))->delete();
+            $this->cart->where('guest_session_id', request()->cookie('customer_unique_token'))->delete();
         }
     }
 
