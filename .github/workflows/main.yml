@@ -67,6 +67,7 @@ jobs:
             **/.git*
             **/.git*/**
             **/public/upload*
+            **/database/factories*
             **/public/upload*/**
             **/public/json*
             **/public/json*/**
@@ -106,6 +107,7 @@ jobs:
             **/.git*
             **/.git*/**
             **/public/upload*
+            **/database/factories*
             **/public/upload*/**
             **/public/json*
             **/public/json*/**
@@ -147,6 +149,7 @@ jobs:
             **/.git*
             **/.git*/**
             **/public/upload*
+            **/database/factories*
             **/public/upload*/**
             **/public/json*
             **/public/json*/**
@@ -189,6 +192,7 @@ jobs:
             **/.git*
             **/.git*/**
             **/public/upload*
+            **/database/factories*
             **/public/upload*/**
             **/public/json*
             **/public/json*/**
@@ -230,6 +234,7 @@ jobs:
             **/.git*
             **/.git*/**
             **/public/upload*
+            **/database/factories*
             **/public/upload*/**
             **/public/json*
             **/public/json*/**
@@ -272,6 +277,7 @@ jobs:
             **/.git*
             **/.git*/**
             **/public/upload*
+            **/database/factories*
             **/public/upload*/**
             **/public/json*
             **/public/json*/**
@@ -312,6 +318,7 @@ jobs:
             **/.git*
             **/.git*/**
             **/public/upload*
+            **/database/factories*
             **/public/upload*/**
             **/public/json*
             **/public/json*/**
@@ -352,6 +359,7 @@ jobs:
             **/.git*
             **/.git*/**
             **/public/upload*
+            **/database/factories*
             **/public/upload*/**
             **/public/json*
             **/public/json*/**
@@ -394,6 +402,7 @@ jobs:
             **/.git*
             **/.git*/**
             **/public/upload*
+            **/database/factories*
             **/public/upload*/**
             **/public/json*
             **/public/json*/**
