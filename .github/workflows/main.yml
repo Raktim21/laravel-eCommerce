@@ -84,9 +84,9 @@ jobs:
             # composer2 update
             mkdir -p public/uploads/reviews
             php artisan migrate
+            php artisan optimize
             php artisan config:clear
             php artisan cache:clear
-            php artisan optimize
     
       
         continue-on-error: true   
@@ -123,9 +123,9 @@ jobs:
             # composer2 update
             mkdir -p public/uploads/reviews
             php artisan migrate
+            php artisan optimize
             php artisan config:clear
             php artisan cache:clear
-            php artisan optimize
     
       
         continue-on-error: true  
@@ -164,9 +164,9 @@ jobs:
             # composer2 update
             mkdir -p public/uploads/reviews
             php artisan migrate
+            php artisan optimize
             php artisan config:clear
             php artisan cache:clear
-            php artisan optimize
     
       
         continue-on-error: true
@@ -206,9 +206,9 @@ jobs:
             # composer2 update
             mkdir -p public/uploads/reviews
             php artisan migrate
+            php artisan optimize
             php artisan config:clear
             php artisan cache:clear
-            php artisan optimize
     
       
         continue-on-error: true  
@@ -248,9 +248,9 @@ jobs:
             # composer2 update
             mkdir -p public/uploads/reviews
             php artisan migrate
+            php artisan optimize
             php artisan config:clear
             php artisan cache:clear
-            php artisan optimize
     
       
         continue-on-error: true  
@@ -290,9 +290,9 @@ jobs:
             # composer2 update
             mkdir -p public/uploads/reviews
             php artisan migrate
+            php artisan optimize
             php artisan config:clear
             php artisan cache:clear
-            php artisan optimize
     
       
         continue-on-error: true
@@ -330,9 +330,9 @@ jobs:
             # composer2 update
             mkdir -p public/uploads/reviews
             php artisan migrate
+            php artisan optimize
             php artisan config:clear
             php artisan cache:clear
-            php artisan optimize
     
       
         continue-on-error: true
@@ -370,9 +370,9 @@ jobs:
             # composer2 update
             mkdir -p public/uploads/reviews
             php artisan migrate
+            php artisan optimize
             php artisan config:clear
             php artisan cache:clear
-            php artisan optimize
     
       
         continue-on-error: true
@@ -412,9 +412,9 @@ jobs:
             # composer2 update
             mkdir -p public/uploads/reviews
             php artisan migrate
+            php artisan optimize
             php artisan config:clear
             php artisan cache:clear
-            php artisan optimize
     
       
         continue-on-error: true  
