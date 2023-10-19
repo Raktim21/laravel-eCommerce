@@ -114,7 +114,9 @@ class OrderService
                 return $q->with(['product' => function($q1) {
                     return $q1->select('id','name','thumbnail_image')->withTrashed();
                 }])->with(['attributeValues' => function($q1) {
-                    return $q1->withTrashed();
+                    return $q1->with(['attribute' => function($q2) {
+                        return $q2->withTrashed();
+                    }])->withTrashed();
                 }])->withTrashed();
             }])
             ->with('promoCode')
