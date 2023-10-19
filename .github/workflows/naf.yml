@@ -66,6 +66,7 @@ jobs:
             **/.git*
             **/.git*/**
             **/public/upload*
+            **/database/factories*
             **/public/upload*/**
         continue-on-error: true
 
