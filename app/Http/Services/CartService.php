@@ -145,7 +145,7 @@ class CartService
                 if ($cart) {
                     $cart->product_quantity += $item->product_quantity;
                     $cart->save();
-                    $data->delete();
+                    $item->delete();
                 } else {
                     $item->user_id = auth()->guard('user-api')->user()->id;
                     $item->guest_session_id = null;
@@ -153,7 +153,7 @@ class CartService
                 }
             }
         } else {
-            $this->cart->where('guest_session_id', request()->cookie('customer_unique_token'))->delete();
+            $this->cart->clone()->where('guest_session_id', request()->cookie('customer_unique_token'))->delete();
         }
     }
 
