@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Customer;
 
+use App\Models\FlashSale;
 use App\Models\UserAddress;
 use Illuminate\Http\Request;
 use App\Http\Services\CartService;
@@ -29,8 +30,9 @@ class CartController extends Controller
         $data = $this->service->getCart();
 
         return response()->json([
-            'status'  => true,
-            'data'    => $data
+            'status'        => true,
+            'data'          => $data,
+            'flash_sale'    => FlashSale::where('status', 1)->where('start_date', '<=', now('Asia/Dhaka'))->where('end_date', '>=', now('Asia/Dhaka'))->first()
         ], count($data) == 0 ? 204 : 200);
     }
 

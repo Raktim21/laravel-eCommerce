@@ -36,7 +36,7 @@ class CartService
                 $q->with('attributeValues.attribute')
                     ->withSum('inventory','stock_quantity')
                   ->with(['product' => function($q) {
-                        $q->select('id','name','slug','uuid','thumbnail_image');
+                        $q->select('id','name','slug','uuid','thumbnail_image','is_on_sale');
                 }]);
             }])
             ->get();
@@ -134,8 +134,9 @@ class CartService
 
     public function convertToAuthCart(Request $request): void
     {
+        $data = $this->cart->clone()->where('guest_session_id', request()->cookie('customer_unique_token'))->get();
+
         if($request->status == 1){
-            $data = $this->cart->clone()->where('guest_session_id', request()->cookie('customer_unique_token'))->get();
 
             foreach ($data as $item) {
                 $cart = $this->cart->clone()->where('user_id', auth()->guard('user-api')->user()->id)
@@ -144,7 +145,7 @@ class CartService
                 if ($cart) {
                     $cart->product_quantity += $item->product_quantity;
                     $cart->save();
-                    $data->delete();
+                    $item->delete();
                 } else {
                     $item->user_id = auth()->guard('user-api')->user()->id;
                     $item->guest_session_id = null;
