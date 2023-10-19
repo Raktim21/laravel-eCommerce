@@ -80,9 +80,9 @@ jobs:
             cd domains/testback.selopia.com/public_html/
             # composer2 update
             php artisan migrate
-            php artisan optimize
             php artisan config:clear
             php artisan cache:clear
+            php artisan optimize
     
 
 
