@@ -75,7 +75,7 @@ class SiteBannerService
 
 
         if ($request->hasFile('featured_banner_image')) {
-            deleteFile($site_banner->all_product_banner_image);
+            deleteFile($site_banner->featured_banner_image);
             saveImage($request->file('featured_banner_image'), '/uploads/images/site_banner/', $site_banner, 'featured_banner_image');
         }
 
@@ -87,7 +87,7 @@ class SiteBannerService
 
 
         if ($request->hasFile('featured_product_image')) {
-            deleteFile($site_banner->featured_banner_image);
+            deleteFile($site_banner->featured_product_image);
             saveImage($request->file('featured_product_image'), '/uploads/images/site_banner/', $site_banner, 'featured_product_image');
         }
 
