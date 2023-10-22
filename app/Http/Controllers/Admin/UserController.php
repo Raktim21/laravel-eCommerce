@@ -140,6 +140,11 @@ class UserController extends Controller
         $data = Cache::remember('address'.$id, 24*60*60*7, function () use ($id) {
             return $this->service->getAddress($id);
         });
+
+        return response()->json([
+            'status' => true,
+            'data'   => $data
+        ], is_null($data) ? 204 : 200);
     }
 
 

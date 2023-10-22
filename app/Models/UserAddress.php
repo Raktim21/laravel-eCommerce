@@ -66,14 +66,14 @@ class UserAddress extends Model
         });
 
         static::updated(function ($address) {
-            Cache::forget('userAddresses'.$address->id);
+            Cache::forget('address'.$address->id);
             Cache::forget('userDetail'.$address->user_id);
             Cache::forget('customer_addresses'.$address->user_id);
             Cache::forget('userAddresses'.$address->user_id);
         });
 
         static::deleted(function ($address) {
-            Cache::forget('userAddresses'.$address->id);
+            Cache::forget('address'.$address->id);
             Cache::forget('userDetail'.$address->user_id);
             Cache::forget('customer_addresses'.$address->user_id);
             Cache::forget('userAddresses'.$address->user_id);
