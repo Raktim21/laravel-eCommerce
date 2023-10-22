@@ -315,6 +315,7 @@ Route::group(['prefix' => 'admin'], function () {
 
                 Route::get('product-review/change-status/{id}','reviewApproved');
                 Route::get('product-reviews', 'reviewGetAll');
+                Route::get('reviews-by-product/{product_id}', 'reviewGetByProduct');
                 Route::get('product-reviews/{id}', 'getReview');
                 Route::put('product-review-reply/{id}', 'reviewReply');
                 Route::put('product-abuse-reports/{id}', 'changeAbuseStatus');

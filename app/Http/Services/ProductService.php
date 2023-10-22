@@ -315,7 +315,9 @@ class ProductService
                             }])->withTrashed();
                     }]);
             }])
-            ->where('is_published', 1)
+            ->when(!auth()->guard('admin-api')->check(), function ($q) {
+                return $q->where('is_published', 1);
+            })
             ->paginate(5);
     }
 
