@@ -135,6 +135,14 @@ class UserController extends Controller
     }
 
 
+    public function userAddress($id)
+    {
+        $data = Cache::remember('address'.$id, 24*60*60*7, function () use ($id) {
+            return $this->service->getAddress($id);
+        });
+    }
+
+
     public function userAddressCreate(UserAddressCreateRequest $request,$id)
     {
         $this->service->storeAddress($request, $id);

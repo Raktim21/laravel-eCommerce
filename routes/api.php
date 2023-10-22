@@ -180,6 +180,7 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::get('user-detail/{id}','userDetail');
                 Route::get('user-order/{id}','userOrder');
                 Route::get('user-address-list/{id}','userAddressList');
+                Route::get('user-address/{id}', 'userAddress');
                 Route::get('user-order-report-detail/{id}', 'userOrderReport');
             });
 
