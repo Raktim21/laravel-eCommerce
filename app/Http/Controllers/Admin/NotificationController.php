@@ -97,7 +97,11 @@ class NotificationController extends Controller
                             if (connection_aborted()) {break;}
                             DB::disconnect('u652464815_testback');
 
-                            DB::connection()->getPdo();
+                            $pdo = DB::connection()->getPdo();
+
+                            $pdo = json_encode($pdo, true);
+
+                            Log::info('pdo info: '. $pdo);
 
                             if (DB::connection()->getDatabaseName()) {
                                 Log::alert('after disconnecting, connected to: ' . DB::connection()->getDatabaseName());
