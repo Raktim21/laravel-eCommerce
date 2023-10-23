@@ -103,6 +103,7 @@ class NotificationController extends Controller
             }
         }
         catch (\Throwable $th) {
+            Log::error('notification: ' . $th->getMessage());
             return response()->json( [
                 'status'   => false,
                 'errors'   => ['Something went wrong']
