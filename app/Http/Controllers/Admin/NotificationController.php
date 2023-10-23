@@ -56,7 +56,7 @@ class NotificationController extends Controller
                         $c = 0;
                         while ((time() - $start_time) < 30)
                         {
-                            Artisan::command('config:clear');
+                            Artisan::call('config:clear');
 //                            DB::connection()->getPdo();
 //
 //                            if (DB::connection()->getDatabaseName()) {
@@ -97,7 +97,7 @@ class NotificationController extends Controller
                             }
 
                             if (connection_aborted()) {break;}
-                            DB::disconnect('u652464815_testback');
+                            DB::disconnect();
 
 //                            if (DB::connection()->getDatabaseName()) {
 //                                Log::alert('after disconnecting, connected to: ' . DB::connection()->getDatabaseName());
