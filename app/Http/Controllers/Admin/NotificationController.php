@@ -112,8 +112,8 @@ class NotificationController extends Controller
             Log::error('notification: ' . $th->getMessage());
             return response()->json( [
                 'status'   => false,
-                'errors'   => ['Something went wrong']
-            ],500 );
+                'error'   => $th->getMessage()
+            ],400 );
         }
     }
 
