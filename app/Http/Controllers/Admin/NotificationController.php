@@ -95,7 +95,7 @@ class NotificationController extends Controller
                             }
 
                             if (connection_aborted()) {break;}
-                            DB::disconnect();
+                            DB::disconnect('u652464815_testback');
 
                             DB::connection()->getPdo();
 
