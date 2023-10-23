@@ -55,11 +55,6 @@ class NotificationController extends Controller
                         $c = 0;
                         while ((time() - $start_time) < 30)
                         {
-                            DB::connection()->getPdo();
-
-                            if (DB::connection()->getDatabaseName()) {
-                                Log::alert('connected to: ' . DB::connection()->getDatabaseName());
-                            }
                             $notifications = Notification::
                                 select('id','data','read_at','created_at')
                                 ->where('notifiable_id', '=', auth()->user()->id)
@@ -94,7 +89,7 @@ class NotificationController extends Controller
                             }
 
                             if (connection_aborted()) {break;}
-                            DB::disconnect();
+//                            DB::disconnect();
                             sleep(3);
                         }
 
