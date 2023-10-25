@@ -156,6 +156,19 @@ class ProductController extends Controller
     }
 
 
+    public function reviewGetByProduct($product_id)
+    {
+        $data = Cache::remember('productReviews'.$product_id.request()->get('page', 1), 24*60*60, function () use  ($product_id) {
+            return $this->service->getReviewsByProduct($product_id);
+        });
+
+        return response()->json([
+            'status'  => true,
+            'data'    => $data
+        ], $data->isEmpty() ? 204 : 200);
+    }
+
+
     public function getReview($id)
     {
         $data = Cache::remember('productReview'.$id, 24*60*60*7, function () use ($id) {

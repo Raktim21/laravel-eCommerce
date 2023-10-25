@@ -366,4 +366,10 @@ class UserService
         );
     }
 
+    public function getAddress($id)
+    {
+        return UserAddress::with('upazila.district.division.country')
+            ->with('union')->find($id);
+    }
+
 }
