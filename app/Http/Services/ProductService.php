@@ -38,7 +38,7 @@ class ProductService
                 return $query->where('name', 'like', '%' . $request->search . '%');
             })->when($request->category_id, function ($query) use ($request) {
                 return $query->where('category_id', $request->category_id);
-            })->when($request->sub_category_id, function ($query) use ($request) {
+            })->when($request->category_sub_id, function ($query) use ($request) {
                 return $query->where('category_sub_id', $request->category_sub_id);
             })->when($request->brands, function ($query) use ($request) {
                 $brands = json_decode($request->brands, true);
