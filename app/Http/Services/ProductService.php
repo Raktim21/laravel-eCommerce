@@ -39,7 +39,7 @@ class ProductService
             })->when($request->category_id, function ($query) use ($request) {
                 return $query->where('category_id', $request->category_id);
             })->when($request->sub_category_id, function ($query) use ($request) {
-                return $query->where('category_sub_id', $request->sub_category_id);
+                return $query->where('category_sub_id', $request->category_sub_id);
             })->when($request->brands, function ($query) use ($request) {
                 $brands = json_decode($request->brands, true);
                 return $query->whereIn('brand_id', $brands);

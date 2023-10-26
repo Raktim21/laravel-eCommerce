@@ -29,7 +29,7 @@ class HomepageRequest extends FormRequest
             'per_page'        => 'required|integer',
             'search'          => 'sometimes|string',
             'category_id'     => 'sometimes|exists:product_categories,id',
-            'sub_category_id' => 'sometimes|exists:product_categories_sub,id',
+            'category_sub_id' => 'sometimes|exists:product_categories_sub,id',
 //            'brands'          => 'sometimes|array',
 //            'brands.*'        => 'required|exists:product_brands,id',
             'sort_by'         => 'sometimes|nullable',
