@@ -180,6 +180,7 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::get('user-detail/{id}','userDetail');
                 Route::get('user-order/{id}','userOrder');
                 Route::get('user-address-list/{id}','userAddressList');
+                Route::get('user-address/{id}', 'userAddress');
                 Route::get('user-order-report-detail/{id}', 'userOrderReport');
             });
 
@@ -315,6 +316,7 @@ Route::group(['prefix' => 'admin'], function () {
 
                 Route::get('product-review/change-status/{id}','reviewApproved');
                 Route::get('product-reviews', 'reviewGetAll');
+                Route::get('reviews-by-product/{product_id}', 'reviewGetByProduct');
                 Route::get('product-reviews/{id}', 'getReview');
                 Route::put('product-review-reply/{id}', 'reviewReply');
                 Route::put('product-abuse-reports/{id}', 'changeAbuseStatus');

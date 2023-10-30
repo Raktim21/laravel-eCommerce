@@ -34,15 +34,17 @@ class ProductReview extends Model
 
         static::created(function ($review) {
             forgetCaches('allProductReviews');
+            forgetCaches('productReviews'.$review->orderItem->combination->product_id);
             Cache::delete('customer_order_detail'.$review->orderItem->order_id);
         });
 
         static::updated(function ($review) {
             forgetCaches('product_reviews'.$review->orderItem->combination->product_id);
+            forgetCaches('productReviews'.$review->orderItem->combination->product_id);
             forgetCaches('allProductReviews');
+            forgetCaches('product_reviews');
             Cache::delete('productReview'.$review->id);
             Cache::delete('product_reviews');
-            forgetCaches('product_reviews');
         });
     }
 }

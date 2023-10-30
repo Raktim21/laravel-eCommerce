@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Notification;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -55,6 +56,13 @@ class NotificationController extends Controller
                         $c = 0;
                         while ((time() - $start_time) < 30)
                         {
+                            Artisan::call('config:clear');
+//                            DB::connection()->getPdo();
+//
+//                            if (DB::connection()->getDatabaseName()) {
+//                                Log::alert('before disconnecting, connected to: ' . DB::connection()->getDatabaseName());
+//                            }
+
                             $notifications = Notification::
                                 select('id','data','read_at','created_at')
                                 ->where('notifiable_id', '=', auth()->user()->id)
@@ -90,6 +98,11 @@ class NotificationController extends Controller
 
                             if (connection_aborted()) {break;}
                             DB::disconnect();
+
+//                            if (DB::connection()->getDatabaseName()) {
+//                                Log::alert('after disconnecting, connected to: ' . DB::connection()->getDatabaseName());
+//                            }
+
                             sleep(3);
                         }
 
@@ -103,10 +116,11 @@ class NotificationController extends Controller
             }
         }
         catch (\Throwable $th) {
+            Log::error('notification: ' . $th->getMessage());
             return response()->json( [
                 'status'   => false,
-                'errors'   => ['Something went wrong']
-            ],500 );
+                'error'   => $th->getMessage()
+            ],400 );
         }
     }
 
