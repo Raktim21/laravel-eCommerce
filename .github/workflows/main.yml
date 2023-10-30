@@ -82,7 +82,7 @@ jobs:
           port: 65002
           script: |
             cd domains/api.shukkarun.com/public_html/
-            # composer2 update
+            composer2 update
             mkdir -p public/uploads/reviews
             php artisan migrate
             php artisan optimize
@@ -122,7 +122,7 @@ jobs:
           port: 65002
           script: |
             cd domains/api.vintbd.com/public_html/
-            # composer2 update
+            composer2 update
             mkdir -p public/uploads/reviews
             php artisan migrate
             php artisan optimize
@@ -164,7 +164,7 @@ jobs:
           port: 65002
           script: |
             cd domains/api.glamdesmit.com/public_html/
-            # composer2 update
+            composer2 update
             mkdir -p public/uploads/reviews
             php artisan migrate
             php artisan optimize
@@ -207,7 +207,7 @@ jobs:
           port: 65002
           script: |
             cd domains/api.jannatistore.com/public_html/
-            # composer2 update
+            composer2 update
             mkdir -p public/uploads/reviews
             php artisan migrate
             php artisan optimize
@@ -250,7 +250,7 @@ jobs:
           script: |
             
             cd domains/apigreenbangla.selopia.com/public_html/
-            # composer2 update
+            composer2 update
             mkdir -p public/uploads/reviews
             php artisan migrate
             php artisan optimize
@@ -293,7 +293,7 @@ jobs:
           script: |
             
             cd domains/apibasictechnology.selopia.com/public_html/
-            # composer2 update
+            composer2 update
             mkdir -p public/uploads/reviews
             php artisan migrate
             php artisan optimize
@@ -334,7 +334,7 @@ jobs:
           script: |
             
             cd domains/apitechview.selopia.com/public_html/
-            # composer2 update
+            composer2 update
             mkdir -p public/uploads/reviews
             php artisan migrate
             php artisan optimize
@@ -375,7 +375,7 @@ jobs:
           script: |
             
             cd domains/api.yellowlix.com/public_html/
-            # composer2 update
+            composer2 update
             mkdir -p public/uploads/reviews
             php artisan migrate
             php artisan optimize
@@ -418,7 +418,7 @@ jobs:
           script: |
             
             cd domains/api.essencebd.store/public_html/
-            # composer2 update
+            composer2 update
             mkdir -p public/uploads/reviews
             php artisan migrate
             php artisan optimize
