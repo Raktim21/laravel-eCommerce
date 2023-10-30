@@ -16,6 +16,7 @@ class PickupAddressSeeder extends Seeder
     public function run()
     {
         $address = new OrderPickupAddress();
+        $address->pickup_unique_id = rand(10000, 999990);
         $address->name = 'Selopia';
         $address->phone = '01700000000';
         $address->email = 'selopia@selopia.us';

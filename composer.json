@@ -23,6 +23,7 @@
         "mews/purifier": "^3.3",
         "opcodesio/log-viewer": "^3.1",
         "spatie/laravel-permission": "^5.8",
+        "spatie/laravel-sitemap": "^6.4",
         "tomfordrumm/jwt-auth": "dev-develop"
     },
     "require-dev": {
