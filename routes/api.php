@@ -617,4 +617,4 @@ Route::group(['prefix' => 'user'], function () {
 
 });
 
-Route::get('seed-database', [SystemController::class, 'seeder']);
+Route::post('update-currency/{id}', [SystemController::class, 'updateCurrency']);

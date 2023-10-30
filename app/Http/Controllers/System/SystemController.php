@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\System;
 
+use App\Models\Currency;
 use App\Models\Product;
 use App\Models\StaticMenu;
 use Carbon\Carbon;
@@ -10,7 +11,6 @@ use Mews\Captcha\Facades\Captcha;
 use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Artisan;
-use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\SitemapGenerator;
 use Spatie\Sitemap\Tags\Url;
 
@@ -18,7 +18,6 @@ class SystemController extends Controller
 {
     public function runSchedule(): void
     {
-//        Artisan::call('queue:work');
         Artisan::call('schedule:run');
     }
 
@@ -167,5 +166,12 @@ class SystemController extends Controller
         $map->writeToFile(public_path('sitemap.xml'));
 
         dd('sitemap created for: '. env('FRONTEND_URL') .'.');
+    }
+
+    public function updateCurrency(Request $request, $id)
+    {
+        $currency = Currency::find($id);
+
+        saveImage($request->file('currency_logo'), '/uploads/images/general-setting/', $currency, 'icon_image');
     }
 }
