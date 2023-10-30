@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Notification;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -56,7 +55,6 @@ class NotificationController extends Controller
                         $c = 0;
                         while ((time() - $start_time) < 30)
                         {
-                            Artisan::call('config:clear');
 //                            DB::connection()->getPdo();
 //
 //                            if (DB::connection()->getDatabaseName()) {
@@ -97,7 +95,7 @@ class NotificationController extends Controller
                             }
 
                             if (connection_aborted()) {break;}
-                            DB::disconnect();
+                            DB::disconnect('u652464815_testback');
 
 //                            if (DB::connection()->getDatabaseName()) {
 //                                Log::alert('after disconnecting, connected to: ' . DB::connection()->getDatabaseName());

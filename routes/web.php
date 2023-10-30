@@ -17,9 +17,12 @@ use GuzzleHttp\Client;
 |
 */
 
-Route::get('email-configuration', [SystemController::class, 'configureEmailView'])->name('configure-email-view');
-Route::get('save-email-configuration', [SystemController::class, 'configureEmail'])->name('configureEmail');
-Route::get('/crone-job', [SystemController::class, 'runSchedule'])->name('crone.job');
+Route::controller(SystemController::class)->group(function () {
+    Route::get('email-configuration', 'configureEmailView')->name('configure-email-view');
+    Route::get('save-email-configuration', 'configureEmail')->name('configureEmail');
+    Route::get('/generate-sitemap', 'generateSitemap');
+    Route::get('/reset-logs', 'clearLogs');
+});
 
 Route::controller(GoogleFacebookController::class)->group(function () {
     Route::get('redirect-auth', 'redirect');
