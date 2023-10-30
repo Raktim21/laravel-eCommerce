@@ -22,6 +22,7 @@ class GeneralSettingService
     public function updateSetting(Request $request)
     {
 //        $this->setting->dashboard_language_id = $request->dashboard_language_id ?? $this->setting->dashboard_language_id;
+        $this->setting->currency_id = $request->currency_id ?? $this->setting->currency_id;
         $this->setting->name = $request->name ?? $this->setting->name;
         $this->setting->email = $request->email ?? $this->setting->email;
         $this->setting->phone = $request->phone ?? $this->setting->phone;
@@ -58,15 +59,9 @@ class GeneralSettingService
 
         if ($request->hasFile('favicon'))
         {
-            deleteFile($this->setting->site_favicon);
+            deleteFile($this->setting->favicon);
             saveImage($request->file('favicon'), '/uploads/images/general-setting/', $this->setting, 'favicon');
         }
 
-    }
-
-    public function changeCurrency($currency_id)
-    {
-        $this->setting->currency_id = $currency_id;
-        $this->setting->save();
     }
 }
