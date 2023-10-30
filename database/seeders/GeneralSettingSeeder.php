@@ -18,7 +18,7 @@ class GeneralSettingSeeder extends Seeder
     {
         $setting = new GeneralSetting();
         $setting->id        = 1;
-        $setting->merchant_unique_id    = uuid_create('int');
+//        $setting->merchant_unique_id    = uuid_create('int');
         $setting->dashboard_language_id = 1;
         $setting->currency_id           = 1;
         $setting->name      = 'Selopia Ecommerce';
