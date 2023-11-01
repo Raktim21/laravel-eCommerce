@@ -194,9 +194,15 @@ class UserService
     {
         $user = $this->user->clone()->findOrFail($id);
 
-        if ($user->profile->image != null && GalleryHasImage::where('image_url', $user->profile->image)->doesntExist())
+        if ($user->profile->image != null)
         {
-            deleteFile($user->profile->image);
+            $img = GalleryHasImage::where('image_url', $user->profile->image)->first();
+
+            if (!$img) {
+                deleteFile($user->profile->image);
+            } else {
+                $img->decrement('usage');
+            }
         }
 
         if ($request->hasFile('avatar')) {

@@ -87,7 +87,7 @@ class GalleryService
 
     public function getImages($id)
     {
-        return GalleryHasImage::where('gallery_id', $id)->latest()->paginate(1);
+        return GalleryHasImage::where('gallery_id', $id)->latest()->paginate(10);
     }
 
     public function updateInfo(Request $request, $id): ?string
