@@ -34,7 +34,7 @@ class GalleryCreateRequest extends FormRequest
                                     ->where('user_id', auth()->user()->id)
                                     ->first();
 
-                                if ($gallery)
+                                if ($gallery && $gallery->id != $this->route('id'))
                                 {
                                     $fail('You already have a gallery with same name.');
                                 }

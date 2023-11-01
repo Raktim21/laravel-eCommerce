@@ -73,6 +73,31 @@ class GalleryController extends Controller
         ], 500);
     }
 
+    public function update(Request $request, $id)
+    {
+        $validate = Validator::make($request->all(), [
+            'name' => 'required|string|max:100'
+        ]);
+
+        if ($validate->fails())
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => $validate->errors()->all()
+            ], 422);
+        }
+
+        if ($response = $this->service->updateInfo($request, $id))
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => [$response]
+            ], 400);
+        }
+
+        return response()->json(['status' => true]);
+    }
+
     public function updateStatus($id)
     {
         if ($this->service->updateGalleryStatus($id))
@@ -84,5 +109,11 @@ class GalleryController extends Controller
             'status' => false,
             'errors' => ['You are not authorized to update the status.']
         ], 403);
+    }
+
+    public function deleteImage($id)
+    {
+        if ($response = $this->service->removeImage($id))
+        {}
     }
 }

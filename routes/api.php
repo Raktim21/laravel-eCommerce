@@ -295,7 +295,9 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::get('gallery-list', 'galleryList');
                 Route::get('gallery-images/{id}', 'galleryImages');
                 Route::post('gallery-store', 'create');
+                Route::put('gallery-update/{id}', 'update');
                 Route::get('gallery-status/{id}', 'updateStatus');
+                Route::delete('gallery-image-delete/{id}', 'deleteImage');
             });
         });
 

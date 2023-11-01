@@ -89,4 +89,39 @@ class GalleryService
     {
         return GalleryHasImage::where('gallery_id', $id)->latest()->paginate(1);
     }
+
+    public function updateInfo(Request $request, $id): ?string
+    {
+        $gallery = $this->gallery->clone()->findOrFail($id);
+
+        if ($gallery->is_public == 0 && $gallery->user_id != auth()->user()->id)
+        {
+            return 'You are not allowed to update the name of a private folder.';
+        }
+
+        $gallery->update([
+            'name' => $request->name
+        ]);
+
+        return null;
+    }
+
+    public function removeImage($id)
+    {
+        $img = GalleryHasImage::findOrFail($id);
+
+        if ($img->gallery->is_public == 0 && $img->gallery->user_id != auth()->user()->id)
+        {
+            return 'you are not allowed to delete an image from a private folder.';
+        }
+
+        if ($img->usage > 0)
+        {
+            return 'Selected image is already in use.';
+        }
+
+        $img->delete();
+
+        return null;
+    }
 }

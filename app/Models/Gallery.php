@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class Gallery extends Model
 {
@@ -22,4 +23,5 @@ class Gallery extends Model
     {
         return $this->hasMany(GalleryHasImage::class, 'gallery_id');
     }
+
 }
