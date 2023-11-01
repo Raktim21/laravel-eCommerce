@@ -41,7 +41,7 @@ class InventoryStockCommand extends Command
                         ->where('stock_quantity', 0);
                 })->get();
 
-                if (!is_null($stock))
+                if (count($stock) != 0)
                 {
                     $stock = json_decode($stock);
 
