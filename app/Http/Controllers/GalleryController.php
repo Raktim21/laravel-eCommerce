@@ -114,6 +114,13 @@ class GalleryController extends Controller
     public function deleteImage($id)
     {
         if ($response = $this->service->removeImage($id))
-        {}
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => [$response]
+            ], 400);
+        }
+
+        return response()->json(['status' => true]);
     }
 }
