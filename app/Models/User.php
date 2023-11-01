@@ -66,6 +66,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasOne(EmailVerification::class, 'user_id');
     }
 
+    public function galleries()
+    {
+        return $this->hasMany(Gallery::class, 'user_id');
+    }
+
     public function contactForms()
     {
         return $this->hasMany(Contact::class, 'user_id');

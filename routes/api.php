@@ -2,6 +2,7 @@
 
 require __DIR__. '/site-api.php';
 
+use App\Http\Controllers\GalleryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AdminController;
@@ -285,6 +286,16 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::post('faq-store','faqStore');
                 Route::put('faq-update/{id}','faqUpdate');
                 Route::delete('faq-delete/{id}','faqDelete');
+            });
+        });
+
+        Route::controller(GalleryController::class)->group(function () {
+
+            Route::group(['middleware' => ['permission:manage gallery']], function () {
+                Route::get('gallery-list', 'galleryList');
+                Route::get('gallery-images/{id}', 'galleryImages');
+                Route::post('gallery-store', 'create');
+                Route::get('gallery-status/{id}', 'updateStatus');
             });
         });
 
@@ -616,5 +627,3 @@ Route::group(['prefix' => 'user'], function () {
     Route::post('subscribe', [SubscriberController::class, 'create']);
 
 });
-
-Route::post('update-currency/{id}', [SystemController::class, 'updateCurrency']);

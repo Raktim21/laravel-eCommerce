@@ -167,11 +167,4 @@ class SystemController extends Controller
 
         dd('sitemap created for: '. env('FRONTEND_URL') .'.');
     }
-
-    public function updateCurrency(Request $request, $id)
-    {
-        $currency = Currency::find($id);
-
-        saveImage($request->file('currency_logo'), '/uploads/images/general-setting/', $currency, 'icon_image');
-    }
 }
