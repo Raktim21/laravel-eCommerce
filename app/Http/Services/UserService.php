@@ -4,6 +4,7 @@ namespace App\Http\Services;
 
 use App\Jobs\NewAdminJob;
 use App\Mail\AdminPasswordMail;
+use App\Models\GalleryHasImage;
 use App\Models\Order;
 use App\Models\OrderPickupAddress;
 use App\Models\User;
@@ -193,12 +194,23 @@ class UserService
     {
         $user = $this->user->clone()->findOrFail($id);
 
-        if ($user->profile->image != null)
+        if ($user->profile->image != null && GalleryHasImage::where('image_url', $user->profile->image)->doesntExist())
         {
             deleteFile($user->profile->image);
         }
 
-        saveImage($request->file('avatar'), $isAdmin ?'/uploads/admin/avatars/' : '/uploads/customer/avatars/', $user->profile, 'image');
+        if ($request->hasFile('avatar')) {
+            saveImage($request->file('avatar'), $isAdmin ? '/uploads/admin/avatars/' : '/uploads/customer/avatars/', $user->profile, 'image');
+        }
+
+        else if ($request->image_id) {
+            $image = GalleryHasImage::find($request->image_id);
+
+            $user->profile->image = $image->image_url;
+            $user->profile->save();
+
+            $image->increment('usage');
+        }
     }
 
 
