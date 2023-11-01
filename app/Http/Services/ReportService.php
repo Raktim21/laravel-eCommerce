@@ -16,8 +16,7 @@ class ReportService
         $status = OrderStatus::where('name', 'Delivered')->first();
         $data = DB::table('orders')->where('order_status_id','=',$status->id)
             ->selectRaw(
-                "count(id) as total_order,
-                        round(sum(total_amount),2) as revenue,
+                "round(sum(total_amount),2) as revenue,
                         (select sum(product_combinations.cost_price) as product_cost from
                         order_items left join product_combinations on
                         order_items.product_combination_id=product_combinations.id left join orders on
@@ -25,6 +24,7 @@ class ReportService
                         orders.order_status_id='".$status->id."') as product_cost"
             )->first();
 
+        $data->total_order     = DB::table('orders')->where('order_status_id','=',$status->id)->count();
         $data->cost            = DB::table('expenses')->sum('amount');
 
         $data->revenue         = $data->revenue == null ? 0 : $data->revenue;

@@ -1,7 +1,6 @@
 <?php
 
-use App\Models\OrderPickupAddress;
-use App\Models\UserAddress;
+use App\Models\GalleryHasImage;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 
@@ -52,9 +51,13 @@ function saveImage($image, $path, $model, $field)
 
 function deleteFile($filepath): void
 {
-    if (File::exists(public_path($filepath)))
-    {
+    $img = GalleryHasImage::where('image_url', $filepath)->first();
+
+    if (!$img && File::exists(public_path($filepath))) {
         File::delete(public_path($filepath));
+    }
+    else {
+        $img->decrement('usage');
     }
 }
 

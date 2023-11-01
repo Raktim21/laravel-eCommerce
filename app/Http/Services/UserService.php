@@ -196,13 +196,7 @@ class UserService
 
         if ($user->profile->image != null)
         {
-            $img = GalleryHasImage::where('image_url', $user->profile->image)->first();
-
-            if (!$img) {
-                deleteFile($user->profile->image);
-            } else {
-                $img->decrement('usage');
-            }
+            deleteFile($user->profile->image);
         }
 
         if ($request->hasFile('avatar')) {
