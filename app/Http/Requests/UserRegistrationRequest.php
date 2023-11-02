@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\GalleryHasImage;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -32,6 +33,19 @@ class UserRegistrationRequest extends FormRequest
             'password'              => 'required|min:6|confirmed',
             'password_confirmation' => 'required',
             'avatar'                => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image_id'              => ['sometimes','integer',
+                                        function($attr, $val, $fail) {
+                                            $img = GalleryHasImage::find($val);
+
+                                            if (!$img)
+                                            {
+                                                $fail('No image found.');
+                                            }
+
+                                            else if ($img->gallery->user_id != auth()->user()->id && $img->is_public == 0) {
+                                                $fail('You cannot select an image from private folder.');
+                                            }
+                                        }],
             'gender'                => 'required|exists:user_sexes,id', // 1: male, 2: female
         ];
     }

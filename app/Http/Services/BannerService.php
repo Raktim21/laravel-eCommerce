@@ -33,7 +33,13 @@ class BannerService
         try {
             $banner = $this->banner->clone()->create($request->except('image'));
 
-            saveImage($request->file('image'), '/uploads/images/banner/', $banner, 'image');
+            if ($request->hasFile('image')) {
+                saveImage($request->file('image'), '/uploads/images/banner/', $banner, 'image');
+            }
+            else if ($request->image_id)
+            {
+                saveImageFromMedia($request->image_id, $banner, 'image');
+            }
 
             DB::commit();
             return true;
@@ -55,7 +61,14 @@ class BannerService
 
             $banner->update($request->except('image'));
 
-            saveImage($request->image, '/uploads/images/banner/', $banner, 'image');
+            if ($request->hasFile('image')) {
+                saveImage($request->image, '/uploads/images/banner/', $banner, 'image');
+            }
+
+            else if ($request->image_id)
+            {
+                saveImageFromMedia($request->image_id, $banner, 'image');
+            }
 
             DB::commit();
 

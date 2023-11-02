@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\GalleryHasImage;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -30,7 +31,20 @@ class AdminCreateRequest extends FormRequest
             'username'              => 'required|string|email|max:98|unique:users,username',
             'phone'                 => ['required','string',
                                         'regex:/^(?:\+?88|0088)?01[3-9]\d{8}$/','unique:users,phone'],
-            'avatar'                => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'avatar'                => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image_id'              => ['sometimes','integer',
+                                        function($attr, $val, $fail) {
+                                            $img = GalleryHasImage::find($val);
+
+                                            if (!$img)
+                                            {
+                                                $fail('No image found.');
+                                            }
+
+                                            else if ($img->gallery->user_id != auth()->user()->id && $img->is_public == 0) {
+                                                $fail('You cannot select an image from private folder.');
+                                            }
+                                        }],
             'gender'                => 'required|exists:user_sexes,id', // 1: male, 2: female
             'role'                  => 'required|exists:roles,id',
             'shop_branch_id'        => 'required|exists:shop_branches,id'

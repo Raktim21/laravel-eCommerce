@@ -97,6 +97,11 @@ class UserService
                 saveImage($request->file('avatar'), '/uploads/admin/avatars/', $profile, 'image');
             }
 
+            else if ($request->image_id)
+            {
+                saveImageFromMedia($request->image_id, $profile, 'image');
+            }
+
             $data = array(
                 'user'      => $admin->name,
                 'password'  => $password
