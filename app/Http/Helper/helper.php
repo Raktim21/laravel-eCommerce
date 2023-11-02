@@ -53,8 +53,10 @@ function deleteFile($filepath): void
 {
     $img = GalleryHasImage::where('image_url', $filepath)->first();
 
-    if (!$img && File::exists(public_path($filepath))) {
-        File::delete(public_path($filepath));
+    if (!$img) {
+        if (File::exists(public_path($filepath))) {
+            File::delete(public_path($filepath));
+        }
     }
     else {
         $img->decrement('usage');
