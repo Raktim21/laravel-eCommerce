@@ -28,12 +28,14 @@ class GalleryService
                 'user_id' => auth()->user()->id
             ]);
 
-            foreach($request->images as $image) {
-                $image_url = $new_gallery->images()->create([
-                    'image_url' => ''
-                ]);
+            if ($request->images) {
+                foreach ($request->images as $image) {
+                    $image_url = $new_gallery->images()->create([
+                        'image_url' => ''
+                    ]);
 
-                saveImage($image, '/uploads/galleries/', $image_url, 'image_url');
+                    saveImage($image, '/uploads/galleries/', $image_url, 'image_url');
+                }
             }
 
             DB::commit();
