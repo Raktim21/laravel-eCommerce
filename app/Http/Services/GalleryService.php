@@ -126,4 +126,37 @@ class GalleryService
 
         return null;
     }
+
+    public function storeImages($request, $id)
+    {
+        $gallery = $this->gallery->clone()->findOrFail($id);
+
+        if ($gallery->user_id != auth()->user()->id && $gallery->is_public == 0)
+        {
+            return 'You cannot add images to a private folder.';
+        }
+
+        DB::beginTransaction();
+
+        try {
+            foreach ($request->images as $image)
+            {
+                $image_url = $gallery->images()->create([
+                    'image_url' => ''
+                ]);
+
+                saveImage($image, '/uploads/galleries/', $image_url, 'image_url');
+            }
+
+            DB::commit();
+
+            return null;
+        }
+        catch (QueryException $ex)
+        {
+            DB::rollback();
+            Log::error('add images to a folder: ' . $ex->getMessage());
+            return $ex->getMessage();
+        }
+    }
 }

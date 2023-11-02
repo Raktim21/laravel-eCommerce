@@ -16,6 +16,11 @@ class OrderAdditionalCharge extends Model
 
     protected $hidden = ['created_at','updated_at'];
 
+    protected $casts = [
+        'is_percentage'    => 'boolean',
+        'status'           => 'boolean'
+    ];
+
     public static function boot()
     {
         parent::boot();

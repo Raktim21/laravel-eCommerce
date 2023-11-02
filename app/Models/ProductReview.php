@@ -18,6 +18,10 @@ class ProductReview extends Model
 
     protected $hidden = ['updated_at'];
 
+    protected $casts = [
+        'is_published'    => 'boolean',
+    ];
+
     public function images()
     {
         return $this->hasMany(ProductReviewImage::class, 'product_review_id');

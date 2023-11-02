@@ -16,6 +16,10 @@ class ProductCategory extends Model
 
     protected $hidden = ['created_at','updated_at'];
 
+    protected $casts = [
+        'status'    => 'boolean',
+    ];
+
     public function subCategories()
     {
         return $this->hasMany(ProductSubCategory::class, 'category_id')->latest();

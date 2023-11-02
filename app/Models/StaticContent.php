@@ -11,9 +11,15 @@ class StaticContent extends Model
     use HasFactory;
 
     protected $table = 'static_contents';
+
     protected $guarded = ['id'];
+
     protected $hidden = ['created_at','updated_at'];
 
+    protected $casts = [
+        'is_updatable'    => 'boolean',
+        'is_deletable'    => 'boolean'
+    ];
 
     public function staticMenu()
     {

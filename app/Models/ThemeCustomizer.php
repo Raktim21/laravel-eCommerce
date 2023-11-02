@@ -8,11 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class ThemeCustomizer extends Model
 {
     use HasFactory;
-    
+
     protected $table = 'theme_customizers';
 
     protected $guarded = ['id'];
 
     protected $hidden = ['created_at','updated_at'];
 
+    protected $casts = [
+        'is_active'         => 'boolean',
+        'is_inactivable'    => 'boolean',
+        'is_static_position'=> 'boolean'
+    ];
 }

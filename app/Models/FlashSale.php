@@ -14,6 +14,10 @@ class FlashSale extends Model
 
     protected $hidden = ['created_at', 'updated_at'];
 
+    protected $casts = [
+        'status'    => 'boolean'
+    ];
+
     public static function boot()
     {
         parent::boot();

@@ -14,6 +14,10 @@ class Gallery extends Model
 
     protected $hidden = ['created_at', 'updated_at'];
 
+    protected $casts = [
+        'is_public' => 'boolean'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

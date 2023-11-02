@@ -73,6 +73,32 @@ class GalleryController extends Controller
         ], 500);
     }
 
+    public function addImages(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'images'    => 'required|array',
+            'images.*'  => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+        ]);
+
+        if($validator->fails())
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()->all()
+            ], 422);
+        }
+
+        if($response = $this->service->storeImages($request, $id))
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => [$response]
+            ], 400);
+        }
+
+        return response()->json(['status' => true], 201);
+    }
+
     public function update(Request $request, $id)
     {
         $validate = Validator::make($request->all(), [

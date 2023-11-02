@@ -19,6 +19,10 @@ class ProductAbuseReport extends Model
 
     protected $hidden = ['updated_at'];
 
+    protected $casts = [
+        'is_checked'    => 'boolean',
+    ];
+
     public function product()
     {
         return $this->belongsTo(Product::class, 'product_id');

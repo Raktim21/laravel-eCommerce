@@ -12,8 +12,9 @@ class Notification extends Model
     protected $table = 'notifications';
 
     protected $guarded = ['id'];
-    
+
     protected $casts = [
         'id' => 'string',
+        'is_send' => 'boolean'
     ];
 }

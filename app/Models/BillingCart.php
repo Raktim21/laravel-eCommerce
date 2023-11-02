@@ -17,8 +17,11 @@ class BillingCart extends Model
         'discount_amount', 'remarks', 'is_follow_up', 'is_ordered'
     ];
 
-    protected $hidden = [
-        'updated_at'
+    protected $hidden = ['updated_at'];
+
+    protected $casts = [
+        'is_ordered'    => 'boolean',
+        'is_follow_up'  => 'boolean'
     ];
 
     public function items()

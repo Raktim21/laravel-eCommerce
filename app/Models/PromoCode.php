@@ -16,6 +16,13 @@ class PromoCode extends Model
 
     protected $hidden = ['created_at','updated_at'];
 
+    protected $casts = [
+        'is_active'         => 'boolean',
+        'is_global_user'    => 'boolean',
+        'is_global_product' => 'boolean',
+        'is_percentage'     => 'boolean'
+    ];
+
     public function orders()
     {
         return $this->hasMany(Order::class, 'promo_code_id');

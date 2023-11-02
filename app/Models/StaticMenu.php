@@ -11,8 +11,15 @@ class StaticMenu extends Model
     use HasFactory;
 
     protected $table = 'static_menus';
+
     protected $guarded = ['id'];
+
     protected $hidden = ['created_at','updated_at'];
+
+    protected $casts = [
+        'is_changeable'    => 'boolean',
+        'status'           => 'boolean'
+    ];
 
     public function parentMenu() {
         return $this->belongsTo(StaticMenu::class, 'parent_menu_id');
