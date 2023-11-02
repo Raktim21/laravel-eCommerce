@@ -48,6 +48,13 @@ class BrandController extends Controller
 
     public function store(BrandRequest $request)
     {
+        if (!$request->hasAny(['image', 'image_id']))
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => ['Please select an image.']
+            ], 422);
+        }
         $this->service->store($request);
 
         return response()->json([

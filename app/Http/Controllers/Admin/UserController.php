@@ -37,6 +37,13 @@ class UserController extends Controller
 
    public function userCreate(UserRegistrationRequest $request)
    {
+       if (!$request->hasAny(['avatar', 'image_id']))
+       {
+           return response()->json([
+               'status' => false,
+               'errors' => ['Please select an image.']
+           ], 422);
+       }
        if((new AuthService())->register($request, 0))
        {
            return response()->json([
@@ -99,6 +106,13 @@ class UserController extends Controller
 
     public function userAvatarUpdate(AvatarUpdateRequest $request, $id)
     {
+        if (!$request->hasAny(['avatar', 'image_id']))
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => ['Please select an image.']
+            ], 422);
+        }
         $this->service->updateAvatar($request, $id, false);
 
         return response()->json([
