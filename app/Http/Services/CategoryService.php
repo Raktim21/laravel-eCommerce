@@ -63,11 +63,7 @@ class CategoryService
             saveImage($request->file('image'), '/uploads/images/category/', $category, 'image');
         }
         else if ($request->image_id) {
-            $image = GalleryHasImage::find($request->image_id);
-            $category->image = $image->image_url;
-            $category->save();
-
-            $image->increment('usage');
+            saveImageFromMedia($request->image_id, $category, 'image');
         }
     }
 
@@ -90,11 +86,7 @@ class CategoryService
         {
             deleteFile($category->image);
 
-            $image = GalleryHasImage::find($request->image_id);
-            $category->image = $image->image_url;
-            $category->save();
-
-            $image->increment('usage');
+            saveImageFromMedia($request->image_id, $category, 'image');
         }
     }
 

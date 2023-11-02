@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use App\Models\GalleryHasImage;
 use App\Models\ProductBrand;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -34,7 +35,14 @@ class BrandService
             'slug' => Str::slug($request->name).'-'.Str::random(5)
         ]);
 
-        saveImage($request->file('image'), '/uploads/images/brands/', $brand, 'image');
+        if ($request->hasFile('image')) {
+            saveImage($request->file('image'), '/uploads/images/brands/', $brand, 'image');
+        }
+
+        else if ($request->image_id)
+        {
+            saveImageFromMedia($request->image_id, $brand, 'image');
+        }
     }
 
 
@@ -51,6 +59,11 @@ class BrandService
         {
             deleteFile($brand->image);
             saveImage($request->file('image'), '/uploads/images/brands/', $brand, 'image');
+        }
+        else if ($request->image_id)
+        {
+            deleteFile($brand->image);
+            saveImageFromMedia($request->image_id, $brand, 'image');
         }
     }
 

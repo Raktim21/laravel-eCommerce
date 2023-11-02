@@ -204,12 +204,7 @@ class UserService
         }
 
         else if ($request->image_id) {
-            $image = GalleryHasImage::find($request->image_id);
-
-            $user->profile->image = $image->image_url;
-            $user->profile->save();
-
-            $image->increment('usage');
+            saveImageFromMedia($request->image_id, $user->profile, 'image');
         }
     }
 

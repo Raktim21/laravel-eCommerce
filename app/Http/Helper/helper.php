@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\File;
 //    );
 //}
 
-function eCourier()
+function eCourier(): array
 {
     return array(
         'url'           => 'https://staging.ecourier.com.bd/api',
@@ -24,7 +24,7 @@ function eCourier()
 }
 
 
-function pandago()
+function pandago(): array
 {
     return array(
         'pandaGoUrl'    => 'https://pandago-api-sandbox.deliveryhero.io/sg/api/v1',
@@ -34,7 +34,7 @@ function pandago()
     );
 }
 
-function saveImage($image, $path, $model, $field)
+function saveImage($image, $path, $model, $field): bool
 {
     try {
         $image_name = time() . rand(100, 9999) . '.' . $image->getClientOriginalExtension();
@@ -47,6 +47,15 @@ function saveImage($image, $path, $model, $field)
     } catch (\Throwable $th) {
         return false;
     }
+}
+
+function saveImageFromMedia($image_id, $model, $field): void
+{
+    $image = GalleryHasImage::find($image_id);
+    $model->$field = $image->image_url;
+    $model->save();
+
+    $image->increment('usage');
 }
 
 function deleteFile($filepath): void
