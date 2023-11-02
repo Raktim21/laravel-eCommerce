@@ -15,6 +15,5 @@ class Notification extends Model
 
     protected $casts = [
         'id' => 'string',
-        'is_send' => 'boolean'
     ];
 }

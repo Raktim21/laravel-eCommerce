@@ -16,11 +16,6 @@ class StaticContent extends Model
 
     protected $hidden = ['created_at','updated_at'];
 
-    protected $casts = [
-        'is_updatable'    => 'boolean',
-        'is_deletable'    => 'boolean'
-    ];
-
     public function staticMenu()
     {
         return $this->hasMany(StaticMenu::class, 'static_contents_id');

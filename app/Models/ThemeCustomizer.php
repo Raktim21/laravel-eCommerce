@@ -15,9 +15,4 @@ class ThemeCustomizer extends Model
 
     protected $hidden = ['created_at','updated_at'];
 
-    protected $casts = [
-        'is_active'         => 'boolean',
-        'is_inactivable'    => 'boolean',
-        'is_static_position'=> 'boolean'
-    ];
 }

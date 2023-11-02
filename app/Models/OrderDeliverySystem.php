@@ -14,10 +14,6 @@ class OrderDeliverySystem extends Model
 
     protected $hidden = ['created_at', 'updated_at'];
 
-    protected $casts = [
-        'active_status'    => 'boolean',
-    ];
-
     public function orders()
     {
         return $this->hasMany(Order::class, 'delivery_system_id');

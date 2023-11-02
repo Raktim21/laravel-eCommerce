@@ -19,11 +19,6 @@ class BillingCart extends Model
 
     protected $hidden = ['updated_at'];
 
-    protected $casts = [
-        'is_ordered'    => 'boolean',
-        'is_follow_up'  => 'boolean'
-    ];
-
     public function items()
     {
         return $this->hasMany(BillingCartItems::class, 'billing_cart_id');

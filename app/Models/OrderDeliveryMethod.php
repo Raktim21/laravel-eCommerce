@@ -13,10 +13,6 @@ class OrderDeliveryMethod extends Model
 
     protected $hidden = ['created_at','updated_at'];
 
-    protected $casts = [
-        'is_active'    => 'boolean',
-    ];
-
     public function orders()
     {
         return $this->hasMany(Order::class, 'delivery_method_id');
