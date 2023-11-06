@@ -16,10 +16,10 @@ use Illuminate\Support\Facades\File;
 function eCourier(): array
 {
     return array(
-        'url'           => 'https://staging.ecourier.com.bd/api',
+        'url'           => 'https://backoffice.ecourier.com.bd/api',
         'user_id'       => 'U6013',
-        'api_key'       => '34PK',
-        'api_secret'    => 'PGE5w'
+        'api_key'       => 'YrWD',
+        'api_secret'    => 'RI0UU'
     );
 }
 
