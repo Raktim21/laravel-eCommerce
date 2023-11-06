@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin\Ecommerce;
 
 use App\Http\Requests\GalleryCreateRequest;
 use App\Http\Services\GalleryService;
+use App\Http\Controllers\Controller;
 use App\Models\Gallery;
-use App\Models\GalleryHasImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;

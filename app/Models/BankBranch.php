@@ -17,4 +17,9 @@ class BankBranch extends Model
     {
         return $this->belongsTo(Bank::class, 'bank_id');
     }
+
+    public function payment_info()
+    {
+        return $this->hasMany(MerchantPaymentInfo::class, 'bank_branch_id');
+    }
 }
