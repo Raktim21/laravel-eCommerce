@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers\System;
 
+use App\Models\Bank;
 use App\Models\Currency;
 use App\Models\Product;
 use App\Models\StaticMenu;
 use Carbon\Carbon;
+use Goutte\Client;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Mews\Captcha\Facades\Captcha;
 use Illuminate\Support\Facades\App;
 use App\Http\Controllers\Controller;
@@ -166,5 +171,47 @@ class SystemController extends Controller
         $map->writeToFile(public_path('sitemap.xml'));
 
         dd('sitemap created for: '. env('FRONTEND_URL') .'.');
+    }
+
+    public function seedBanks(Request $request)
+    {
+        $client = new Client();
+
+        $url = !$request->has('alphabet') ? 'https://www.anupamasite.com/bank_routing_no.php'
+            : 'https://www.anupamasite.com/bank_routing_'. $request->alphabet .'.php';
+
+        $website = $client->request('GET', $url);
+
+        $bank_model = new Bank();
+
+        $website->filter('table > tr')->each(function ($value, $index) use ($bank_model) {
+            if ($index > 1){
+                $bank = $value->filter('td:nth-child(2)');
+                $branch = $value->filter('td:nth-child(4)');
+                $uuid = $value->filter('td:nth-child(5)');
+
+//                if ($bank->text() != 'BANGLADESH BANK') {
+                    DB::beginTransaction();
+
+                    try {
+                        $new_bank = $bank_model->clone()->firstOrCreate([
+                            'name' => $bank->text()
+                        ]);
+
+                        $new_bank->branches()->updateOrCreate([
+                            'routing_no' => $uuid->text()
+                        ], [
+                            'name' => $branch->text()
+                        ]);
+                        DB::commit();
+                    } catch (QueryException $e) {
+                        DB::rollback();
+                        Log::info($e->getMessage());
+                    }
+//                }
+            }
+        });
+
+        dd('done');
     }
 }

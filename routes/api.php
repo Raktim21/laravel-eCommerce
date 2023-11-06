@@ -114,6 +114,8 @@ Route::group(['prefix' => 'admin'], function () {
             Route::get('district-list','districtList');
             Route::get('sub-district-list','subDistrictList');
             Route::get('union-list','unionList');
+            Route::get('bank-list', 'bankList');
+            Route::get('bank-branch-list/{id}', 'bankBranches');
             Route::get('language-list', 'languageList');
             Route::get('currency-list', 'currencyList');
             Route::get('gender-list', 'genderList');

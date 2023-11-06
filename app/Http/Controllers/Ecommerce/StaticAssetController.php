@@ -132,6 +132,28 @@ class StaticAssetController extends Controller
         ], count($data)==0 ? 204 : 200);
     }
 
+    public function bankList()
+    {
+        $data = $this->service->getBanks();
+
+        return response()->json([
+            'status' => true,
+            'data'   => $data
+        ], $data->isEmpty() ? 204 : 200);
+    }
+
+    public function bankBranches($id)
+    {
+        $data = Cache::rememberForever('bankBranchList'.$id, function () use ($id) {
+            return $this->service->getBankBranches($id);
+        });
+
+        return response()->json([
+            'status' => true,
+            'data'   => $data
+        ], count($data) == 0 ? 204 : 200);
+    }
+
     public function languageList()
     {
         $data = Cache::rememberForever('languageList', function () {

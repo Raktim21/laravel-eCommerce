@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
             DeliveryChargeLookupSeeder::class,
             PaymentStatusSeeder::class,
             PaymentMethodSeeder::class,
+            MerchantPaymentMethodSeeder::class,
             ShippingMethodSeeder::class,
             PickupAddressSeeder::class,
             ThemeCustomizationSeeder::class,

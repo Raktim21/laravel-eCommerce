@@ -2,6 +2,8 @@
 
 namespace App\Http\Services;
 
+use App\Models\Bank;
+use App\Models\BankBranch;
 use App\Models\Country;
 use App\Models\Currency;
 use App\Models\DashboardLanguage;
@@ -94,5 +96,17 @@ class AssetService
     public function activeDeliverySystem()
     {
         return OrderDeliverySystem::where('active_status', 1)->first()->id;
+    }
+
+    public function getBanks()
+    {
+        return Bank::when(\request()->input('name'), function ($q) {
+            return $q->where('name','like','%'.\request()->input('name').'%');
+        })->paginate(10);
+    }
+
+    public function getBankBranches($id)
+    {
+        return BankBranch::where('bank_id', $id)->get();
     }
 }
