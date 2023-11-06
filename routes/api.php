@@ -120,6 +120,7 @@ Route::group(['prefix' => 'admin'], function () {
             Route::get('language-list', 'languageList');
             Route::get('currency-list', 'currencyList');
             Route::get('gender-list', 'genderList');
+            Route::get('merchant-payment-method-list', 'paymentMethodList');
         });
 
         Route::get('general-setting', [FrontendController::class, 'general']);

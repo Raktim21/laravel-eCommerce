@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Ecommerce;
 
+use App\Models\MerchantPaymentMethods;
 use Illuminate\Http\Request;
 use App\Http\Services\AssetService;
 use App\Http\Controllers\Controller;
@@ -187,6 +188,18 @@ class StaticAssetController extends Controller
         return response()->json([
             'status'        => true,
             'data'          => $data
+        ]);
+    }
+
+    public function paymentMethodList()
+    {
+        $data = Cache::rememberForever('merchantPaymentMethods', function () {
+            return MerchantPaymentMethods::get();
+        });
+
+        return response()->json([
+            'status' => true,
+            'data'   => $data
         ]);
     }
 }
