@@ -93,8 +93,8 @@ class OrderDeliverySystemService
                         "recipient_district"    => $order->deliveryAddress->upazila->district->name,
                         "recipient_union"       => $order->deliveryAddress->postal_code,
                         "recipient_address"     => $order->deliveryAddress->address,
-//                        "package_code"          => $order->deliveryAddress->upazila->district->name == 'Dhaka' ? '#2416' : '#2453', // development
-                        "package_code"          => $order->deliveryAddress->upazila->district->name == 'Dhaka' ? '#2711' : '#2605', // production
+                        "package_code"          => $order->deliveryAddress->upazila->district->name == 'Dhaka' ? '#2416' : '#2453', // development
+//                        "package_code"          => $order->deliveryAddress->upazila->district->name == 'Dhaka' ? '#2711' : '#2605', // production
                         "product_price"         => $order->total_amount,
                         "payment_method"        => 1,
                         "parcel_detail"         => $detail,
