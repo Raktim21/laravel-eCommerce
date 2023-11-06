@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('bank_id')->constrained('banks')->onDelete('restrict');
             $table->string('name');
             $table->integer('routing_no')->unique();
+            $table->timestamps();
         });
     }
 

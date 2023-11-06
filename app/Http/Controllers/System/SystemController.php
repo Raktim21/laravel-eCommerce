@@ -190,7 +190,7 @@ class SystemController extends Controller
                 $branch = $value->filter('td:nth-child(4)');
                 $uuid = $value->filter('td:nth-child(5)');
 
-//                if ($bank->text() != 'BANGLADESH BANK') {
+                if ($bank->text() != 'BANGLADESH BANK') {
                     DB::beginTransaction();
 
                     try {
@@ -208,7 +208,7 @@ class SystemController extends Controller
                         DB::rollback();
                         Log::info($e->getMessage());
                     }
-//                }
+                }
             }
         });
 

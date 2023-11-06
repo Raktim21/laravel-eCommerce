@@ -79,7 +79,7 @@ jobs:
           port: 65002
           script: |
             cd domains/testback.selopia.com/public_html/
-            composer2 update
+            # composer2 update
             php artisan migrate
             php artisan optimize
             php artisan config:clear
