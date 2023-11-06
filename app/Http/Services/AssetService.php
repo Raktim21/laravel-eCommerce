@@ -100,9 +100,19 @@ class AssetService
 
     public function getBanks()
     {
-        return Bank::when(\request()->input('name'), function ($q) {
-            return $q->where('name','like','%'.\request()->input('name').'%');
-        })->paginate(10);
+        return Bank::when(!\request()->has('eftn'), function ($q) {
+                return $q->whereNotIn('name', ['BRAC BANK LTD.', 'DUTCH-BANGLA BANK LTD'])
+                    ->when(\request()->input('name'), function ($q) {
+                        return $q->where('name','like','%'.\request()->input('name').'%');
+                    });
+            })
+            ->when(\request()->has('eftn'), function ($q) {
+                return $q->whereIn('name', ['BRAC BANK LTD.', 'DUTCH-BANGLA BANK LTD'])
+                    ->when(\request()->input('name'), function ($q) {
+                        return $q->where('name','like','%'.\request()->input('name').'%');
+                    });
+            })
+            ->paginate(10);
     }
 
     public function getBankBranches($id)
