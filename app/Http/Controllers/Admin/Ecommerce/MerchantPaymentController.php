@@ -29,12 +29,12 @@ class MerchantPaymentController extends Controller
     {
         $validate = Validator::make($request->all(), [
             'payment_method_id'  => 'required|exists:merchant_payment_methods,id',
-            'bank_branch_id'     => 'required_with:payment_method_id,1,2|exists:bank_branches,id',
-            'bank_account_holder'=> 'required_with:payment_method_id,1,2|string|max:100',
-            'bank_account_no'    => 'required_with:payment_method_id,1,2|string|max:30',
-            'bkash_no'           => ['required_with:payment_method_id,3','string',
+            'bank_branch_id'     => 'required_if:payment_method_id,1,2|exists:bank_branches,id',
+            'bank_account_holder'=> 'required_if:payment_method_id,1,2|string|max:100',
+            'bank_account_no'    => 'required_if:payment_method_id,1,2|string|max:30',
+            'bkash_no'           => ['required_if:payment_method_id,3','string',
                                     'regex:/^(?:\+?88|0088)?01[3-9]\d{8}$/'],
-            'rocket_no'          => ['required_with:payment_method_id,4','string',
+            'rocket_no'          => ['required_if:payment_method_id,4','string',
                                     'regex:/^(?:\+?88|0088)?01[3-9]\d{8}$/']
         ]);
 
