@@ -19,7 +19,7 @@ class MerchantPaymentInfo extends Model
         return $this->belongsTo(MerchantPaymentMethods::class, 'payment_method_id');
     }
 
-    public function bank()
+    public function bank_branch()
     {
         return $this->belongsTo(BankBranch::class, 'bank_branch_id');
     }
