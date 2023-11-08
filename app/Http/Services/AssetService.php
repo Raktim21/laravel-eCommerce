@@ -117,6 +117,10 @@ class AssetService
 
     public function getBankBranches($id)
     {
-        return BankBranch::where('bank_id', $id)->paginate(10);
+        return BankBranch::where('bank_id', $id)
+            ->when(\request()->input('search'), function ($q) {
+                return $q->where('name', \request()->input('search'));
+            })
+            ->paginate(10)->appends(\request()->except('page'));
     }
 }
