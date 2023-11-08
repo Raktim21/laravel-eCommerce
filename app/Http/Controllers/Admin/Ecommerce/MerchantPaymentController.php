@@ -16,7 +16,7 @@ class MerchantPaymentController extends Controller
         $system = (new AssetService())->activeDeliverySystem();
 
         $data = Cache::remember('merchantPaymentInfo', 24*60*60*7, function () use ($system) {
-            return MerchantPaymentInfo::where('delivery_system_id', $system)->with('payment_method','bank_branch')->first();
+            return MerchantPaymentInfo::where('delivery_system_id', $system)->with('payment_method','bank_branch.bank')->first();
         });
 
         return response()->json([
