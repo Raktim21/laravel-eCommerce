@@ -145,7 +145,7 @@ class StaticAssetController extends Controller
 
     public function bankBranches($id)
     {
-        $data = Cache::rememberForever('bankBranchList'.$id, function () use ($id) {
+        $data = Cache::rememberForever('bankBranchList'.$id.\request()->input('page',1), function () use ($id) {
             return $this->service->getBankBranches($id);
         });
 
