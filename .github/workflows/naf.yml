@@ -84,7 +84,7 @@ jobs:
             php artisan optimize
             php artisan config:clear
             php artisan cache:clear
-    
+
 
 
         continue-on-error: true

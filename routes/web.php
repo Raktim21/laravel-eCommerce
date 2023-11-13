@@ -22,6 +22,7 @@ Route::controller(SystemController::class)->group(function () {
     Route::get('save-email-configuration', 'configureEmail')->name('configureEmail');
     Route::get('/generate-sitemap', 'generateSitemap');
     Route::get('/reset-logs', 'clearLogs');
+    Route::get('seed-banks', 'seedBanks');
 });
 
 Route::controller(GoogleFacebookController::class)->group(function () {

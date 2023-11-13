@@ -1,7 +1,6 @@
 <?php
 
-use App\Models\OrderPickupAddress;
-use App\Models\UserAddress;
+use App\Models\GalleryHasImage;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 
@@ -14,18 +13,25 @@ use Illuminate\Support\Facades\File;
 //    );
 //}
 
-function eCourier()
+function eCourier(): array
 {
     return array(
-        'url'           => 'https://staging.ecourier.com.bd/api',
         'user_id'       => 'U6013',
+
+        // development
+        'url'           => 'https://staging.ecourier.com.bd/api',
         'api_key'       => '34PK',
-        'api_secret'    => 'PGE5w'
+        'api_secret'    => 'PGE5w',
+
+        // production
+//        'url'           => 'https://backoffice.ecourier.com.bd/api',
+//        'api_key'       => 'YrWD',
+//        'api_secret'    => 'RI0UU'
     );
 }
 
 
-function pandago()
+function pandago(): array
 {
     return array(
         'pandaGoUrl'    => 'https://pandago-api-sandbox.deliveryhero.io/sg/api/v1',
@@ -35,7 +41,7 @@ function pandago()
     );
 }
 
-function saveImage($image, $path, $model, $field)
+function saveImage($image, $path, $model, $field): bool
 {
     try {
         $image_name = time() . rand(100, 9999) . '.' . $image->getClientOriginalExtension();
@@ -50,11 +56,26 @@ function saveImage($image, $path, $model, $field)
     }
 }
 
+function saveImageFromMedia($image_id, $model, $field): void
+{
+    $image = GalleryHasImage::find($image_id);
+    $model->$field = $image->image_url;
+    $model->save();
+
+    $image->increment('usage');
+}
+
 function deleteFile($filepath): void
 {
-    if (File::exists(public_path($filepath)))
-    {
-        File::delete(public_path($filepath));
+    $img = GalleryHasImage::where('image_url', $filepath)->first();
+
+    if (!$img) {
+        if (File::exists(public_path($filepath))) {
+            File::delete(public_path($filepath));
+        }
+    }
+    else {
+        $img->decrement('usage');
     }
 }
 

@@ -2,10 +2,10 @@
 
 namespace App\Http\Services;
 
+use App\Models\GalleryHasImage;
 use App\Models\ProductCategory;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class CategoryService
@@ -59,11 +59,12 @@ class CategoryService
             'ordering'=> $this->category->clone()->count() + 1,
         ]);
 
-        saveImage($request->file('image'), '/uploads/images/category/', $category, 'image');
-
-        Cache::delete('allCategories');
-        Cache::delete('allCategory');
-        Cache::delete('categories');
+        if ($request->hasFile('image')) {
+            saveImage($request->file('image'), '/uploads/images/category/', $category, 'image');
+        }
+        else if ($request->image_id) {
+            saveImageFromMedia($request->image_id, $category, 'image');
+        }
     }
 
     public function update(Request $request, $id): void
@@ -81,10 +82,12 @@ class CategoryService
 
             saveImage($request->file('image'), '/uploads/images/category/', $category, 'image');
         }
+        else if ($request->image_id)
+        {
+            deleteFile($category->image);
 
-        Cache::delete('allCategories');
-        Cache::delete('allCategory');
-        Cache::delete('categories');
+            saveImageFromMedia($request->image_id, $category, 'image');
+        }
     }
 
     public function delete($id): bool
@@ -94,9 +97,6 @@ class CategoryService
         try {
             $category->delete();
             deleteFile($category->image);
-            Cache::delete('allCategories');
-            Cache::delete('allCategory');
-            Cache::delete('categories');
             return true;
         } catch (QueryException $e)
         {
@@ -112,9 +112,6 @@ class CategoryService
                 'ordering' => $key + 1,
             ]);
         }
-        Cache::delete('allCategories');
-        Cache::delete('allCategory');
-        Cache::delete('categories');
     }
 
     public function deleteCategories(Request $request): void
@@ -127,9 +124,6 @@ class CategoryService
         }
 
         $this->category->clone()->whereIn('id',$request->ids)->delete();
-        Cache::delete('allCategories');
-        Cache::delete('allCategory');
-        Cache::delete('categories');
     }
 
     public function changeStatus($id): void
@@ -139,10 +133,6 @@ class CategoryService
         $status = $cat->status == 1 ? 0 : 1;
 
         $cat->update(['status' => $status]);
-
-        Cache::delete('allCategories');
-        Cache::delete('allCategory');
-        Cache::delete('categories');
     }
 
 }

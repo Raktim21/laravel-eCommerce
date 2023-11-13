@@ -34,6 +34,13 @@ class BannerSettingController extends Controller
 
     public function store(BannerSettingRequest $request)
     {
+        if (!$request->hasAny(['image', 'image_id']))
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => ['Please select an image.']
+            ], 422);
+        }
         if($this->service->store($request))
         {
             return response()->json([
@@ -63,6 +70,13 @@ class BannerSettingController extends Controller
 
     public function update(BannerSettingRequest $request, $id)
     {
+        if (!$request->hasAny(['image', 'image_id']))
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => ['Please select an image.']
+            ], 422);
+        }
         if($this->service->update($request, $id))
         {
             return response()->json([

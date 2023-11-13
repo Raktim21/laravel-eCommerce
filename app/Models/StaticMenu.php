@@ -11,7 +11,9 @@ class StaticMenu extends Model
     use HasFactory;
 
     protected $table = 'static_menus';
+
     protected $guarded = ['id'];
+
     protected $hidden = ['created_at','updated_at'];
 
     public function parentMenu() {

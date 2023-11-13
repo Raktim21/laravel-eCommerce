@@ -53,6 +53,10 @@ class AuthService
             if ($request->hasFile('avatar')) {
                 saveImage($request->file('avatar'), '/uploads/customer/avatars/', $profile, 'image');
             }
+            else if ($request->image_id)
+            {
+                saveImageFromMedia($request->image_id, $profile, 'image');
+            }
 
             DB::commit();
             return true;

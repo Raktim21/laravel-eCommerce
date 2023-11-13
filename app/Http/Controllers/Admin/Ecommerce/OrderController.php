@@ -92,6 +92,7 @@ class OrderController extends Controller
 
         Cache::delete('deliverySystems');
         Cache::delete('deliveryChargeLookup');
+        Cache::delete('merchantPaymentInfo');
 
         return response()->json(['status' => true]);
     }

@@ -39,6 +39,14 @@ class ProfileController extends Controller
 
     public function avatarUpdate(AvatarUpdateRequest $request)
     {
+        if (!$request->hasAny(['avatar', 'image_id']))
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => ['Please select an image.']
+            ], 422);
+        }
+
         $this->service->updateAvatar($request, auth()->guard('admin-api')->user()->id, true);
 
         return response()->json(['status' => true]);

@@ -4,6 +4,7 @@ namespace App\Http\Services;
 
 use App\Jobs\NewAdminJob;
 use App\Mail\AdminPasswordMail;
+use App\Models\GalleryHasImage;
 use App\Models\Order;
 use App\Models\OrderPickupAddress;
 use App\Models\User;
@@ -94,6 +95,11 @@ class UserService
 
             if ($request->hasFile('avatar')) {
                 saveImage($request->file('avatar'), '/uploads/admin/avatars/', $profile, 'image');
+            }
+
+            else if ($request->image_id)
+            {
+                saveImageFromMedia($request->image_id, $profile, 'image');
             }
 
             $data = array(
@@ -198,7 +204,13 @@ class UserService
             deleteFile($user->profile->image);
         }
 
-        saveImage($request->file('avatar'), $isAdmin ?'/uploads/admin/avatars/' : '/uploads/customer/avatars/', $user->profile, 'image');
+        if ($request->hasFile('avatar')) {
+            saveImage($request->file('avatar'), $isAdmin ? '/uploads/admin/avatars/' : '/uploads/customer/avatars/', $user->profile, 'image');
+        }
+
+        else if ($request->image_id) {
+            saveImageFromMedia($request->image_id, $user->profile, 'image');
+        }
     }
 
 

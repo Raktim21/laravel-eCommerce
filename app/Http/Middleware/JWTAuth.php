@@ -25,7 +25,7 @@ class JWTAuth
         // $token_name = $guard == 'admin-api' ? 'admin_refresh_token' : 'customer_refresh_token';
 
         $token = request()->header('Authorization');
-        
+
 
         if (!$token) {
             return response()->json( [
@@ -42,7 +42,7 @@ class JWTAuth
                 'message'  => 'Unauthenticated'
             ],401 );
         }
-        
+
         $token = $token[1];
 
         if (!auth()->check()) {
@@ -86,10 +86,10 @@ class JWTAuth
         try {
 
             $payload = FacadesJWTAuth::manager()->getJWTProvider()->decode($token);
-            
+
             if (array_key_exists("refresh_token",$payload) && $payload['refresh_token'] == true) {
 
-                
+
                 return response()->json( [
                     'errors'   => 'Unauthenticated',
                     'message'  =>'Unauthenticated'

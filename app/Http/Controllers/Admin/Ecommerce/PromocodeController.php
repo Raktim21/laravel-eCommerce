@@ -60,15 +60,6 @@ class PromocodeController extends Controller
         ], is_null($data) ? 204 : 200);
     }
 
-
-//    public function update(PromoUpdateRequest $request, $id)
-//    {
-//        $this->service->update($request, $id);
-//        return response()->json([
-//            'status' => true,
-//        ]);
-//    }
-
     public function updateStatus($id)
     {
         if ($this->service->updateStatus($id))

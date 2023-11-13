@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\GalleryHasImage;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -27,7 +28,20 @@ class BrandRequest extends FormRequest
     {
         return [
             'name'  => 'required|max:50|unique:product_brands,name',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image_id'  => ['sometimes','integer',
+                            function($attr, $val, $fail) {
+                                $img = GalleryHasImage::find($val);
+
+                                if (!$img)
+                                {
+                                    $fail('No image found.');
+                                }
+
+                                else if ($img->gallery->user_id != auth()->user()->id && $img->is_public == 0) {
+                                    $fail('You cannot select an image from private folder.');
+                                }
+                            }]
         ];
     }
 
@@ -36,7 +50,6 @@ class BrandRequest extends FormRequest
     {
         return [
             'name.required'  => __('Please enter a name'),
-            'image.required' => __('Please upload an image'),
             'image.image'    => __('Invalid brand image'),
             'image.mimes'    => __('Invalid brand image'),
             'image.max'      => __('Brand image must be less than 2MB'),

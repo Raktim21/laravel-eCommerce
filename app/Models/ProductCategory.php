@@ -32,10 +32,16 @@ class ProductCategory extends Model
 
         static::created(function ($category) {
             Cache::delete('all_categories');
+            Cache::delete('allCategories');
+            Cache::delete('allCategory');
+            Cache::delete('categories');
         });
 
         static::updated(function ($category) {
             Cache::delete('all_categories');
+            Cache::delete('allCategories');
+            Cache::delete('allCategory');
+            Cache::delete('categories');
 
             foreach ($category->products as $item)
             {
@@ -46,6 +52,9 @@ class ProductCategory extends Model
 
         static::deleted(function ($category) {
             Cache::delete('all_categories');
+            Cache::delete('allCategories');
+            Cache::delete('allCategory');
+            Cache::delete('categories');
         });
     }
 }
