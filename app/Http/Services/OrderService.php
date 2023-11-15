@@ -534,4 +534,11 @@ class OrderService
         }
     }
 
+    public function trackOrderStatus($order_no)
+    {
+        $order = $this->order->where('order_number', $order_no)->first();
+
+
+    }
+
 }

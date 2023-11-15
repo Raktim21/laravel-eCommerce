@@ -26,24 +26,6 @@ class SystemController extends Controller
         Artisan::call('schedule:run');
     }
 
-    public function configureEmailView()
-    {
-        return view('email_configuration');
-    }
-
-    public function configureEmail(Request $request)
-    {
-        putenv("hey=me");
-//        putenv("MAIL_MAILER=".$request->mailer);
-//        putenv("MAIL_HOST=".$request->host);
-//        putenv("MAIL_PORT=".$request->port);
-//        putenv(['MAIL_USERNAME' => $request->username]);
-//        putenv(['MAIL_PASSWORD' => $request->password]);
-//        putenv(['MAIL_ENCRYPTION' => $request->encryption]);
-//        putenv(['MAIL_FROM_ADDRESS' => $request->email]);
-//        putenv(['MAIL_FROM_NAME' => $request->name]);
-    }
-
     public function sendCaptcha()
     {
         return response()->json([
@@ -116,40 +98,10 @@ class SystemController extends Controller
                 ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
                 ->setPriority(0.5)
             )
-            ->add(Url::create(env('FRONTEND_URL') . '/wishlist')
-                ->setLastModificationDate(Carbon::now('Asia/Dhaka'))
-                ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
-                ->setPriority(0.5)
-            )
-            ->add(Url::create(env('FRONTEND_URL') . '/profile')
-                ->setLastModificationDate(Carbon::now('Asia/Dhaka'))
-                ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
-                ->setPriority(0.5)
-            )
-            ->add(Url::create(env('FRONTEND_URL') . '/profile/shipping')
-                ->setLastModificationDate(Carbon::now('Asia/Dhaka'))
-                ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
-                ->setPriority(0.5)
-            )
-            ->add(Url::create(env('FRONTEND_URL') . '/profile/order')
-                ->setLastModificationDate(Carbon::now('Asia/Dhaka'))
-                ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
-                ->setPriority(0.5)
-            )
-            ->add(Url::create(env('FRONTEND_URL') . '/profile/history')
-                ->setLastModificationDate(Carbon::now('Asia/Dhaka'))
-                ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
-                ->setPriority(0.5)
-            )
             ->add(Url::create(env('FRONTEND_URL') . '/products')
                 ->setLastModificationDate(Carbon::now('Asia/Dhaka'))
                 ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
                 ->setPriority(0.9)
-            )
-            ->add(Url::create(env('FRONTEND_URL') . '/checkout')
-                ->setLastModificationDate(Carbon::now('Asia/Dhaka'))
-                ->setChangeFrequency(Url::CHANGE_FREQUENCY_MONTHLY)
-                ->setPriority(0.6)
             );
 
         Product::get()->each(function ($product) use ($map) {

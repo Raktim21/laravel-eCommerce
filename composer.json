@@ -16,7 +16,6 @@
         "intervention/image": "^2.7",
         "laravel/framework": "^10.31.0",
         "laravel/sanctum": "^3.2",
-        "laravel/socialite": "^5.8",
         "laravel/tinker": "^2.7",
         "maatwebsite/excel": "3.1.48",
         "mews/captcha": "^3.3",
