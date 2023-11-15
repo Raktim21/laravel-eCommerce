@@ -518,7 +518,15 @@ class OrderService
     {
         $order = $this->order->where('order_number', $order_no)->first();
 
+        if (!$order)
+        {
+            return null;
+        }
 
+        return array(
+            'order_status' => $order->delivery_status,
+            'time'         => $order->updated_at
+        );
     }
 
 }
