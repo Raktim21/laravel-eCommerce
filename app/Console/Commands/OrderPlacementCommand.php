@@ -55,7 +55,7 @@ class OrderPlacementCommand extends Command
 
                 Mail::to($to)->send(new OrdersMail($mail_data));
             } catch (\Throwable $th) {
-                Log::info('sending order placement email' . $order->order_number. ' - ' .$th->getMessage());
+                Log::error('sending order placement email' . $order->order_number. ' - ' .$th->getMessage());
             }
         }
     }
