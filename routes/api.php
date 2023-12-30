@@ -95,6 +95,7 @@ Route::group(['middleware' => ['ApiAuth']],function () {
         Route::get('banners', 'getBanners');
         Route::get('static-menu-content/{id}','staticMenuContent');
         Route::get('flash-sale', 'flashSale');
+        Route::get('track-order', 'trackOrder');
     });
 
     Route::get('wish-list', [WishlistController::class, 'getList']);

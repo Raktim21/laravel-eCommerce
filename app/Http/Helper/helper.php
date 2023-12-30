@@ -18,15 +18,15 @@ function eCourier(): array
     return array(
         'user_id'       => 'U6013',
 
-        // development
-        'url'           => 'https://staging.ecourier.com.bd/api',
-        'api_key'       => '34PK',
-        'api_secret'    => 'PGE5w',
+//        // development
+//        'url'           => 'https://staging.ecourier.com.bd/api',
+//        'api_key'       => '34PK',
+//        'api_secret'    => 'PGE5w',
 
         // production
-//        'url'           => 'https://backoffice.ecourier.com.bd/api',
-//        'api_key'       => 'YrWD',
-//        'api_secret'    => 'RI0UU'
+        'url'           => 'https://backoffice.ecourier.com.bd/api',
+        'api_key'       => 'YrWD',
+        'api_secret'    => 'RI0UU'
     );
 }
 

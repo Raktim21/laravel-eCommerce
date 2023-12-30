@@ -196,32 +196,12 @@ class OrderService
         return $weight;
     }
 
-    public function paperFlyCancelOrder($order): void
-    {
-        $client = new Client();
-
-        $response = $client->post(paperfly()['paperFlyUrl'] . '/api/v1/cancel-order/', [
-            'headers' => [
-                'paperflykey' =>  peperfly()['paperFlyKey']
-            ],
-            'auth' => peperfly()['credential'],
-            'json' => [
-                "order_id" => $order->order_number,
-            ],
-        ]);
-
-        json_decode($response->getBody()->getContents(), true);
-
-        $order->delivery_tracking_number = null;
-        $order->save();
-    }
-
     public function placeOrder(Request $request, $cart_items)
     {
         DB::beginTransaction();
 
         try {
-            $new_order = Order::create([
+            $new_order = $this->order->clone()->create([
                 'user_id'                   => auth()->user()->id,
                 'order_number'              => 'ORD-' . implode('-', str_split(hexdec(uniqid()), 4)),
                 'payment_method_id'         => $request->payment_method_id,
@@ -532,6 +512,21 @@ class OrderService
 
             return false;
         }
+    }
+
+    public function trackOrderStatus($order_no)
+    {
+        $order = $this->order->where('order_number', $order_no)->first();
+
+        if (!$order)
+        {
+            return null;
+        }
+
+        return array(
+            'order_status' => $order->delivery_status,
+            'time'         => $order->updated_at
+        );
     }
 
 }

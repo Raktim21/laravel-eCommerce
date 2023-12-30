@@ -1,10 +1,7 @@
 <?php
 
 use App\Http\Controllers\System\SystemController;
-use App\Http\Controllers\System\GoogleFacebookController;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
-use GuzzleHttp\Client;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,15 +15,7 @@ use GuzzleHttp\Client;
 */
 
 Route::controller(SystemController::class)->group(function () {
-    Route::get('email-configuration', 'configureEmailView')->name('configure-email-view');
-    Route::get('save-email-configuration', 'configureEmail')->name('configureEmail');
     Route::get('/generate-sitemap', 'generateSitemap');
     Route::get('/reset-logs', 'clearLogs');
     Route::get('seed-banks', 'seedBanks');
-});
-
-Route::controller(GoogleFacebookController::class)->group(function () {
-    Route::get('redirect-auth', 'redirect');
-    Route::get('auth/google/callback', 'handleGoogleCallback');
-    Route::get('auth/facebook/callback', 'handleFacebookCallback');
 });
