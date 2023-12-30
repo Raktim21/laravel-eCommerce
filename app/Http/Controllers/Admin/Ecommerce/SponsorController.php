@@ -34,6 +34,13 @@ class SponsorController extends Controller
 
     public function store(SponsorRequest $request)
     {
+        if (!$request->hasAny(['image', 'image_id']))
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => ['Please select an image.']
+            ], 422);
+        }
         $this->service->store($request);
 
         return response()->json([

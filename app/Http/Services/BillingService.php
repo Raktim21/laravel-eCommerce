@@ -61,7 +61,7 @@ class BillingService
                             }]);
                         }]);
                 }]);
-            }])->findOrFail($id);
+            }])->find($id);
     }
 
     public function store(Request $request)

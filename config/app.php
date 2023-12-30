@@ -200,7 +200,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
-
+        Weidner\Goutte\GoutteServiceProvider::class,
     ],
 
     /*
@@ -219,6 +219,7 @@ return [
         'Purifier'  => Mews\Purifier\Facades\Purifier::class,
         'Excel'     => Maatwebsite\Excel\Facades\Excel::class,
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+        'Goutte' => Weidner\Goutte\GoutteFacade::class,
     ])->toArray(),
 
 ];

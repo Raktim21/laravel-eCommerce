@@ -27,7 +27,13 @@ class SponsorService
             'image'         => ''
         ]);
 
-        saveImage($request->file('image'), '/uploads/images/sponsors/', $sponsor, 'image');
+        if ($request->hasFile('image')) {
+            saveImage($request->file('image'), '/uploads/images/sponsors/', $sponsor, 'image');
+        }
+        else if ($request->image_id)
+        {
+            saveImageFromMedia($request->image_id, $sponsor, 'image');
+        }
     }
 
     public function update(Request $request, $id)
@@ -44,6 +50,12 @@ class SponsorService
             deleteFile($sponsor->image);
 
             saveImage($request->file('image'), '/uploads/images/sponsors/', $sponsor, 'image');
+        }
+        else if ($request->image_id)
+        {
+            deleteFile($sponsor->image);
+
+            saveImageFromMedia($request->image_id, $sponsor, 'image');
         }
     }
 

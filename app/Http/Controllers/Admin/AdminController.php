@@ -35,6 +35,14 @@ class AdminController extends Controller
 
     public function adminCreate(AdminCreateRequest $request)
     {
+        if (!$request->hasAny(['avatar', 'image_id']))
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => ['Please select an image.']
+            ], 422);
+        }
+
         if($this->service->storeAdmin($request))
         {
             return response()->json([

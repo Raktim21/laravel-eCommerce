@@ -37,7 +37,7 @@ class AppServiceProvider extends ServiceProvider
             return str_replace(':max', $parameters[0], $message);
         });
 
-//         $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+         $out = new \Symfony\Component\Console\Output\ConsoleOutput();
 
 //         DB::listen(function ($query) use ($out) {
 //             Log::info($query->sql . ' - ' . $query->time);

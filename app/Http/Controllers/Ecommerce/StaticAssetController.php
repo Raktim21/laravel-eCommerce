@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Ecommerce;
 
+use App\Models\MerchantPaymentMethods;
 use Illuminate\Http\Request;
 use App\Http\Services\AssetService;
 use App\Http\Controllers\Controller;
@@ -132,6 +133,26 @@ class StaticAssetController extends Controller
         ], count($data)==0 ? 204 : 200);
     }
 
+    public function bankList()
+    {
+        $data = $this->service->getBanks();
+
+        return response()->json([
+            'status' => true,
+            'data'   => $data
+        ], $data->isEmpty() ? 204 : 200);
+    }
+
+    public function bankBranches($id)
+    {
+        $data = $this->service->getBankBranches($id);
+
+        return response()->json([
+            'status' => true,
+            'data'   => $data
+        ], count($data) == 0 ? 204 : 200);
+    }
+
     public function languageList()
     {
         $data = Cache::rememberForever('languageList', function () {
@@ -165,6 +186,18 @@ class StaticAssetController extends Controller
         return response()->json([
             'status'        => true,
             'data'          => $data
+        ]);
+    }
+
+    public function paymentMethodList()
+    {
+        $data = Cache::rememberForever('merchantPaymentMethods', function () {
+            return MerchantPaymentMethods::get();
+        });
+
+        return response()->json([
+            'status' => true,
+            'data'   => $data
         ]);
     }
 }

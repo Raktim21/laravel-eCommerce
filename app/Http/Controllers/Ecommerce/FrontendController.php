@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Ecommerce;
 
+use App\Http\Services\OrderService;
 use App\Models\Contact;
+use App\Models\Order;
 use App\Models\OrderPickupAddress;
 use App\Models\Product;
 use App\Models\Sponsor;
@@ -28,6 +30,7 @@ use App\Http\Services\ContactService;
 use App\Http\Services\ProductService;
 use App\Models\OrderAdditionalCharge;
 use App\Models\ProductRestockRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\HomepageRequest;
 use App\Http\Services\CategoryService;
@@ -434,5 +437,32 @@ class FrontendController extends Controller
             'status' => true,
             'data' => $data
         ], is_null($data) ? 204 : 200);
+    }
+
+    public function trackOrder(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'order_no' => 'required|string'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()->all()
+            ], 422);
+        }
+
+        if ($data = (new OrderService(new Order()))->trackOrderStatus($request->order_no))
+        {
+            return response()->json([
+                'status' => true,
+                'data' => $data
+            ]);
+        }
+
+        return response()->json([
+            'status' => false,
+            'errors' => ['No order found']
+        ], 400);
     }
 }

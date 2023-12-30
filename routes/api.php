@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\Ecommerce\OrderController;
 use App\Http\Controllers\Admin\POS\BillingCartController;
 use App\Http\Controllers\Ecommerce\StaticAssetController;
 use App\Http\Controllers\System\GenerateReportController;
+use App\Http\Controllers\Admin\Ecommerce\GalleryController;
 use App\Http\Controllers\Admin\Ecommerce\ProductController;
 use App\Http\Controllers\Admin\Ecommerce\SponsorController;
 use App\Http\Controllers\Admin\Ecommerce\ContactController;
@@ -39,6 +40,7 @@ use App\Http\Controllers\Admin\Ecommerce\ThemeSettingController;
 use App\Http\Controllers\Admin\Ecommerce\BannerSettingController;
 use App\Http\Controllers\Admin\Analytics\AdminDashboardController;
 use App\Http\Controllers\Admin\Ecommerce\GeneralSettingController;
+use App\Http\Controllers\Admin\Ecommerce\MerchantPaymentController;
 use App\Http\Controllers\Admin\Ecommerce\ProductAttributeController;
 use App\Http\Controllers\Customer\ProfileController as CustomerProfileController;
 use App\Http\Controllers\Customer\Order\OrderController as CustomerOrderController;
@@ -93,6 +95,7 @@ Route::group(['middleware' => ['ApiAuth']],function () {
         Route::get('banners', 'getBanners');
         Route::get('static-menu-content/{id}','staticMenuContent');
         Route::get('flash-sale', 'flashSale');
+        Route::get('track-order', 'trackOrder');
     });
 
     Route::get('wish-list', [WishlistController::class, 'getList']);
@@ -113,9 +116,12 @@ Route::group(['prefix' => 'admin'], function () {
             Route::get('district-list','districtList');
             Route::get('sub-district-list','subDistrictList');
             Route::get('union-list','unionList');
+            Route::get('bank-list', 'bankList');
+            Route::get('bank-branch-list/{id}', 'bankBranches');
             Route::get('language-list', 'languageList');
             Route::get('currency-list', 'currencyList');
             Route::get('gender-list', 'genderList');
+            Route::get('merchant-payment-method-list', 'paymentMethodList');
         });
 
         Route::get('general-setting', [FrontendController::class, 'general']);
@@ -168,7 +174,7 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::delete('admin-delete/{id}','adminDelete');
                 Route::post('admin-bulk-delete', 'bulkDelete');
             });
-            //Pick Up Address
+
             Route::get('pickup-address-list','pickUpAddress');
             Route::put('pickup-address-update','pickUpAddressUpdate')->middleware('permission:update pickup address');
         });
@@ -277,7 +283,6 @@ Route::group(['prefix' => 'admin'], function () {
         Route::controller(GeneralSettingController::class)->group(function () {
 
             Route::get('general-setting-detail','detail');
-            Route::put('change-currency', 'changeCurrency')->middleware('permission:update general setting');
             Route::post('general-setting-update','update')->middleware('permission:update general setting');
 
             Route::group(['middleware' => ['permission:create/update/delete faqs']], function() {
@@ -285,6 +290,27 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::post('faq-store','faqStore');
                 Route::put('faq-update/{id}','faqUpdate');
                 Route::delete('faq-delete/{id}','faqDelete');
+            });
+        });
+
+        Route::controller(MerchantPaymentController::class)->group(function () {
+
+            Route::group(['middleware' => ['permission:update-merchant-payment-information']], function () {
+                Route::get('payment-info/{delivery_system_id}', 'getInfo');
+                Route::post('update-payment-info', 'updateInfo');
+            });
+        });
+
+        Route::controller(GalleryController::class)->group(function () {
+
+            Route::group(['middleware' => ['permission:manage gallery']], function () {
+                Route::get('gallery-list', 'galleryList');
+                Route::get('gallery-images/{id}', 'galleryImages');
+                Route::post('gallery-store', 'create');
+                Route::post('add-gallery-images/{id}', 'addImages');
+                Route::put('gallery-update/{id}', 'update');
+                Route::get('gallery-status/{id}', 'updateStatus');
+                Route::delete('gallery-image-delete/{id}', 'deleteImage');
             });
         });
 
@@ -366,7 +392,6 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::get('promocode-list','index');
                 Route::post('promocode-store','store');
                 Route::get('promocode-detail/{id}','detail');
-//                Route::put('promocode-update/{id}', 'update');
                 Route::get('promocode-inactive/{id}', 'updateStatus');
             });
         });
@@ -616,5 +641,3 @@ Route::group(['prefix' => 'user'], function () {
     Route::post('subscribe', [SubscriberController::class, 'create']);
 
 });
-
-Route::get('seed-database', [SystemController::class, 'seeder']);

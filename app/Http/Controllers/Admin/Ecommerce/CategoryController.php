@@ -22,7 +22,6 @@ class CategoryController extends Controller
 
     public function index()
     {
-        Cache::clear();
         $data = $this->service->getAll(request()->has('is_paginated') ? 0 : 1, true);
 
         return response()->json([
@@ -34,6 +33,13 @@ class CategoryController extends Controller
 
     public function store(CategoryStoreRequest $request)
     {
+        if (!$request->hasAny(['image', 'image_id']))
+        {
+            return response()->json([
+                'status' => false,
+                'errors' => ['Please select an image.']
+            ], 422);
+        }
         $this->service->store($request);
 
         return response()->json([

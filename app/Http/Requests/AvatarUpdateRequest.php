@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\GalleryHasImage;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -26,7 +27,20 @@ class AvatarUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'avatar'    => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image_id'  => ['sometimes','integer',
+                            function($attr, $val, $fail) {
+                                $img = GalleryHasImage::find($val);
+
+                                if (!$img)
+                                {
+                                    $fail('No image found.');
+                                }
+
+                                else if ($img->gallery->user_id != auth()->user()->id && $img->is_public == 0) {
+                                    $fail('You cannot select an image from private folder.');
+                                }
+                            }]
         ];
     }
 

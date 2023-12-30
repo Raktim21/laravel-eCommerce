@@ -65,7 +65,6 @@ class AdminRoleController extends Controller
         {
             Cache::delete('roleDetail'.$id);
             Cache::delete('adminRoles');
-//            forgetCaches('permissions');
 
             return response()->json([
                 'status' => true,

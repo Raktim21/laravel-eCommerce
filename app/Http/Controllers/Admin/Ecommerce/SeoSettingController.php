@@ -11,10 +11,9 @@ class SeoSettingController extends Controller
 {
     protected $seo;
 
-    public function __construct($seo){
+    public function __construct(){
         $this->seo = SeoSetting::first();
     }
-
 
     public function index() {
 

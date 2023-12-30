@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\GalleryHasImage;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -26,8 +27,21 @@ class CategoryStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'  => 'required|max:50|unique:product_categories,name',
-            'image' => 'required|mimes:jpg,jpeg,png|max:2048'
+            'name'      => 'required|max:50|unique:product_categories,name',
+            'image'     => 'sometimes|mimes:jpg,jpeg,png|max:2048',
+            'image_id'  => ['sometimes','integer',
+                            function($attr, $val, $fail) {
+                                $img = GalleryHasImage::find($val);
+
+                                if (!$img)
+                                {
+                                    $fail('No image found.');
+                                }
+
+                                else if ($img->gallery->user_id != auth()->user()->id && $img->is_public == 0) {
+                                    $fail('You cannot select an image from private folder.');
+                                }
+                            }]
         ];
     }
 
@@ -37,7 +51,6 @@ class CategoryStoreRequest extends FormRequest
         return [
             'name.required'  => __('Category name is required'),
             'name.unique'    => __('Category name must be unique'),
-            'image.required' => __('Please provide a category image'),
             'image.mimes'    => __('Invalid category image.'),
             'image.max'      => __('Category image must be less than 2MB.'),
         ];

@@ -105,23 +105,4 @@ class GeneralSettingController extends Controller
             'status'    => true,
         ]);
     }
-
-    public function changeCurrency(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'currency_id' => 'required|in:1,2'
-        ]);
-
-        if ($validator->fails())
-        {
-            return response()->json([
-                'status' => false,
-                'errors' => $validator->errors()->all()
-            ], 422);
-        }
-
-        $this->service->changeCurrency($request->currency_id);
-
-        return response()->json(['status' => true]);
-    }
 }

@@ -53,6 +53,10 @@ class AuthService
             if ($request->hasFile('avatar')) {
                 saveImage($request->file('avatar'), '/uploads/customer/avatars/', $profile, 'image');
             }
+            else if ($request->image_id)
+            {
+                saveImageFromMedia($request->image_id, $profile, 'image');
+            }
 
             DB::commit();
             return true;
@@ -171,9 +175,9 @@ class AuthService
     protected function incrementLoginAttempts(Request $request)
     {
         return $this->limiter()->hit(
-                    $this->throttleKey($request),
-                    2 * 60
-                );
+            $this->throttleKey($request),
+            2 * 60
+        );
     }
 
 
@@ -256,8 +260,8 @@ class AuthService
             'code' => $code
         ];
 
-//        sending password reset token via email (using queue)
-//        dispatch(new ResetPasswordMailJob($to, $data));
+        //sending password reset token via email (using queue)
+        //dispatch(new ResetPasswordMailJob($to, $data));
 
         Mail::to($user->username)->send(new PasswordResetMail($data));
 
@@ -280,7 +284,7 @@ class AuthService
     {
         $user = auth()->user()->id;
 
-//        cannot deactivate account if order exists
+        //cannot deactivate account if order exists
 
         if(Order::where('user_id', $user)
             ->whereIn('order_status_id', [1,2])->exists())
@@ -288,7 +292,7 @@ class AuthService
             return 0;
         }
 
-//        logging out the user before deactivating
+        //logging out the user before deactivating
 
         if($this->logout($token))
         {

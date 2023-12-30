@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\GalleryHasImage;
 use App\Models\Sponsor;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
@@ -26,7 +27,7 @@ class SponsorRequest extends FormRequest
      */
     public function rules()
     {
-        $rules = [
+        return [
             'name'  => ['required','string','max:100',
                         function($attr, $val, $fail) {
                             $sponsor = Sponsor::where('name', $val)->first();
@@ -38,14 +39,20 @@ class SponsorRequest extends FormRequest
                         }],
             'url'   => 'nullable|url|max:100',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image_id' => ['sometimes','integer',
+                            function($attr, $val, $fail) {
+                                $img = GalleryHasImage::find($val);
+
+                                if (!$img)
+                                {
+                                    $fail('No image found.');
+                                }
+
+                                else if ($img->gallery->user_id != auth()->user()->id && $img->is_public == 0) {
+                                    $fail('You cannot select an image from private folder.');
+                                }
+                            }]
         ];
-
-        if(!$this->route('id'))
-        {
-            $rules['image'] = 'required';
-        }
-
-        return $rules;
     }
 
     protected function failedValidation(Validator $validator)

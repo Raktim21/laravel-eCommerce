@@ -39,8 +39,8 @@ class OrderPlacementCommand extends Command
                     return $q1->withTrashed();
                 }])->withTrashed();
             }])
-            ->whereBetween('created_at',[Carbon::now('Asia/Dhaka')->subMinutes(5), Carbon::now('Asia/Dhaka')])
-            ->where('order_status_id', 1)
+            ->whereBetween('created_at',[Carbon::now('Asia/Dhaka')->subMinutes(1), Carbon::now('Asia/Dhaka')])
+            ->where('order_status_id', '=', 1)
             ->get();
 
         foreach ($orders as $order)
@@ -55,7 +55,7 @@ class OrderPlacementCommand extends Command
 
                 Mail::to($to)->send(new OrdersMail($mail_data));
             } catch (\Throwable $th) {
-                Log::info($order->order_number. ' - ' .$th->getMessage());
+                Log::error('sending order placement email' . $order->order_number. ' - ' .$th->getMessage());
             }
         }
     }
